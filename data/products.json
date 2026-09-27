@@ -1,0 +1,121 @@
+{
+  "items": [
+    {
+      "id": "zine-001",
+      "name": "AURA Zine 001",
+      "type": "Printed zine",
+      "price": 45,
+      "color": "linear-gradient(135deg,#111,#6b665a,#d8d0bc)",
+      "desc": "Publicação impressa com ensaios, stills, notas curatoriais e registros da programação. Formato editorial independente para colecionar.",
+      "images": [
+        "assets/shop/zine-001-01.jpg",
+        "assets/shop/zine-001-02.jpg",
+        "assets/shop/zine-001-03.jpg"
+      ]
+    },
+    {
+      "id": "tee-archive",
+      "name": "Archive T-Shirt",
+      "type": "Wearable",
+      "price": 120,
+      "color": "linear-gradient(135deg,#050505,#393939,#a7a7a7)",
+      "desc": "Camiseta preta com tipografia editorial minimalista. Peça básica para drops de rádio, arquivo e transmissão.",
+      "images": [
+        "assets/shop/archive-tee-01.jpg",
+        "assets/shop/archive-tee-02.jpg",
+        "assets/shop/archive-tee-03.jpg"
+      ]
+    },
+    {
+      "id": "poster-noite",
+      "name": "Noite Poster",
+      "type": "Print",
+      "price": 70,
+      "color": "linear-gradient(135deg,#080808,#3c2d2d,#c7b39b)",
+      "desc": "Poster vertical 1080×1440 inspirado na transmissão Noite, Ruído e Memória Digital.",
+      "images": [
+        "assets/shop/noite-poster-01.jpg",
+        "assets/shop/noite-poster-02.jpg",
+        "assets/shop/noite-poster-03.jpg"
+      ]
+    },
+    {
+      "id": "digital-pack",
+      "name": "Digital Archive Pack",
+      "type": "Digital",
+      "price": 35,
+      "color": "linear-gradient(135deg,#111,#2d2d50,#c9c1e8)",
+      "desc": "Pacote digital com wallpapers, scans, capas de programa e notas editoriais para uso visual.",
+      "images": [
+        "assets/shop/digital-pack-01.jpg",
+        "assets/shop/digital-pack-02.jpg",
+        "assets/shop/digital-pack-03.jpg"
+      ]
+    },
+    {
+      "id": "longsleeve-radio",
+      "name": "Radio Longsleeve",
+      "type": "Wearable",
+      "price": 150,
+      "color": "linear-gradient(135deg,#050505,#262626,#d8d8d8)",
+      "desc": "Longsleeve de rádio com frente minimalista e print de transmissão nas costas.",
+      "images": [
+        "assets/shop/radio-longsleeve-01.jpg",
+        "assets/shop/radio-longsleeve-02.jpg",
+        "assets/shop/radio-longsleeve-03.jpg"
+      ]
+    },
+    {
+      "id": "sticker-pack",
+      "name": "Signal Sticker Pack",
+      "type": "Object",
+      "price": 25,
+      "color": "linear-gradient(135deg,#111,#3c3c3c,#f2f0e9)",
+      "desc": "Pacote de adesivos com sinais, frequências, códigos e marcações do arquivo.",
+      "images": [
+        "assets/shop/sticker-pack-01.jpg",
+        "assets/shop/sticker-pack-02.jpg",
+        "assets/shop/sticker-pack-03.jpg"
+      ]
+    },
+    {
+      "id": "cassette-dub",
+      "name": "Cassette Dub",
+      "type": "Audio Object",
+      "price": 85,
+      "color": "linear-gradient(135deg,#0b0b0b,#4a4036,#c0a27b)",
+      "desc": "Edição física limitada em fita cassete com mixtape e arte impressa.",
+      "images": [
+        "assets/shop/cassette-dub-01.jpg",
+        "assets/shop/cassette-dub-02.jpg",
+        "assets/shop/cassette-dub-03.jpg"
+      ]
+    },
+    {
+      "id": "photo-print",
+      "name": "Low Light Photo Print",
+      "type": "Print",
+      "price": 95,
+      "color": "linear-gradient(135deg,#000,#1b1b1b,#777)",
+      "desc": "Print fotográfico vertical em baixa luz para parede, arquivo ou instalação.",
+      "images": [
+        "assets/shop/photo-print-01.jpg",
+        "assets/shop/photo-print-02.jpg",
+        "assets/shop/photo-print-03.jpg"
+      ]
+    },
+    {
+      "id": "archive-bundle",
+      "name": "Archive Bundle",
+      "type": "Bundle",
+      "price": 210,
+      "color": "linear-gradient(135deg,#111,#3b352e,#e2d3b8)",
+      "desc": "Combo com zine, poster, adesivos e pacote digital da edição atual.",
+      "images": [
+        "assets/shop/archive-bundle-01.jpg",
+        "assets/shop/archive-bundle-02.jpg",
+        "assets/shop/archive-bundle-03.jpg"
+      ]
+    }
+  ]
+}

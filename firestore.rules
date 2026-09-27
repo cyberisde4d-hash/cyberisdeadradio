@@ -1,0 +1,58 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function adminEmail() {
+      return signedIn() && request.auth.token.email in [
+        'aura1000x@gmail.com',
+        'cyberisde4d@gmail.com',
+        'cyberisdead4d@gmail.com',
+        'cyberisdead2015@gmail.com',
+        'luankeditor@gmail.com'
+      ];
+    }
+    function adminUidDoc() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    function userRoleAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && (
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin'
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.admin == true
+          || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.owner == true
+        );
+    }
+    function isAdmin() {
+      return signedIn() && (adminEmail() || adminUidDoc() || userRoleAdmin());
+    }
+
+    match /articles/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /stations/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /products/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /hosts/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /settings/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /media/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /logs/{id} { allow read, write: if isAdmin(); }
+    match /backups/{id} { allow read, write: if isAdmin(); }
+
+    match /builderPages/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /builderBlocks/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /builderAssets/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /builderTemplates/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /builderSettings/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /builderHistory/{id} { allow read, write: if isAdmin(); }
+
+    match /admins/{uid} {
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create, update, delete: if isAdmin();
+    }
+    match /users/{uid} {
+      allow read, update: if isAdmin() || (signedIn() && request.auth.uid == uid);
+      allow create: if signedIn() && request.auth.uid == uid;
+      allow delete: if isAdmin();
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn() && (
+        request.auth.token.email in [
+          'cyberisdead2015@gmail.com',
+          'luankeditor@gmail.com',
+          'aura1000x@gmail.com'
+        ]
+      );
+    }
+    match /{allPaths=**} {
+      allow read: if true;
+      allow write, delete: if isAdmin() && request.resource.size < 25 * 1024 * 1024;
+    }
+  }
+}

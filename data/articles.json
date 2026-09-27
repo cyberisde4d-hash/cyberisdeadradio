@@ -1,0 +1,92 @@
+{
+  "items": [
+    {
+      "title": "Noite, ruído e memória digital",
+      "category": "Essay",
+      "year": "2026",
+      "excerpt": "Um ensaio sobre plataformas independentes, arquivos vivos e transmissões escondidas.",
+      "color": "linear-gradient(135deg,#111,#6b665a,#d8d0bc)",
+      "body": [
+        "A internet independente sempre funcionou como um conjunto de corredores paralelos: links privados, páginas temporárias, transmissões com pouca divulgação e comunidades que se encontram por sinal, não por algoritmo.",
+        "Este arquivo editorial parte dessa ideia: reunir textos, imagens, sons e notas como uma revista em atualização constante. Não é só um blog; é um índice vivo."
+      ]
+    },
+    {
+      "title": "Rádio visual como linguagem",
+      "category": "Radio",
+      "year": "2026",
+      "excerpt": "Quando o player deixa de ser ferramenta e vira parte da experiência editorial.",
+      "color": "linear-gradient(135deg,#050505,#393939,#a7a7a7)",
+      "body": [
+        "Uma rádio visual cria presença. O som não está sozinho: ele carrega imagem, contexto, texto e atmosfera.",
+        "A página vira uma sala. O arquivo vira transmissão. O botão de play vira uma entrada."
+      ]
+    },
+    {
+      "title": "Cinema encontrado e circulação secreta",
+      "category": "Cinema",
+      "year": "2026",
+      "excerpt": "Notas sobre sessões, links escondidos e catálogos afetivos.",
+      "color": "linear-gradient(135deg,#080808,#3c2d2d,#c7b39b)",
+      "body": [
+        "O cinema na web também acontece fora dos catálogos oficiais: listas, drives, fóruns, newsletters, links apagados e recomendações diretas.",
+        "Um arquivo editorial pode documentar esse fluxo sem depender de uma plataforma única."
+      ]
+    },
+    {
+      "title": "Guia bruto de uma cena local",
+      "category": "Scene",
+      "year": "2026",
+      "excerpt": "Pessoas, lugares, eventos e ruídos que compõem uma cena em movimento.",
+      "color": "linear-gradient(135deg,#090909,#1d332d,#bacbbd)",
+      "body": [
+        "Toda cena tem uma camada visível e uma camada subterrânea. A primeira aparece nos flyers; a segunda aparece nas conversas.",
+        "O papel do arquivo é registrar as duas sem transformar tudo em produto limpo demais."
+      ]
+    },
+    {
+      "title": "Playlist como texto crítico",
+      "category": "Music",
+      "year": "2026",
+      "excerpt": "A seleção musical também pode funcionar como ensaio.",
+      "color": "linear-gradient(135deg,#111,#2d2d50,#c9c1e8)",
+      "body": [
+        "Uma playlist não é apenas sequência. Ela cria argumento, ritmo, tensão e comentário.",
+        "Quando publicada com notas editoriais, vira texto expandido."
+      ]
+    },
+    {
+      "title": "Fotografia de baixa luz",
+      "category": "Visual",
+      "year": "2025",
+      "excerpt": "Estética noturna, granulação, sombra e documentação informal.",
+      "color": "linear-gradient(135deg,#000,#202020,#6e6e6e)",
+      "body": [
+        "A imagem escura carrega uma ética própria: menos nitidez, mais presença.",
+        "No arquivo, ela funciona como documento e como atmosfera."
+      ]
+    },
+    {
+      "title": "Zines, PDFs e páginas mortas",
+      "category": "Archive",
+      "year": "2025",
+      "excerpt": "A importância de preservar formatos frágeis.",
+      "color": "linear-gradient(135deg,#151515,#807867,#eee6d3)",
+      "body": [
+        "Nem todo arquivo nasce para durar. Alguns existem como PDF solto, página quebrada, pasta renomeada ou print.",
+        "Preservar também é aceitar a sujeira do formato."
+      ]
+    },
+    {
+      "title": "Notas sobre interface underground",
+      "category": "Design",
+      "year": "2025",
+      "excerpt": "Por que algumas páginas precisam parecer encontradas, não vendidas.",
+      "color": "linear-gradient(135deg,#111,#4a4a4a,#f2f0e9)",
+      "body": [
+        "Interfaces muito polidas podem matar a sensação de descoberta.",
+        "Às vezes o melhor design é aquele que parece um acesso, não uma vitrine."
+      ]
+    }
+  ]
+}

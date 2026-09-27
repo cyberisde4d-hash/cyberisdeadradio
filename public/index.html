@@ -1,0 +1,1531 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>CYBERISDEAD</title>
+  <meta name="description" content="CYBERISDEAD" />
+  <meta name="keywords" content="cyberisdead, radio, cinema, editorial, underground" />
+  <meta name="author" content="CYBERISDEAD" />
+  <meta name="theme-color" content="#000000" />
+  <link rel="canonical" href="https://cyberisdeadesite.web.app/" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23000%22/%3E%3Ccircle cx=%2232%22 cy=%2232%22 r=%2222%22 fill=%22none%22 stroke=%22%23fff%22 stroke-width=%226%22/%3E%3C/svg%3E" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 64 64%22%3E%3Crect width=%2264%22 height=%2264%22 fill=%22%23000%22/%3E%3Ccircle cx=%2232%22 cy=%2232%22 r=%2222%22 fill=%22none%22 stroke=%22%23fff%22 stroke-width=%226%22/%3E%3C/svg%3E" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="CYBERISDEAD" />
+  <meta property="og:title" content="CYBERISDEAD" />
+  <meta property="og:description" content="CYBERISDEAD" />
+  <meta property="og:url" content="https://cyberisdeadesite.web.app/" />
+  <meta property="og:image" content="" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="CYBERISDEAD" />
+  <meta name="twitter:description" content="CYBERISDEAD" />
+  <meta name="twitter:image" content="" />
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#000;
+      --fg:#fff;
+      --muted:rgba(255,255,255,.58);
+      --line:rgba(255,255,255,.22);
+      --panel:#060606;
+      --paper:#fff;
+      --ink:#000;
+      --safe-top:env(safe-area-inset-top);
+      --safe-bottom:env(safe-area-inset-bottom);
+    }
+    html,body{width:100%;min-height:100%;background:#000;color:#fff}
+    html{scroll-behavior:smooth}
+    body{
+      font-family:Arial,Helvetica,sans-serif;
+      text-transform:uppercase;
+      font-size:11px;
+      line-height:1;
+      letter-spacing:.03em;
+      overflow:hidden;
+      cursor:default;
+    }
+    button,a,input,select{font:inherit;color:inherit}
+    button{cursor:pointer;background:none;border:0}
+    a{text-decoration:none}
+    ::selection{background:#fff;color:#000}
+    body::before{
+      content:"";
+      position:fixed;
+      inset:-30%;
+      z-index:0;
+      pointer-events:none;
+      opacity:.04;
+      background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+      animation:none!important;
+    }
+    @keyframes grain{0%{transform:translate(0,0)}25%{transform:translate(-3%,2%)}50%{transform:translate(3%,-2%)}75%{transform:translate(2%,3%)}100%{transform:translate(0,0)}}
+
+    .topbar{
+      position:fixed;
+      z-index:80;
+      top:0;
+      left:0;
+      right:0;
+      height:calc(50px + var(--safe-top));
+      padding:var(--safe-top) 14px 0;
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      align-items:center;
+      background:linear-gradient(to bottom,rgba(0,0,0,.82),rgba(0,0,0,.18),transparent);
+      pointer-events:none;
+    }
+    .topbar > *{pointer-events:auto}
+    .brand{
+      justify-self:center;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-size:11px;
+      letter-spacing:.18em;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .brand-mark{width:10px;height:10px;border:1px solid #fff;border-radius:50%;box-shadow:0 0 18px rgba(255,255,255,.25)}
+    .nav-left,.nav-right{display:flex;gap:7px;align-items:center}
+    .nav-right{justify-self:end}
+    .pill{
+      border:1px solid rgba(255,255,255,.28);
+      background:rgba(0,0,0,.46);
+      backdrop-filter:blur(12px);
+      color:#fff;
+      min-height:30px;
+      padding:8px 10px;
+      font-size:10px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .pill:hover,.pill.active{background:#fff;color:#000;border-color:#fff}
+    .country-select{appearance:none;min-width:90px;text-align:center}
+
+    .shop-stage{
+      position:relative;
+      z-index:1;
+      width:100vw;
+      height:100dvh;
+      overflow:hidden;
+      background:#000;
+      touch-action:pan-y;
+    }
+    .product-track{
+      display:flex;
+      width:100%;
+      height:100%;
+      transform:translate3d(0,0,0);
+      transition:transform .42s cubic-bezier(.16,1,.3,1);
+      will-change:transform;
+    }
+    .product-slide{
+      position:relative;
+      min-width:100vw;
+      height:100dvh;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      background:#000;
+      isolation:isolate;
+    }
+    .product-bg{display:none!important;}
+    .product-fallback{
+      display:none !important;
+    }
+    .product-photo{
+      max-width:100vw;
+      max-height:100dvh;
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+      filter:none!important;
+      opacity:1;
+      transition:opacity .2s ease, transform .35s ease;
+      cursor:pointer;
+      -webkit-user-drag:none;
+      user-select:none;
+    }
+    .product-photo.is-missing{opacity:0}
+    .product-slide:hover .product-photo{transform:scale(1.008)}
+    .product-caption{
+      position:absolute;
+      left:14px;
+      bottom:calc(14px + var(--safe-bottom));
+      right:14px;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      align-items:end;
+      pointer-events:none;
+      color:#fff;
+      text-shadow:0 2px 16px rgba(0,0,0,.85);
+    }
+    .caption-title{font-size:clamp(22px,3vw,46px);line-height:.9;letter-spacing:-.05em;font-weight:400}
+    .caption-meta{margin-top:7px;color:rgba(255,255,255,.65);font-size:10px;letter-spacing:.08em}
+    .caption-price{display:none!important}
+    .arrows{
+      position:fixed;
+      z-index:60;
+      inset:0;
+      pointer-events:none;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 14px;
+    }
+    .arrow{
+      pointer-events:auto;
+      width:38px;
+      height:48px;
+      border:1px solid rgba(255,255,255,.24);
+      background:rgba(0,0,0,.36);
+      backdrop-filter:blur(10px);
+      font-size:18px;
+    }
+    .arrow:hover{background:#fff;color:#000;border-color:#fff}
+    .counter{
+      position:fixed;
+      z-index:65;
+      left:50%;
+      bottom:calc(14px + var(--safe-bottom));
+      transform:translateX(-50%);
+      color:rgba(255,255,255,.65);
+      font-size:10px;
+      letter-spacing:.12em;
+      pointer-events:none;
+    }
+
+    .modal{
+      position:fixed;
+      z-index:120;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      background:rgba(0,0,0,.78);
+      backdrop-filter:blur(8px);
+    }
+    .modal.open{display:flex}
+    .product-modal-box{
+      width:min(1080px,100%);
+      max-height:92dvh;
+      display:grid;
+      grid-template-columns:minmax(280px,540px) 1fr;
+      overflow:hidden;
+      border:1px solid #fff;
+      background:#070707;
+      color:#fff;
+      box-shadow:0 30px 120px rgba(0,0,0,.86);
+    }
+    .modal-gallery{background:#000;min-height:300px;display:flex;flex-direction:column}
+    .modal-media{
+      position:relative;
+      flex:1;
+      min-height:0;
+      background:#0b0b0b;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+    }
+    .modal-media::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:var(--product-color,linear-gradient(135deg,#111,#555,#aaa));
+      opacity:.28;
+      filter:blur(22px);
+      transform:scale(1.1);
+    }
+    .modal-media img{
+      position:relative;
+      z-index:1;
+      width:100%;
+      height:100%;
+      max-height:70dvh;
+      object-fit:contain;
+      display:block;
+    }
+    .modal-media img.is-missing{opacity:0}
+    .gallery-nav{position:absolute;z-index:2;left:8px;right:8px;top:50%;transform:translateY(-50%);display:flex;justify-content:space-between;pointer-events:none}
+    .gallery-nav button{pointer-events:auto;width:36px;height:36px;border:1px solid rgba(255,255,255,.5);background:#000;color:#fff}
+    .gallery-nav button:hover{background:#fff;color:#000;border-color:#fff}
+    .thumbs{display:flex;gap:6px;overflow:auto;padding:8px;border-top:1px solid rgba(255,255,255,.18)}
+    .thumb{width:44px;height:58px;flex:0 0 auto;border:1px solid rgba(255,255,255,.25);background:#111 center/cover no-repeat;opacity:.55}
+    .thumb.active{opacity:1;outline:2px solid #fff}
+
+    .modal-info{padding:14px;display:flex;flex-direction:column;gap:12px;min-height:0;overflow:auto;border-left:1px solid rgba(255,255,255,.18)}
+    .modal-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:10px;color:rgba(255,255,255,.64);font-size:10px;letter-spacing:.08em}
+    .close{font-size:26px;color:#fff;line-height:1}
+    .modal-title{font-size:clamp(34px,5vw,68px);line-height:.9;letter-spacing:-.06em;font-weight:400}
+    .modal-desc{font-size:13px;line-height:19px;text-transform:none;color:rgba(255,255,255,.78);max-width:540px}
+    .price-line{display:flex;justify-content:space-between;gap:10px;align-items:center;border-top:1px solid rgba(255,255,255,.18);padding-top:12px;font-size:18px;letter-spacing:.08em}
+    .stock{font-size:10px;color:rgba(255,255,255,.62)}
+    .option-block{display:grid;gap:7px}
+    .label{font-size:10px;letter-spacing:.09em;color:rgba(255,255,255,.58)}
+    .size-list,.variant-list{display:flex;gap:6px;flex-wrap:wrap}
+    .choice{border:1px solid rgba(255,255,255,.28);padding:9px 10px;min-width:42px;text-align:center;background:#050505;color:#fff;font-size:10px;text-transform:uppercase}
+    .choice.active,.choice:hover{background:#fff;color:#000;border-color:#fff}
+    .qty-row{display:flex;align-items:center;gap:8px}
+    .qty-row button{width:34px;height:34px;border:1px solid rgba(255,255,255,.28)}
+    .qty-row button:hover{background:#fff;color:#000;border-color:#fff}
+    .qty-number{min-width:26px;text-align:center;font-size:12px}
+    .action-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:auto}
+    .action{border:1px solid #fff;padding:13px 12px;text-align:center;text-transform:uppercase;background:#050505;color:#fff;font-size:10px;letter-spacing:.08em}
+    .action.primary{background:#fff;color:#000}
+    .action:hover{background:#fff;color:#000}
+    .action.primary:hover{background:#d8d8d8}
+    .note-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+    .note-box{border:1px solid rgba(255,255,255,.18);padding:9px;color:rgba(255,255,255,.62);font-size:10px;line-height:14px;text-transform:none}
+
+    .drawer{
+      position:fixed;
+      z-index:180;
+      top:0;
+      right:0;
+      width:min(500px,100%);
+      height:100dvh;
+      background:#060606;
+      color:#fff;
+      border-left:1px solid #fff;
+      transform:translateX(102%);
+      transition:.28s cubic-bezier(.16,1,.3,1);
+      display:flex;
+      flex-direction:column;
+      padding:12px;
+      box-shadow:none;
+    }
+    .drawer.open{transform:translateX(0);box-shadow:0 0 0 9999px rgba(0,0,0,.82),-22px 0 110px rgba(0,0,0,.9)}
+    .drawer-head{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,.18);padding-bottom:12px}
+    .drawer-title{font-size:34px;line-height:.9;letter-spacing:-.06em;font-weight:400}
+    .drawer-close{font-size:28px;color:#fff}
+    .drawer-body{flex:1;overflow:auto;padding:12px 0}
+    .empty{border:1px solid rgba(255,255,255,.18);padding:18px;color:rgba(255,255,255,.58);font-size:12px;line-height:17px;text-transform:none}
+    .cart-item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.16)}
+    .cart-thumb{width:64px;height:80px;background:#111 center/cover no-repeat}
+    .cart-name{font-size:14px;line-height:16px}
+    .cart-meta{font-size:10px;color:rgba(255,255,255,.58);margin-top:5px;line-height:14px}
+    .cart-price{font-size:12px;white-space:nowrap}
+    .cart-qty{display:flex;gap:7px;align-items:center;margin-top:7px}
+    .cart-qty button,.remove{border:1px solid rgba(255,255,255,.2);padding:6px 8px;color:#fff;background:#090909;font-size:10px}
+    .cart-qty button:hover,.remove:hover{background:#fff;color:#000;border-color:#fff}
+    .remove{margin-top:7px;display:inline-block}
+    .drawer-total{border-top:1px solid rgba(255,255,255,.18);padding-top:12px}
+    .total-line{display:flex;justify-content:space-between;gap:12px;margin-bottom:12px;font-size:12px;letter-spacing:.08em}
+    .checkout{width:100%;border:1px solid #fff;background:#fff;color:#000;padding:15px 12px;text-transform:uppercase;font-weight:700;letter-spacing:.08em}
+    .checkout:hover{background:#d8d8d8}
+    .drawer-note{margin-top:10px;color:rgba(255,255,255,.55);font-size:11px;line-height:15px;text-transform:none}
+
+    .share-panel{
+      position:fixed;
+      z-index:200;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      background:rgba(0,0,0,.78);
+      backdrop-filter:blur(8px);
+    }
+    .share-panel.open{display:flex}
+    .share-box{width:min(460px,100%);background:#fff;color:#000;border:1px solid #000;padding:12px}
+    .share-top{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #000;padding-bottom:9px;margin-bottom:12px;font-size:10px;color:#666}
+    .share-title{font-size:26px;line-height:28px;letter-spacing:-.04em;font-weight:400;margin-bottom:8px}
+    .share-options{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin:12px 0}
+    .share-options a,.share-options button{border:1px solid #000;padding:10px 8px;text-align:center;text-transform:uppercase;font-size:10px;color:#000;background:#fff}
+    .share-options a:hover,.share-options button:hover{background:#000;color:#fff}
+    .copy-field{display:grid;grid-template-columns:1fr auto;gap:6px}
+    .copy-field input{border:1px solid #000;padding:10px;font-size:11px;text-transform:none;width:100%;color:#000;background:#fff}
+    .copy-field button{border:1px solid #000;padding:10px;font-size:10px;text-transform:uppercase;color:#000}
+
+    .auth-box{width:min(430px,100%);background:#fff;color:#000;border:1px solid #000;padding:0}
+    .auth-top{height:38px;display:grid;grid-template-columns:1fr 38px;align-items:center;border-bottom:1px solid #000;font-size:10px;color:#555}
+    .auth-top span{padding:0 10px}.auth-top button{height:38px;border-left:1px solid #000;color:#000;font-size:20px}
+    .auth-body{padding:12px}.auth-body h2{font-size:28px;line-height:30px;letter-spacing:-.05em;font-weight:400;margin-bottom:8px}
+    .auth-body p{font-size:12px;line-height:16px;color:#444;text-transform:none;margin-bottom:10px}
+    .auth-form{display:grid;gap:8px}.auth-form label{display:grid;gap:5px;color:#555;font-size:10px;letter-spacing:.05em}
+    .auth-form input{border:1px solid #000;background:#fff;color:#000;padding:10px;font:inherit;font-size:13px;text-transform:none}
+    .auth-submit{border:1px solid #000;background:#000;color:#fff;padding:11px;text-transform:uppercase}
+    .account-panels{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .account-panel{border:1px solid #000;padding:9px;min-height:80px}
+    .account-panel h3{font-size:12px;margin-bottom:7px}.account-list{display:grid;gap:5px}
+    .account-item{border-top:1px solid #ddd;padding-top:5px;font-size:11px;color:#444;text-align:left;width:100%}
+    .status-msg{font-size:11px;line-height:15px;text-transform:none;color:#555;margin-top:8px}
+
+    .toast{position:fixed;z-index:250;left:50%;bottom:calc(28px + var(--safe-bottom));transform:translateX(-50%) translateY(20px);opacity:0;transition:.2s;background:#fff;color:#000;border:1px solid #000;padding:10px 12px;font-size:10px;letter-spacing:.08em;pointer-events:none}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    body.modal-lock{overflow:hidden}
+
+    /* LIGHT / DARK THEME TOGGLE */
+    html[data-shop-theme="light"]{
+      --bg:#f4f4f1;
+      --fg:#000;
+      --muted:rgba(0,0,0,.58);
+      --line:rgba(0,0,0,.22);
+      --panel:#f7f7f4;
+      --paper:#000;
+      --ink:#fff;
+    }
+    html[data-shop-theme="light"],
+    html[data-shop-theme="light"] body{
+      background:#fff;
+      color:#000;
+    }
+    html[data-shop-theme="light"] body::before{
+      opacity:.025;
+      filter:invert(1);
+    }
+    html[data-shop-theme="light"] .shop-stage,
+    html[data-shop-theme="light"] .product-slide{
+      background:#fff;
+    }
+    html[data-shop-theme="light"] .topbar{
+      background:transparent;
+    }
+    html[data-shop-theme="light"] .pill,
+    html[data-shop-theme="light"] .arrow{
+      color:#000;
+      border-color:rgba(0,0,0,.26);
+      background:rgba(244,244,241,.68);
+    }
+    html[data-shop-theme="light"] .pill:hover,
+    html[data-shop-theme="light"] .pill.active,
+    html[data-shop-theme="light"] .arrow:hover{
+      background:#000;
+      color:#fff;
+      border-color:#000;
+    }
+    html[data-shop-theme="light"] .brand-mark{
+      border-color:#000;
+      box-shadow:0 0 18px rgba(0,0,0,.18);
+    }
+    html[data-shop-theme="light"] .product-bg{
+      opacity:.16;
+      filter:blur(34px) saturate(.82);
+    }
+    html[data-shop-theme="light"] .product-caption{
+      color:#000;
+      text-shadow:0 2px 18px rgba(244,244,241,.9);
+    }
+    html[data-shop-theme="light"] .caption-meta,
+    html[data-shop-theme="light"] .counter{
+      color:rgba(0,0,0,.62);
+    }
+    html[data-shop-theme="light"] .product-modal-box,
+    html[data-shop-theme="light"] .drawer{
+      background:#fff;
+      color:#000;
+      border-color:#000;
+    }
+    html[data-shop-theme="light"] .modal-gallery,
+    html[data-shop-theme="light"] .modal-media{
+      background:#ededeb;
+    }
+    html[data-shop-theme="light"] .modal-info{
+      border-left-color:rgba(0,0,0,.18);
+    }
+    html[data-shop-theme="light"] .modal-top,
+    html[data-shop-theme="light"] .price-line,
+    html[data-shop-theme="light"] .drawer-head,
+    html[data-shop-theme="light"] .drawer-total,
+    html[data-shop-theme="light"] .cart-item,
+    html[data-shop-theme="light"] .thumbs{
+      border-color:rgba(0,0,0,.18);
+    }
+    html[data-shop-theme="light"] .modal-desc,
+    html[data-shop-theme="light"] .label,
+    html[data-shop-theme="light"] .stock,
+    html[data-shop-theme="light"] .cart-meta,
+    html[data-shop-theme="light"] .drawer-note{
+      color:rgba(0,0,0,.62);
+    }
+    html[data-shop-theme="light"] .choice,
+    html[data-shop-theme="light"] .action,
+    html[data-shop-theme="light"] .qty-row button,
+    html[data-shop-theme="light"] .cart-qty button,
+    html[data-shop-theme="light"] .remove,
+    html[data-shop-theme="light"] .note-box{
+      background:#fff;
+      color:#000;
+      border-color:rgba(0,0,0,.28);
+    }
+    html[data-shop-theme="light"] .choice.active,
+    html[data-shop-theme="light"] .choice:hover,
+    html[data-shop-theme="light"] .action:hover,
+    html[data-shop-theme="light"] .qty-row button:hover,
+    html[data-shop-theme="light"] .cart-qty button:hover,
+    html[data-shop-theme="light"] .remove:hover{
+      background:#000;
+      color:#fff;
+      border-color:#000;
+    }
+    html[data-shop-theme="light"] .action.primary,
+    html[data-shop-theme="light"] .checkout{
+      background:#000;
+      color:#fff;
+      border-color:#000;
+    }
+    html[data-shop-theme="light"] .action.primary:hover,
+    html[data-shop-theme="light"] .checkout:hover{
+      background:#242424;
+    }
+    html[data-shop-theme="light"] .modal,
+    html[data-shop-theme="light"] .share-panel{
+      background:rgba(244,244,241,.78);
+    }
+    html[data-shop-theme="light"] .close,
+    html[data-shop-theme="light"] .drawer-close{
+      color:#000;
+    }
+    html[data-shop-theme="light"] .drawer.open{
+      box-shadow:0 0 0 9999px rgba(244,244,241,.82),-22px 0 110px rgba(0,0,0,.18);
+    }
+
+    @media(max-width:760px){
+      .topbar{
+        grid-template-columns:auto 1fr auto;
+        align-content:center;
+        height:calc(54px + var(--safe-top));
+        padding-left:8px;
+        padding-right:8px;
+        gap:6px;
+      }
+      .brand{justify-self:center;font-size:9px;letter-spacing:.14em}
+      .nav-left{display:flex;gap:4px}
+      .nav-desktop-only{display:none!important}
+      .nav-right{gap:4px}
+      .pill{padding:8px 8px;font-size:9px}
+      .arrows{display:none}
+      .product-caption{grid-template-columns:1fr;bottom:calc(18px + var(--safe-bottom))}
+      .caption-price{justify-self:start}
+      .counter{display:none}
+      .product-modal-box{grid-template-columns:1fr;overflow:auto}
+      .modal-info{border-left:0;border-top:1px solid rgba(255,255,255,.18)}
+      .modal-media img{max-height:55dvh}
+      .action-grid{grid-template-columns:1fr}
+      .note-grid,.account-panels{grid-template-columns:1fr}
+    }
+    @media(max-width:430px){
+      .nav-left{gap:3px}
+      .nav-left .pill{min-height:28px;padding:7px 6px;font-size:8px}
+      .nav-right .pill{min-height:28px;padding:7px 6px;font-size:8px}
+      .country-select{min-width:48px}
+      .brand{font-size:8px;letter-spacing:.12em}
+      .nav-right .pill[data-hide-mobile]{display:none}
+      .modal{padding:8px}
+      .drawer{width:100%}
+      .product-caption{left:10px;right:10px}
+      .caption-title{font-size:24px}
+    }
+  
+    /* GRAN FINALE: quantidade removida da interface; checkout/link cuida disso */
+    #qtyLabel,
+    #qtyLabel + .qty-row,
+    .qty-row,
+    .cart-qty{
+      display:none!important;
+    }
+
+  
+    /* FINAL CLEANUP: sem quantidade visível no site/carrinho */
+    .cart-meta,
+    .cart-qty,
+    #qtyLabel,
+    #qtyLabel + .qty-row,
+    .qty-row{
+      display:none!important;
+    }
+
+  
+    /* CLIENT CLEANUP: sem quantidade/contador visível */
+    #cartCount,
+    .cart-meta,
+    .cart-qty,
+    #qtyLabel,
+    #qtyLabel + .qty-row,
+    .qty-row{
+      display:none!important;
+    }
+
+  
+    #radioBtn{
+      background:#fff!important;
+      color:#000!important;
+      border-color:#fff!important;
+    }
+    html[data-shop-theme="light"] #radioBtn{
+      background:#000!important;
+      color:#fff!important;
+      border-color:#000!important;
+    }
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav-left">
+      <button class="pill" id="themeToggle" type="button" aria-label="Alternar tema">Dark</button>
+      <button class="pill nav-desktop-only" id="prevBtnTop" type="button">Prev</button>
+      <button class="pill nav-desktop-only" id="nextBtnTop" type="button">Next</button>
+      <div style="margin-top:6px;"><button class="pill" id="radioBtn" type="button" onclick="window.open('/radio', '_blank', 'noopener,noreferrer')">RADIO</button></div>
+    </nav>
+    <a class="brand" href="#top" aria-label="CYBERISDEAD">CYBERISDEAD</a>
+    <nav class="nav-right">
+      <select class="pill country-select" id="countrySelect" aria-label="País/idioma">
+        <option value="pt-BR">BR</option><option value="en-US" selected>US</option><option value="en-GB">UK</option><option value="es-ES">ES</option><option value="fr-FR">FR</option><option value="de-DE">DE</option><option value="it-IT">IT</option><option value="ja-JP">JP</option><option value="ko-KR">KR</option><option value="zh-CN">CN</option><option value="ru-RU">RU</option>
+      </select>
+      <button class="pill" id="accountOpen" type="button">Account</button>
+      <button class="pill" id="cartOpen" type="button">Cart <span id="cartCount" style="display:none">0</span></button>
+    </nav>
+  </header>
+
+  <main id="top" class="shop-stage" aria-label="CYBERISDEAD Shop">
+    <div class="product-track" id="productTrack"></div>
+  </main>
+  <div class="arrows"><button class="arrow" id="prevBtn" type="button">‹</button><button class="arrow" id="nextBtn" type="button">›</button></div>
+  <div class="counter" id="counter">00 / 00</div>
+
+  <section class="modal" id="productModal" aria-hidden="true">
+    <div class="product-modal-box" role="dialog" aria-modal="true">
+      <div class="modal-gallery">
+        <div class="modal-media" id="modalMedia">
+          <img id="modalImage" alt="" />
+          <div class="gallery-nav"><button id="modalPrevImage" type="button">‹</button><button id="modalNextImage" type="button">›</button></div>
+        </div>
+        <div class="thumbs" id="modalThumbs"></div>
+      </div>
+      <div class="modal-info">
+        <div class="modal-top"><span id="modalType">Product</span><button class="close" id="modalClose" type="button" aria-label="Fechar">×</button></div>
+        <h1 class="modal-title" id="modalTitle"></h1>
+        <p class="modal-desc" id="modalDesc"></p>
+        <div class="price-line"><strong id="modalPrice"></strong><span class="stock" id="modalStock"></span></div>
+        <div class="option-block" id="sizeBlock"><span class="label" id="sizeLabel">Size</span><div class="size-list" id="sizeList"></div></div>
+        <div class="option-block" id="variantBlock"><span class="label" id="variantLabel">Variant</span><div class="variant-list" id="variantList"></div></div>
+        <div class="option-block"><span class="label" id="qtyLabel">Quantity</span><div class="qty-row"><button id="qtyMinus" type="button">−</button><span class="qty-number" id="qtyValue">1</span><button id="qtyPlus" type="button">+</button></div></div>
+        <div class="action-grid">
+          <button class="action primary" id="buyNow" type="button">Buy now</button>
+          <button class="action" id="addToCart" type="button">Add to cart</button>
+          <button class="action" id="saveProduct" type="button">Save</button>
+          <button class="action" id="shareProduct" type="button">Share</button>
+        </div>
+        <div class="note-grid">
+          <div class="note-box" id="shippingNote">Shipping calculated at checkout.</div>
+          <div class="note-box" id="returnsNote">Secure checkout through configured external link or cart request.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="drawer" id="cartDrawer" aria-hidden="true">
+    <div class="drawer-head"><h2 class="drawer-title" id="cartTitle">Cart</h2><button class="drawer-close" id="cartClose" type="button">×</button></div>
+    <div class="drawer-body" id="cartItems"></div>
+    <div class="drawer-total">
+      <div class="total-line"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
+      <button class="checkout" id="checkoutBtn" type="button">Checkout</button>
+      <p class="drawer-note" id="cartNote">ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.</p>
+    </div>
+  </aside>
+
+  <section class="share-panel" id="sharePanel" aria-hidden="true">
+    <div class="share-box">
+      <div class="share-top"><span id="shareMeta">Share product</span><button id="shareClose" type="button">×</button></div>
+      <h2 class="share-title" id="shareTitle">Product</h2>
+      <p class="status-msg" id="shareText">Copy or send this product.</p>
+      <div class="share-options" id="shareOptions"></div>
+      <div class="copy-field"><input id="shareUrlInput" readonly value=""><button id="copyShare" type="button">Copy</button></div>
+    </div>
+  </section>
+
+  <section class="modal" id="authModal" aria-hidden="true">
+    <div class="auth-box">
+      <div class="auth-top"><span id="authMeta">Account access</span><button id="authClose" type="button">×</button></div>
+      <div class="auth-body">
+        <h2 id="authTitle">Account</h2>
+        <p id="authIntro">Login to save products, keep history and access future orders.</p>
+        <form class="auth-form" id="authForm">
+          <label>Email<input id="authEmail" type="email" autocomplete="email" required></label>
+          <label>Password<input id="authPassword" type="password" autocomplete="current-password" required></label>
+          <button class="auth-submit" id="authSubmit" type="submit">Login / Create account</button>
+        </form>
+        <button class="auth-submit" id="logoutBtn" type="button" style="display:none;margin-top:8px;width:100%">Logout</button>
+        <div class="status-msg" id="authState"></div>
+        <div class="account-panels">
+          <div class="account-panel"><h3>Saved</h3><div class="account-list" id="savedList"></div></div>
+          <div class="account-panel"><h3>History</h3><div class="account-list" id="historyList"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast">OK</div>
+
+  <script type="module">
+    import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, collection, getDocs, doc, getDoc, addDoc, setDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOl8WXhHyG8M2Uh9zFTwt4mClqRYO4GIc",
+      authDomain: "cyberisdeadesite.firebaseapp.com",
+      projectId: "cyberisdeadesite",
+      storageBucket: "cyberisdeadesite.firebasestorage.app",
+      messagingSenderId: "145227236840",
+      appId: "1:145227236840:web:c691a4f7e31ca32cff905d",
+      measurementId: "G-3QBSY750TT"
+    };
+
+    const INLINE_PRODUCTS = [{"id": "zine-001", "name": "AURA Zine 001", "type": "Printed zine", "price": 45, "color": "linear-gradient(135deg,#111,#6b665a,#d8d0bc)", "desc": "Publicação impressa com ensaios, stills, notas curatoriais e registros da programação. Formato editorial independente para colecionar.", "images": ["assets/shop/zine-001-01.jpg", "assets/shop/zine-001-02.jpg", "assets/shop/zine-001-03.jpg"]}, {"id": "tee-archive", "name": "Archive T-Shirt", "type": "Wearable", "price": 120, "color": "linear-gradient(135deg,#050505,#393939,#a7a7a7)", "desc": "Camiseta preta com tipografia editorial minimalista. Peça básica para drops de rádio, arquivo e transmissão.", "images": ["assets/shop/archive-tee-01.jpg", "assets/shop/archive-tee-02.jpg", "assets/shop/archive-tee-03.jpg"]}, {"id": "poster-noite", "name": "Noite Poster", "type": "Print", "price": 70, "color": "linear-gradient(135deg,#080808,#3c2d2d,#c7b39b)", "desc": "Poster vertical 1080×1440 inspirado na transmissão Noite, Ruído e Memória Digital.", "images": ["assets/shop/noite-poster-01.jpg", "assets/shop/noite-poster-02.jpg", "assets/shop/noite-poster-03.jpg"]}, {"id": "digital-pack", "name": "Digital Archive Pack", "type": "Digital", "price": 35, "color": "linear-gradient(135deg,#111,#2d2d50,#c9c1e8)", "desc": "Pacote digital com wallpapers, scans, capas de programa e notas editoriais para uso visual.", "images": ["assets/shop/digital-pack-01.jpg", "assets/shop/digital-pack-02.jpg", "assets/shop/digital-pack-03.jpg"]}, {"id": "longsleeve-radio", "name": "Radio Longsleeve", "type": "Wearable", "price": 150, "color": "linear-gradient(135deg,#050505,#262626,#d8d8d8)", "desc": "Longsleeve de rádio com frente minimalista e print de transmissão nas costas.", "images": ["assets/shop/radio-longsleeve-01.jpg", "assets/shop/radio-longsleeve-02.jpg", "assets/shop/radio-longsleeve-03.jpg"]}, {"id": "sticker-pack", "name": "Signal Sticker Pack", "type": "Object", "price": 25, "color": "linear-gradient(135deg,#111,#3c3c3c,#f2f0e9)", "desc": "Pacote de adesivos com sinais, frequências, códigos e marcações do arquivo.", "images": ["assets/shop/sticker-pack-01.jpg", "assets/shop/sticker-pack-02.jpg", "assets/shop/sticker-pack-03.jpg"]}, {"id": "cassette-dub", "name": "Cassette Dub", "type": "Audio Object", "price": 85, "color": "linear-gradient(135deg,#0b0b0b,#4a4036,#c0a27b)", "desc": "Edição física limitada em fita cassete com mixtape e arte impressa.", "images": ["assets/shop/cassette-dub-01.jpg", "assets/shop/cassette-dub-02.jpg", "assets/shop/cassette-dub-03.jpg"]}, {"id": "photo-print", "name": "Low Light Photo Print", "type": "Print", "price": 95, "color": "linear-gradient(135deg,#000,#1b1b1b,#777)", "desc": "Print fotográfico vertical em baixa luz para parede, arquivo ou instalação.", "images": ["assets/shop/photo-print-01.jpg", "assets/shop/photo-print-02.jpg", "assets/shop/photo-print-03.jpg"]}, {"id": "archive-bundle", "name": "Archive Bundle", "type": "Bundle", "price": 210, "color": "linear-gradient(135deg,#111,#3b352e,#e2d3b8)", "desc": "Combo com zine, poster, adesivos e pacote digital da edição atual.", "images": ["assets/shop/archive-bundle-01.jpg", "assets/shop/archive-bundle-02.jpg", "assets/shop/archive-bundle-03.jpg"]}];
+    const INLINE_SOCIALS = [{"label": "Twitter", "url": "https://twitter.com/"}, {"label": "Tumblr", "url": "https://www.tumblr.com/"}, {"label": "Instagram", "url": "https://www.instagram.com/"}, {"label": "SoundCloud", "url": "https://soundcloud.com/"}, {"label": "Pinterest", "url": "https://www.pinterest.com/"}, {"label": "YouTube", "url": "https://www.youtube.com/"}, {"label": "Spotify", "url": "https://open.spotify.com/"}, {"label": "Apple Music", "url": "https://music.apple.com/"}, {"label": "Bandcamp", "url": "https://bandcamp.com/"}];
+    const INLINE_INFO = {"about": {"meta": "", "title": "About", "text": ["AURA ARCHIVE é um sistema editorial independente para rádio, arquivo, loja e publicações visuais.", "Aqui você pode colocar a história do projeto, manifesto, ficha técnica ou qualquer texto institucional curto."], "media": [{"type": "image", "src": "assets/about/about-cover.jpg"}, {"type": "video", "src": "assets/about/about-video.mp4"}], "actions": [{"label": "Close", "action": "close"}]}, "contact": {"meta": "GENERAL INQUIRY", "title": "Contact", "text": ["Preencha o formulário abaixo para propostas, colaborações, bookings, envio de materiais ou mensagens gerais."], "media": [], "form": true, "actions": [{"label": "Send inquiry", "action": "submit"}, {"label": "Close", "action": "close"}]}, "donate": {"meta": "", "title": "Donate", "text": ["Apoie o projeto com uma contribuição direta. Troque o link abaixo pelo seu link real de pagamento."], "media": [{"type": "image", "src": "assets/about/donate-cover.jpg"}], "donateUrl": "https://seu-link-de-pagamento-aqui.com", "actions": [{"label": "Open donate link", "action": "donate"}, {"label": "Close", "action": "close"}]}};
+
+    const $ = id => document.getElementById(id);
+    const els = {
+      track:$('productTrack'), counter:$('counter'), country:$('countrySelect'), themeToggle:$('themeToggle'),
+      prev:$('prevBtn'), next:$('nextBtn'), prevTop:$('prevBtnTop'), nextTop:$('nextBtnTop'),
+      modal:$('productModal'), modalMedia:$('modalMedia'), modalImage:$('modalImage'), modalType:$('modalType'), modalTitle:$('modalTitle'), modalDesc:$('modalDesc'), modalPrice:$('modalPrice'), modalStock:$('modalStock'), modalClose:$('modalClose'), modalThumbs:$('modalThumbs'), modalPrevImage:$('modalPrevImage'), modalNextImage:$('modalNextImage'),
+      sizeBlock:$('sizeBlock'), sizeList:$('sizeList'), variantBlock:$('variantBlock'), variantList:$('variantList'), qtyValue:$('qtyValue'), qtyMinus:$('qtyMinus'), qtyPlus:$('qtyPlus'),
+      buyNow:$('buyNow'), addToCart:$('addToCart'), saveProduct:$('saveProduct'), shareProduct:$('shareProduct'),
+      cartOpen:$('cartOpen'), cartDrawer:$('cartDrawer'), cartClose:$('cartClose'), cartItems:$('cartItems'), cartTotal:$('cartTotal'), cartCount:$('cartCount'), checkout:$('checkoutBtn'),
+      sharePanel:$('sharePanel'), shareClose:$('shareClose'), shareTitle:$('shareTitle'), shareText:$('shareText'), shareOptions:$('shareOptions'), shareUrlInput:$('shareUrlInput'), copyShare:$('copyShare'),
+      authOpen:$('accountOpen'), authModal:$('authModal'), authClose:$('authClose'), authForm:$('authForm'), authEmail:$('authEmail'), authPassword:$('authPassword'), authState:$('authState'), logoutBtn:$('logoutBtn'), savedList:$('savedList'), historyList:$('historyList'), authSubmit:$('authSubmit'),
+      toast:$('toast')
+    };
+
+    let db=null, auth=null, user=null, products=[], current=0, activeProduct=null, activeImage=0, selectedSize='', selectedVariant='', qty=1;
+    let pendingSaveProductId = '';
+    let cart = loadLocal('cid_cart_v6', []);
+    let saved = loadLocal('cid_saved_v6', []);
+    let history = loadLocal('cid_history_v6', []);
+    let siteSettings = { checkoutUrl:'', whatsapp:'', currency:'USD', locale:'en-US', cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.', shippingNote:'Shipping calculated at checkout.', returnsNote:'Secure checkout through configured external link or cart request.' };
+    let siteTexts = {};
+    let shareSettings = {};
+    let themeSettings = {};
+    let accessSettings = {};
+    let globalSocials = INLINE_SOCIALS.slice();
+    let headerButtons = [];
+    let homeButtons = [];
+    let infoCards = INLINE_INFO;
+
+    function setMeta(selector, value){
+      if(!value && value !== '') return;
+      let el = document.head.querySelector(selector);
+      if(el){ el.setAttribute('content', value); }
+    }
+    function setLink(rel, href, attrs={}){
+      if(!href) return;
+      const normalizedHref = clean(href);
+      let el = document.head.querySelector(`link[rel="${rel}"]`);
+      if(!el){ el = document.createElement('link'); el.rel = rel; document.head.appendChild(el); }
+      el.href = normalizedHref;
+      Object.entries(attrs||{}).forEach(([k,v])=>{ if(v) el.setAttribute(k,v); });
+    }
+    function applyFavicon(icon){
+      icon = clean(icon);
+      if(!icon) return;
+      const type = /\.svg(\?|#|$)/i.test(icon) ? 'image/svg+xml' : /\.ico(\?|#|$)/i.test(icon) ? 'image/x-icon' : 'image/png';
+      const cacheSafeIcon = icon.startsWith('data:') ? icon : icon + (icon.includes('?') ? '&' : '?') + 'v=' + encodeURIComponent(String(siteSettings.updatedAt?.seconds || siteSettings.updatedAt || Date.now()));
+      setLink('icon', cacheSafeIcon, {type});
+      setLink('shortcut icon', cacheSafeIcon, {type});
+      setLink('apple-touch-icon', cacheSafeIcon);
+      let ms = document.head.querySelector('meta[name="msapplication-TileImage"]');
+      if(!ms){ ms = document.createElement('meta'); ms.setAttribute('name','msapplication-TileImage'); document.head.appendChild(ms); }
+      ms.setAttribute('content', cacheSafeIcon);
+    }
+    function applySiteIdentity(settings={}){
+      const siteName = clean(settings.siteName || settings.browserTitle || settings.brandName || settings.title || settings.name || 'CYBERISDEAD');
+      const suffix = clean(settings.titleSuffix || '');
+      const fullTitle = suffix && !siteName.includes(suffix) ? `${siteName} ${suffix}` : siteName;
+      const siteDesc = clean(settings.siteDescription || settings.description || settings.metaDescription || settings.ogDescription || 'CYBERISDEAD');
+      const keywords = clean(settings.keywords || 'cyberisdead, radio, cinema, editorial, underground');
+      const author = clean(settings.author || siteName);
+      const canonical = clean(settings.canonicalUrl || settings.canonical || settings.siteUrl || settings.url || 'https://cyberisdeadesite.web.app/');
+      const ogTitle = clean(settings.ogTitle || settings.shareTitle || fullTitle);
+      const ogDesc = clean(settings.ogDescription || settings.shareText || siteDesc);
+      const ogImage = clean(settings.ogImage || settings.shareImage || settings.image || settings.logo || settings.appIcon || '');
+      const icon = clean(settings.favicon || settings.faviconUrl || settings.siteIcon || settings.icon || settings.appIcon || settings.appIconUrl || settings.logo || settings.logoUrl || settings.ogImage || '');
+      const themeColor = clean(settings.themeColor || '#000000');
+      document.title = fullTitle;
+      const brand = document.querySelector('.brand');
+      if(brand){ brand.textContent = siteName; brand.setAttribute('aria-label', siteName); }
+      const themeMeta = document.querySelector('meta[name="theme-color"]'); if(themeMeta) themeMeta.setAttribute('content', themeColor);
+      setMeta('meta[name="description"]', siteDesc);
+      setMeta('meta[name="keywords"]', keywords);
+      setMeta('meta[name="author"]', author);
+      setMeta('meta[property="og:site_name"]', siteName);
+      setMeta('meta[property="og:title"]', ogTitle);
+      setMeta('meta[property="og:description"]', ogDesc);
+      setMeta('meta[property="og:url"]', canonical);
+      setMeta('meta[property="og:image"]', ogImage);
+      setMeta('meta[property="og:locale"]', selectedLocale().replace('-', '_'));
+      setMeta('meta[name="twitter:title"]', ogTitle);
+      setMeta('meta[name="twitter:description"]', ogDesc);
+      setMeta('meta[name="twitter:image"]', ogImage);
+      setLink('canonical', canonical);
+      if(icon) applyFavicon(icon);
+    }
+
+    function applyThemeSettings(settings={}){
+      themeSettings = settings || {};
+      const root = document.documentElement;
+      const setVar = (name, value) => { if(clean(value)) root.style.setProperty(name, clean(value)); };
+      setVar('--fg', settings.textColor || settings.color || settings.buttonTextColor);
+      setVar('--muted', settings.mutedColor);
+      setVar('--line', settings.lineColor);
+      setVar('--bg', settings.siteBackground || settings.background);
+      if(clean(settings.siteBackground || settings.background)) document.body.style.background = clean(settings.siteBackground || settings.background);
+      if(clean(settings.textColor || settings.color)) document.body.style.color = clean(settings.textColor || settings.color);
+      const noise = document.querySelector('body::before');
+      if(settings.noiseOpacity !== undefined) document.documentElement.style.setProperty('--noise-opacity', String(settings.noiseOpacity));
+      const adminThemeMode = clean(settings.mode || settings.themeMode || settings.colorMode || settings.appearance || '');
+      if(['light','dark'].includes(adminThemeMode.toLowerCase()) && !localStorage.getItem('cid_shop_theme_v2')) setShopTheme(adminThemeMode.toLowerCase());
+      const css = [];
+      if(settings.globalSpacing) css.push(`.product-caption{bottom:calc(${settings.globalSpacing} + var(--safe-bottom))}`);
+      if(settings.cardMinWidth) css.push(`.product-slide{min-width:${settings.cardMinWidth}}`);
+      if(settings.popupWidth) css.push(`.product-modal-box{width:min(${settings.popupWidth},100%)}`);
+      let style = document.getElementById('adminThemeStyle');
+      if(!style){ style = document.createElement('style'); style.id='adminThemeStyle'; document.head.appendChild(style); }
+      style.textContent = css.join('\\n');
+    }
+
+    function settingText(key, fallback=''){
+      const loc = selectedLocale();
+      const lang = localeShort();
+      const candidates = [key+'_'+loc, key+'_'+lang, key+'_'+loc.replace('-','_'), key];
+      for(const k of candidates){ if(siteTexts && clean(siteTexts[k])) return clean(siteTexts[k]); }
+      return clean(fallback);
+    }
+
+    function buttonIsVisible(btn={}){
+      if(btn.visible === false) return false;
+      const access = clean(btn.access || 'public').toLowerCase();
+      if(access === 'locked' || access === 'hidden') return false;
+      if(access === 'login' && !user) return false;
+      return true;
+    }
+
+    function applyHeaderButtons(){
+      const nav = document.querySelector('.nav-right');
+      if(!nav) return;
+      nav.querySelectorAll('[data-admin-header-button]').forEach(el=>el.remove());
+      const buttons = Array.isArray(headerButtons) ? headerButtons.filter(buttonIsVisible).slice(0,4) : [];
+      buttons.reverse().forEach(btn=>{
+        const label = clean(btn.label || btn.title || 'Link');
+        const type = clean(btn.type || 'link').toLowerCase();
+        const system = clean(btn.system || '').toLowerCase();
+        if(['account','cart'].includes(system) || ['account','cart'].includes(type)) return;
+        const b = document.createElement('button');
+        b.type='button'; b.className='pill'; b.dataset.adminHeaderButton='1'; b.textContent=label;
+        b.addEventListener('click',()=>{
+          if(type === 'system' && system === 'share' && products[current]) return openShare(products[current]);
+          const url = clean(btn.url || btn.href || btn.buttonUrl || '#');
+          if(url.startsWith('#product-')){ const id = decodeURIComponent(url.replace('#product-','')); return openById(id); }
+          if(url && url !== '#') window.open(url, btn.newTab === false ? '_self' : '_blank', 'noopener,noreferrer');
+        });
+        nav.insertBefore(b, nav.firstChild);
+      });
+    }
+
+    async function getSettingDoc(name){
+      if(!db) return null;
+      try{ const snap = await getDoc(doc(db,'settings',name)); return snap.exists() ? snap.data() : null; }catch(e){ return null; }
+    }
+
+
+    try {
+      const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+      db = getFirestore(app);
+      auth = getAuth(app);
+    } catch(e) { console.warn('[SHOP] Firebase init fallback', e); }
+
+
+
+    function forceDefaultLocaleOnce(){
+      if(!localStorage.getItem('cid_country_v2')){
+        siteSettings.locale = 'en-US';
+        siteSettings.currency = 'USD';
+        if(els.country) els.country.value = 'en-US';
+      }
+    }
+
+    function preferredShopTheme(){
+      const savedTheme = localStorage.getItem('cid_shop_theme_v2');
+      if(savedTheme === 'light' || savedTheme === 'dark') return savedTheme;
+      return 'light';
+    }
+    function setShopTheme(mode){
+      const theme = mode === 'light' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-shop-theme', theme);
+      localStorage.setItem('cid_shop_theme_v2', theme);
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if(meta) meta.setAttribute('content', theme === 'light' ? '#f4f4f1' : '#000000');
+      if(els.themeToggle){
+        els.themeToggle.textContent = theme === 'light' ? 'Light' : 'Dark';
+        els.themeToggle.setAttribute('aria-label', theme === 'light' ? 'Tema claro ativo' : 'Tema escuro ativo');
+      }
+    }
+    setShopTheme(preferredShopTheme());
+    forceDefaultLocaleOnce();
+    els.themeToggle?.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-shop-theme') || 'dark';
+      setShopTheme(currentTheme === 'light' ? 'dark' : 'light');
+    });
+
+    const I18N = {
+      'pt-BR':{account:'Conta',cart:'Carrinho',prev:'Anterior',next:'Próximo',buy:'Comprar agora',add:'Adicionar ao carrinho',save:'Salvar',saved:'Salvo',share:'Compartilhar',size:'Tamanho',variant:'Variação',quantity:'Quantidade',checkout:'Finalizar pedido',empty:'Carrinho vazio.',copy:'Copiar',copied:'Copiado',login:'Entrar / Criar conta',history:'Histórico',savedPanel:'Salvos',noSaved:'Nenhum produto salvo.',noHistory:'Sem histórico.',ship:'Envio calculado no checkout.',secure:'Checkout seguro por link externo configurado ou pedido pelo carrinho.',product:'Produto',inStock:'em estoque',soldOut:'Esgotado',removed:'Removido',added:'Adicionado',orderCopied:'Pedido copiado',localMode:'Modo de conta local.',loginFailed:'Falha no login',loggedIn:'Logado como',shareProduct:'Compartilhar produto',shareHelp:'Copie ou envie este produto.',nativeShare:'Compartilhar nativo',remove:'Remover',total:'Total',qtyShort:'QTD',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Produto disponível na loja.'},
+      'en-US':{account:'Account',cart:'Cart',prev:'Prev',next:'Next',buy:'Buy now',add:'Add to cart',save:'Save',saved:'Saved',share:'Share',size:'Size',variant:'Variant',quantity:'Quantity',checkout:'Checkout',empty:'Cart is empty.',copy:'Copy',copied:'Copied',login:'Login / Create account',history:'History',savedPanel:'Saved',noSaved:'No saved products.',noHistory:'No history.',ship:'Shipping calculated at checkout.',secure:'Secure checkout through configured external link or cart request.',product:'Product',inStock:'in stock',soldOut:'Sold out',removed:'Removed',added:'Added',orderCopied:'Order copied',localMode:'Local account mode.',loginFailed:'Login failed',loggedIn:'Logged in as',shareProduct:'Share product',shareHelp:'Copy or send this product.',nativeShare:'Native share',remove:'Remove',total:'Total',qtyShort:'QTY',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Product available in the shop.'},
+      'en-GB':{account:'Account',cart:'Basket',prev:'Prev',next:'Next',buy:'Buy now',add:'Add to basket',save:'Save',saved:'Saved',share:'Share',size:'Size',variant:'Variant',quantity:'Quantity',checkout:'Checkout',empty:'Basket is empty.',copy:'Copy',copied:'Copied',login:'Login / Create account',history:'History',savedPanel:'Saved',noSaved:'No saved products.',noHistory:'No history.',ship:'Shipping calculated at checkout.',secure:'Secure checkout through configured external link or basket request.',product:'Product',inStock:'in stock',soldOut:'Sold out',removed:'Removed',added:'Added',orderCopied:'Order copied',localMode:'Local account mode.',loginFailed:'Login failed',loggedIn:'Logged in as',shareProduct:'Share product',shareHelp:'Copy or send this product.',nativeShare:'Native share',remove:'Remove',total:'Total',qtyShort:'QTY',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Product available in the shop.'},
+      'es-ES':{account:'Cuenta',cart:'Carrito',prev:'Anterior',next:'Siguiente',buy:'Comprar ahora',add:'Añadir al carrito',save:'Guardar',saved:'Guardado',share:'Compartir',size:'Talla',variant:'Variante',quantity:'Cantidad',checkout:'Finalizar compra',empty:'Carrito vacío.',copy:'Copiar',copied:'Copiado',login:'Entrar / Crear cuenta',history:'Historial',savedPanel:'Guardados',noSaved:'No hay productos guardados.',noHistory:'Sin historial.',ship:'Envío calculado en el checkout.',secure:'Checkout seguro por enlace externo configurado o pedido del carrito.',product:'Producto',inStock:'en stock',soldOut:'Agotado',removed:'Eliminado',added:'Añadido',orderCopied:'Pedido copiado',localMode:'Modo de cuenta local.',loginFailed:'Error de login',loggedIn:'Sesión iniciada como',shareProduct:'Compartir producto',shareHelp:'Copia o envía este producto.',nativeShare:'Compartir nativo',remove:'Eliminar',total:'Total',qtyShort:'CANT',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Producto disponible en la tienda.'},
+      'fr-FR':{account:'Compte',cart:'Panier',prev:'Précédent',next:'Suivant',buy:'Acheter',add:'Ajouter au panier',save:'Sauvegarder',saved:'Sauvé',share:'Partager',size:'Taille',variant:'Variante',quantity:'Quantité',checkout:'Paiement',empty:'Panier vide.',copy:'Copier',copied:'Copié',login:'Connexion / Créer',history:'Historique',savedPanel:'Sauvegardés',noSaved:'Aucun produit sauvegardé.',noHistory:'Aucun historique.',ship:'Livraison calculée au paiement.',secure:'Paiement sécurisé via lien externe configuré ou demande panier.',product:'Produit',inStock:'en stock',soldOut:'Épuisé',removed:'Retiré',added:'Ajouté',orderCopied:'Commande copiée',localMode:'Mode compte local.',loginFailed:'Échec de connexion',loggedIn:'Connecté en tant que',shareProduct:'Partager le produit',shareHelp:'Copiez ou envoyez ce produit.',nativeShare:'Partage natif',remove:'Retirer',total:'Total',qtyShort:'QTÉ',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Produit disponible dans la boutique.'},
+      'de-DE':{account:'Konto',cart:'Warenkorb',prev:'Zurück',next:'Weiter',buy:'Jetzt kaufen',add:'In den Warenkorb',save:'Speichern',saved:'Gespeichert',share:'Teilen',size:'Größe',variant:'Variante',quantity:'Menge',checkout:'Checkout',empty:'Warenkorb ist leer.',copy:'Kopieren',copied:'Kopiert',login:'Login / Konto erstellen',history:'Verlauf',savedPanel:'Gespeichert',noSaved:'Keine gespeicherten Produkte.',noHistory:'Kein Verlauf.',ship:'Versand im Checkout.',secure:'Sicherer Checkout über konfigurierten externen Link oder Warenkorb-Anfrage.',product:'Produkt',inStock:'auf Lager',soldOut:'Ausverkauft',removed:'Entfernt',added:'Hinzugefügt',orderCopied:'Bestellung kopiert',localMode:'Lokaler Kontomodus.',loginFailed:'Login fehlgeschlagen',loggedIn:'Eingeloggt als',shareProduct:'Produkt teilen',shareHelp:'Kopieren oder senden Sie dieses Produkt.',nativeShare:'Nativ teilen',remove:'Entfernen',total:'Gesamt',qtyShort:'MENGE',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Produkt im Shop verfügbar.'},
+      'it-IT':{account:'Account',cart:'Carrello',prev:'Prec',next:'Succ',buy:'Compra ora',add:'Aggiungi al carrello',save:'Salva',saved:'Salvato',share:'Condividi',size:'Taglia',variant:'Variante',quantity:'Quantità',checkout:'Checkout',empty:'Carrello vuoto.',copy:'Copia',copied:'Copiato',login:'Login / Crea account',history:'Cronologia',savedPanel:'Salvati',noSaved:'Nessun prodotto salvato.',noHistory:'Nessuna cronologia.',ship:'Spedizione calcolata al checkout.',secure:'Checkout sicuro tramite link esterno configurato o richiesta carrello.',product:'Prodotto',inStock:'disponibili',soldOut:'Esaurito',removed:'Rimosso',added:'Aggiunto',orderCopied:'Ordine copiato',localMode:'Modalità account locale.',loginFailed:'Login fallito',loggedIn:'Accesso effettuato come',shareProduct:'Condividi prodotto',shareHelp:'Copia o invia questo prodotto.',nativeShare:'Condivisione nativa',remove:'Rimuovi',total:'Totale',qtyShort:'QTÀ',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Prodotto disponibile nello shop.'},
+      'ja-JP':{account:'アカウント',cart:'カート',prev:'前へ',next:'次へ',buy:'今すぐ購入',add:'カートに追加',save:'保存',saved:'保存済み',share:'共有',size:'サイズ',variant:'バリエーション',quantity:'数量',checkout:'チェックアウト',empty:'カートは空です。',copy:'コピー',copied:'コピーしました',login:'ログイン / アカウント作成',history:'履歴',savedPanel:'保存済み',noSaved:'保存された商品はありません。',noHistory:'履歴はありません。',ship:'送料はチェックアウト時に計算されます。',secure:'設定済みの外部リンクまたはカートリクエストで安全に購入できます。',product:'商品',inStock:'在庫あり',soldOut:'売り切れ',removed:'削除しました',added:'追加しました',orderCopied:'注文をコピーしました',localMode:'ローカルアカウントモード。',loginFailed:'ログイン失敗',loggedIn:'ログイン中',shareProduct:'商品を共有',shareHelp:'この商品をコピーまたは送信します。',nativeShare:'ネイティブ共有',remove:'削除',total:'合計',qtyShort:'数量',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'ショップで購入可能な商品です。'},
+      'ko-KR':{account:'계정',cart:'장바구니',prev:'이전',next:'다음',buy:'바로 구매',add:'장바구니 담기',save:'저장',saved:'저장됨',share:'공유',size:'사이즈',variant:'옵션',quantity:'수량',checkout:'결제',empty:'장바구니가 비어 있습니다.',copy:'복사',copied:'복사됨',login:'로그인 / 계정 만들기',history:'기록',savedPanel:'저장됨',noSaved:'저장된 상품이 없습니다.',noHistory:'기록 없음.',ship:'배송비는 결제 시 계산됩니다.',secure:'설정된 외부 링크 또는 장바구니 요청으로 안전하게 결제합니다.',product:'상품',inStock:'재고 있음',soldOut:'품절',removed:'삭제됨',added:'추가됨',orderCopied:'주문 복사됨',localMode:'로컬 계정 모드.',loginFailed:'로그인 실패',loggedIn:'로그인됨',shareProduct:'상품 공유',shareHelp:'이 상품을 복사하거나 보내세요.',nativeShare:'기본 공유',remove:'삭제',total:'합계',qtyShort:'수량',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'쇼핑몰에서 구매 가능한 상품입니다.'},
+      'zh-CN':{account:'账户',cart:'购物车',prev:'上一项',next:'下一项',buy:'立即购买',add:'加入购物车',save:'保存',saved:'已保存',share:'分享',size:'尺码',variant:'款式',quantity:'数量',checkout:'结账',empty:'购物车为空。',copy:'复制',copied:'已复制',login:'登录 / 创建账户',history:'历史',savedPanel:'已保存',noSaved:'没有已保存商品。',noHistory:'没有历史记录。',ship:'运费将在结账时计算。',secure:'通过已配置的外部链接或购物车请求安全结账。',product:'商品',inStock:'有库存',soldOut:'售罄',removed:'已移除',added:'已添加',orderCopied:'订单已复制',localMode:'本地账户模式。',loginFailed:'登录失败',loggedIn:'已登录为',shareProduct:'分享商品',shareHelp:'复制或发送此商品。',nativeShare:'系统分享',remove:'移除',total:'总计',qtyShort:'数量',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'商店中可购买的商品。'},
+      'ru-RU':{account:'Аккаунт',cart:'Корзина',prev:'Назад',next:'Далее',buy:'Купить сейчас',add:'В корзину',save:'Сохранить',saved:'Сохранено',share:'Поделиться',size:'Размер',variant:'Вариант',quantity:'Количество',checkout:'Оформить заказ',empty:'Корзина пуста.',copy:'Копировать',copied:'Скопировано',login:'Войти / Создать аккаунт',history:'История',savedPanel:'Сохранено',noSaved:'Нет сохранённых товаров.',noHistory:'Истории нет.',ship:'Доставка рассчитывается при оформлении.',secure:'Безопасная оплата через настроенную внешнюю ссылку или запрос корзины.',product:'Товар',inStock:'в наличии',soldOut:'Распродано',removed:'Удалено',added:'Добавлено',orderCopied:'Заказ скопирован',localMode:'Локальный режим аккаунта.',loginFailed:'Ошибка входа',loggedIn:'Вошли как',shareProduct:'Поделиться товаром',shareHelp:'Скопируйте или отправьте этот товар.',nativeShare:'Системное меню',remove:'Удалить',total:'Итого',qtyShort:'КОЛ-ВО',cartNote:'ALL TRANSACTIONS AND INFORMATION ARE PROCESSED USING COMMUNICATION PRODUCTS, ENSURING THAT COMMUNICATION IS ALWAYS ENCRYPTED.',productDefault:'Товар доступен в магазине.'}
+    };
+
+    const I18N_EXTRA = {
+      'pt-BR':{accountAccess:'Acesso à conta',email:'E-mail',password:'Senha',logout:'Sair',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Loja',copyOrSend:'Copie ou envie este produto.',copiedOrder:'Pedido copiado',orderTitle:'Pedido CYBERISDEAD SHOP',quantityShort:'QTD',openCheckout:'Abrir checkout'},
+      'en-US':{accountAccess:'Account access',email:'Email',password:'Password',logout:'Logout',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Shop',copyOrSend:'Copy or send this product.',copiedOrder:'Order copied',orderTitle:'CYBERISDEAD SHOP order',quantityShort:'QTY',openCheckout:'Open checkout'},
+      'en-GB':{accountAccess:'Account access',email:'Email',password:'Password',logout:'Logout',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Shop',copyOrSend:'Copy or send this product.',copiedOrder:'Order copied',orderTitle:'CYBERISDEAD SHOP order',quantityShort:'QTY',openCheckout:'Open checkout'},
+      'es-ES':{accountAccess:'Acceso a la cuenta',email:'Correo',password:'Contraseña',logout:'Salir',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Tienda',copyOrSend:'Copia o envía este producto.',copiedOrder:'Pedido copiado',orderTitle:'Pedido CYBERISDEAD SHOP',quantityShort:'CANT',openCheckout:'Abrir checkout'},
+      'fr-FR':{accountAccess:'Accès au compte',email:'E-mail',password:'Mot de passe',logout:'Déconnexion',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Boutique',copyOrSend:'Copiez ou envoyez ce produit.',copiedOrder:'Commande copiée',orderTitle:'Commande CYBERISDEAD SHOP',quantityShort:'QTÉ',openCheckout:'Ouvrir le paiement'},
+      'de-DE':{accountAccess:'Kontozugriff',email:'E-Mail',password:'Passwort',logout:'Abmelden',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Shop',copyOrSend:'Kopieren oder senden Sie dieses Produkt.',copiedOrder:'Bestellung kopiert',orderTitle:'CYBERISDEAD SHOP Bestellung',quantityShort:'MENGE',openCheckout:'Checkout öffnen'},
+      'it-IT':{accountAccess:'Accesso account',email:'Email',password:'Password',logout:'Esci',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Negozio',copyOrSend:'Copia o invia questo prodotto.',copiedOrder:'Ordine copiato',orderTitle:'Ordine CYBERISDEAD SHOP',quantityShort:'QTÀ',openCheckout:'Apri checkout'},
+      'ja-JP':{accountAccess:'アカウントアクセス',email:'メール',password:'パスワード',logout:'ログアウト',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'ショップ',copyOrSend:'この商品をコピーまたは送信します。',copiedOrder:'注文をコピーしました',orderTitle:'CYBERISDEAD SHOP 注文',quantityShort:'数量',openCheckout:'チェックアウトを開く'},
+      'ko-KR':{accountAccess:'계정 접근',email:'이메일',password:'비밀번호',logout:'로그아웃',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'숍',copyOrSend:'이 상품을 복사하거나 보내세요.',copiedOrder:'주문 복사됨',orderTitle:'CYBERISDEAD SHOP 주문',quantityShort:'수량',openCheckout:'결제 열기'},
+      'zh-CN':{accountAccess:'账户访问',email:'电子邮件',password:'密码',logout:'退出',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'商店',copyOrSend:'复制或发送此商品。',copiedOrder:'订单已复制',orderTitle:'CYBERISDEAD SHOP 订单',quantityShort:'数量',openCheckout:'打开结账'},
+      'ru-RU':{accountAccess:'Доступ к аккаунту',email:'Email',password:'Пароль',logout:'Выйти',ok:'OK',xTwitter:'X / Twitter',whatsapp:'WhatsApp',tumblr:'Tumblr',brand:'CYBERISDEAD',shop:'Магазин',copyOrSend:'Скопируйте или отправьте этот товар.',copiedOrder:'Заказ скопирован',orderTitle:'Заказ CYBERISDEAD SHOP',quantityShort:'КОЛ-ВО',openCheckout:'Открыть оплату'}
+    };
+    Object.keys(I18N_EXTRA).forEach(loc=>Object.assign(I18N[loc]||(I18N[loc]={}), I18N_EXTRA[loc]));
+
+    const CURRENCY_BY_LOCALE = {'pt-BR':'BRL','en-US':'USD','en-GB':'GBP','es-ES':'EUR','fr-FR':'EUR','de-DE':'EUR','it-IT':'EUR','ja-JP':'JPY','ko-KR':'KRW','zh-CN':'CNY','ru-RU':'RUB'};
+    const RATE = {BRL:1,USD:.19,GBP:.15,EUR:.17,JPY:29,KRW:260,CNY:1.35,RUB:17};
+
+    function t(k){return settingText(k, (I18N[els.country.value]||I18N['en-US'])[k]||I18N['en-US'][k]||k)}
+    function localeShort(){return selectedLocale().split('-')[0]}
+    function productTranslation(p){
+      const loc = selectedLocale();
+      const lang = localeShort();
+      const tr = p?.translations || p?.i18n || {};
+      return tr[loc] || tr[lang] || {};
+    }
+    const TYPE_TRANSLATIONS = {
+      'printed zine':{'pt-BR':'Zine impresso','es-ES':'Zine impreso','fr-FR':'Zine imprimé','de-DE':'Gedrucktes Zine','it-IT':'Zine stampata','ja-JP':'印刷ジン','ko-KR':'인쇄 진','zh-CN':'印刷刊物','ru-RU':'Печатный зин'},
+      'wearable':{'pt-BR':'Vestuário','es-ES':'Ropa','fr-FR':'Vêtement','de-DE':'Bekleidung','it-IT':'Abbigliamento','ja-JP':'アパレル','ko-KR':'의류','zh-CN':'服饰','ru-RU':'Одежда'},
+      'print':{'pt-BR':'Print','es-ES':'Lámina','fr-FR':'Affiche','de-DE':'Print','it-IT':'Stampa','ja-JP':'プリント','ko-KR':'프린트','zh-CN':'印刷品','ru-RU':'Принт'},
+      'digital':{'pt-BR':'Digital','es-ES':'Digital','fr-FR':'Numérique','de-DE':'Digital','it-IT':'Digitale','ja-JP':'デジタル','ko-KR':'디지털','zh-CN':'数字','ru-RU':'Цифровой'},
+      'object':{'pt-BR':'Objeto','es-ES':'Objeto','fr-FR':'Objet','de-DE':'Objekt','it-IT':'Oggetto','ja-JP':'オブジェクト','ko-KR':'오브젝트','zh-CN':'物件','ru-RU':'Объект'},
+      'audio object':{'pt-BR':'Objeto sonoro','es-ES':'Objeto de audio','fr-FR':'Objet audio','de-DE':'Audio-Objekt','it-IT':'Oggetto audio','ja-JP':'オーディオ作品','ko-KR':'오디오 오브젝트','zh-CN':'音频物件','ru-RU':'Аудио объект'},
+      'bundle':{'pt-BR':'Combo','es-ES':'Pack','fr-FR':'Pack','de-DE':'Bundle','it-IT':'Bundle','ja-JP':'バンドル','ko-KR':'번들','zh-CN':'套装','ru-RU':'Набор'},
+      'product':{'pt-BR':'Produto','es-ES':'Producto','fr-FR':'Produit','de-DE':'Produkt','it-IT':'Prodotto','ja-JP':'商品','ko-KR':'상품','zh-CN':'商品','ru-RU':'Товар'}
+    };
+    const FALLBACK_PRODUCT_TRANSLATIONS = {
+      'zine-001':{
+        'pt-BR':{name:'AURA Zine 001',desc:'Publicação impressa com ensaios, stills, notas curatoriais e registros da programação. Formato editorial independente para colecionar.'},
+        'en-US':{name:'AURA Zine 001',desc:'Printed publication with essays, stills, curatorial notes and programming records. An independent editorial format to collect.'},
+        'en-GB':{name:'AURA Zine 001',desc:'Printed publication with essays, stills, curatorial notes and programming records. An independent editorial format to collect.'},
+        'es-ES':{name:'AURA Zine 001',desc:'Publicación impresa con ensayos, stills, notas curatoriales y registros de programación. Un formato editorial independiente para coleccionar.'},
+        'fr-FR':{name:'AURA Zine 001',desc:'Publication imprimée avec essais, images, notes curatoriales et archives de programmation. Un format éditorial indépendant à collectionner.'},
+        'de-DE':{name:'AURA Zine 001',desc:'Gedruckte Publikation mit Essays, Stills, kuratorischen Notizen und Programmarchiv. Ein unabhängiges Editorial-Format zum Sammeln.'},
+        'it-IT':{name:'AURA Zine 001',desc:'Pubblicazione stampata con saggi, still, note curatoriali e registri della programmazione. Un formato editoriale indipendente da collezionare.'},
+        'ja-JP':{name:'AURA Zine 001',desc:'エッセイ、スチル、キュレーションノート、プログラム記録を収録した印刷刊行物。コレクション向けのインディペンデントな編集フォーマット。'},
+        'ko-KR':{name:'AURA Zine 001',desc:'에세이, 스틸컷, 큐레이션 노트, 프로그램 기록이 담긴 인쇄물입니다. 소장용 독립 에디토리얼 포맷입니다.'},
+        'zh-CN':{name:'AURA Zine 001',desc:'包含文章、剧照、策展笔记和节目记录的印刷出版物。可收藏的独立编辑形式。'},
+        'ru-RU':{name:'AURA Zine 001',desc:'Печатное издание с эссе, кадрами, кураторскими заметками и программными записями. Независимый редакционный формат для коллекции.'}
+      },
+      'tee-archive':{'pt-BR':{name:'Archive T-Shirt',desc:'Camiseta preta com tipografia editorial minimalista. Peça básica para drops de rádio, arquivo e transmissão.'},'en-US':{name:'Archive T-Shirt',desc:'Black T-shirt with minimal editorial typography. A basic piece for radio, archive and transmission drops.'},'en-GB':{name:'Archive T-Shirt',desc:'Black T-shirt with minimal editorial typography. A basic piece for radio, archive and transmission drops.'},'es-ES':{name:'Archive T-Shirt',desc:'Camiseta negra con tipografía editorial minimalista. Pieza básica para drops de radio, archivo y transmisión.'},'fr-FR':{name:'Archive T-Shirt',desc:'T-shirt noir avec typographie éditoriale minimaliste. Pièce essentielle pour les drops radio, archive et transmission.'},'de-DE':{name:'Archive T-Shirt',desc:'Schwarzes T-Shirt mit minimalistischer Editorial-Typografie. Ein Basic für Radio-, Archiv- und Transmission-Drops.'},'it-IT':{name:'Archive T-Shirt',desc:'T-shirt nera con tipografia editoriale minimalista. Capo base per drop radio, archivio e trasmissione.'},'ja-JP':{name:'Archive T-Shirt',desc:'ミニマルな編集タイポグラフィを使った黒いTシャツ。ラジオ、アーカイブ、配信ドロップのベーシックアイテム。'},'ko-KR':{name:'Archive T-Shirt',desc:'미니멀한 에디토리얼 타이포그래피의 블랙 티셔츠. 라디오, 아카이브, 송출 드롭을 위한 기본 아이템입니다.'},'zh-CN':{name:'Archive T-Shirt',desc:'黑色 T 恤，带有极简编辑字体。适用于广播、档案和传输系列的基础单品。'},'ru-RU':{name:'Archive T-Shirt',desc:'Чёрная футболка с минималистичной редакционной типографикой. Базовая вещь для радио, архива и трансляций.'}},
+      'archive-bundle':{'pt-BR':{name:'Archive Bundle',desc:'Combo com zine, poster, adesivos e pacote digital da edição atual.'},'en-US':{name:'Archive Bundle',desc:'Bundle with zine, poster, stickers and digital pack from the current edition.'},'en-GB':{name:'Archive Bundle',desc:'Bundle with zine, poster, stickers and digital pack from the current edition.'},'es-ES':{name:'Archive Bundle',desc:'Pack con zine, póster, stickers y paquete digital de la edición actual.'},'fr-FR':{name:'Archive Bundle',desc:'Pack avec zine, affiche, stickers et pack numérique de l’édition actuelle.'},'de-DE':{name:'Archive Bundle',desc:'Bundle mit Zine, Poster, Stickern und digitalem Paket der aktuellen Ausgabe.'},'it-IT':{name:'Archive Bundle',desc:'Bundle con zine, poster, sticker e pacchetto digitale dell’edizione attuale.'},'ja-JP':{name:'Archive Bundle',desc:'現在のエディションのジン、ポスター、ステッカー、デジタルパックを含むバンドル。'},'ko-KR':{name:'Archive Bundle',desc:'현재 에디션의 진, 포스터, 스티커, 디지털 팩이 포함된 번들입니다.'},'zh-CN':{name:'Archive Bundle',desc:'包含本期 zine、海报、贴纸和数字包的套装。'},'ru-RU':{name:'Archive Bundle',desc:'Набор с зином, постером, стикерами и цифровым пакетом текущего выпуска.'}}
+    };
+
+    const FALLBACK_PRODUCT_TRANSLATIONS_EXTRA = {
+      'poster-noite':{
+        'pt-BR':{name:'Noite Poster',desc:'Poster vertical 1080×1440 inspirado na transmissão Noite, Ruído e Memória Digital.'},
+        'en-US':{name:'Night Poster',desc:'Vertical 1080×1440 poster inspired by the Night, Noise and Digital Memory transmission.'},
+        'en-GB':{name:'Night Poster',desc:'Vertical 1080×1440 poster inspired by the Night, Noise and Digital Memory transmission.'},
+        'es-ES':{name:'Póster Nocturno',desc:'Póster vertical 1080×1440 inspirado en la transmisión Noche, ruido y memoria digital.'},
+        'fr-FR':{name:'Affiche Nuit',desc:'Affiche verticale 1080×1440 inspirée de la transmission Nuit, bruit et mémoire numérique.'},
+        'de-DE':{name:'Nacht-Poster',desc:'Vertikales 1080×1440 Poster, inspiriert von der Transmission Nacht, Rauschen und digitaler Erinnerung.'},
+        'it-IT':{name:'Poster Notte',desc:'Poster verticale 1080×1440 ispirato alla trasmissione Notte, rumore e memoria digitale.'},
+        'ja-JP':{name:'ナイトポスター',desc:'「夜、ノイズ、デジタルメモリー」の配信に着想を得た縦型1080×1440ポスター。'},
+        'ko-KR':{name:'나이트 포스터',desc:'밤, 노이즈, 디지털 메모리 송출에서 영감을 받은 1080×1440 세로 포스터입니다.'},
+        'zh-CN':{name:'夜晚海报',desc:'受“夜晚、噪音与数字记忆”传输启发的 1080×1440 竖版海报。'},
+        'ru-RU':{name:'Ночной постер',desc:'Вертикальный постер 1080×1440, вдохновлённый трансляцией «Ночь, шум и цифровая память».'}
+      },
+      'digital-pack':{
+        'pt-BR':{name:'Digital Archive Pack',desc:'Pacote digital com wallpapers, scans, capas de programa e notas editoriais para uso visual.'},
+        'en-US':{name:'Digital Archive Pack',desc:'Digital pack with wallpapers, scans, programme covers and editorial notes for visual use.'},
+        'en-GB':{name:'Digital Archive Pack',desc:'Digital pack with wallpapers, scans, programme covers and editorial notes for visual use.'},
+        'es-ES':{name:'Pack de Archivo Digital',desc:'Paquete digital con fondos, scans, portadas de programa y notas editoriales para uso visual.'},
+        'fr-FR':{name:'Pack Archive Numérique',desc:'Pack numérique avec fonds d’écran, scans, pochettes de programme et notes éditoriales pour usage visuel.'},
+        'de-DE':{name:'Digitales Archivpaket',desc:'Digitales Paket mit Wallpapern, Scans, Programmcovern und Editorial-Notizen für visuelle Nutzung.'},
+        'it-IT':{name:'Pacchetto Archivio Digitale',desc:'Pacchetto digitale con wallpaper, scansioni, copertine programma e note editoriali per uso visivo.'},
+        'ja-JP':{name:'デジタルアーカイブパック',desc:'壁紙、スキャン、番組カバー、ビジュアル用途の編集ノートを含むデジタルパック。'},
+        'ko-KR':{name:'디지털 아카이브 팩',desc:'월페이퍼, 스캔, 프로그램 커버, 비주얼용 에디토리얼 노트가 담긴 디지털 팩입니다.'},
+        'zh-CN':{name:'数字档案包',desc:'包含壁纸、扫描图、节目封面和视觉用编辑笔记的数字包。'},
+        'ru-RU':{name:'Цифровой архивный пакет',desc:'Цифровой пакет с обоями, сканами, обложками программ и редакционными заметками для визуального использования.'}
+      },
+      'longsleeve-radio':{
+        'pt-BR':{name:'Radio Longsleeve',desc:'Longsleeve de rádio com frente minimalista e print de transmissão nas costas.'},
+        'en-US':{name:'Radio Longsleeve',desc:'Radio longsleeve with a minimal front and transmission print on the back.'},
+        'en-GB':{name:'Radio Longsleeve',desc:'Radio longsleeve with a minimal front and transmission print on the back.'},
+        'es-ES':{name:'Longsleeve Radio',desc:'Camiseta de manga larga de radio con frente minimalista y print de transmisión en la espalda.'},
+        'fr-FR':{name:'Longsleeve Radio',desc:'Manches longues radio avec devant minimaliste et imprimé transmission au dos.'},
+        'de-DE':{name:'Radio Longsleeve',desc:'Radio-Longsleeve mit minimaler Vorderseite und Transmission-Print auf dem Rücken.'},
+        'it-IT':{name:'Longsleeve Radio',desc:'Longsleeve radio con fronte minimalista e stampa trasmissione sul retro.'},
+        'ja-JP':{name:'ラジオ ロングスリーブ',desc:'ミニマルなフロントと背面のトランスミッションプリントを備えたラジオロングスリーブ。'},
+        'ko-KR':{name:'라디오 롱슬리브',desc:'미니멀한 앞면과 뒷면 송출 프린트가 있는 라디오 롱슬리브입니다.'},
+        'zh-CN':{name:'广播长袖',desc:'正面极简、背面带传输印花的广播长袖。'},
+        'ru-RU':{name:'Лонгслив Radio',desc:'Лонгслив радио с минималистичным передом и принтом трансляции на спине.'}
+      },
+      'sticker-pack':{
+        'pt-BR':{name:'Signal Sticker Pack',desc:'Pacote de adesivos com sinais, frequências, códigos e marcações do arquivo.'},
+        'en-US':{name:'Signal Sticker Pack',desc:'Sticker pack with signals, frequencies, codes and archive markings.'},
+        'en-GB':{name:'Signal Sticker Pack',desc:'Sticker pack with signals, frequencies, codes and archive markings.'},
+        'es-ES':{name:'Pack de Stickers Signal',desc:'Paquete de stickers con señales, frecuencias, códigos y marcas del archivo.'},
+        'fr-FR':{name:'Pack Stickers Signal',desc:'Pack de stickers avec signaux, fréquences, codes et marquages d’archive.'},
+        'de-DE':{name:'Signal Sticker Pack',desc:'Stickerpaket mit Signalen, Frequenzen, Codes und Archivmarkierungen.'},
+        'it-IT':{name:'Pack Sticker Signal',desc:'Pacchetto sticker con segnali, frequenze, codici e marcature d’archivio.'},
+        'ja-JP':{name:'シグナルステッカーパック',desc:'信号、周波数、コード、アーカイブマーキングを含むステッカーパック。'},
+        'ko-KR':{name:'시그널 스티커 팩',desc:'신호, 주파수, 코드, 아카이브 마킹이 포함된 스티커 팩입니다.'},
+        'zh-CN':{name:'信号贴纸包',desc:'包含信号、频率、代码和档案标记的贴纸包。'},
+        'ru-RU':{name:'Пак стикеров Signal',desc:'Набор стикеров с сигналами, частотами, кодами и архивными отметками.'}
+      },
+      'cassette-dub':{
+        'pt-BR':{name:'Cassette Dub',desc:'Edição física limitada em fita cassete com mixtape e arte impressa.'},
+        'en-US':{name:'Cassette Dub',desc:'Limited physical cassette edition with mixtape and printed artwork.'},
+        'en-GB':{name:'Cassette Dub',desc:'Limited physical cassette edition with mixtape and printed artwork.'},
+        'es-ES':{name:'Cassette Dub',desc:'Edición física limitada en cassette con mixtape y arte impreso.'},
+        'fr-FR':{name:'Cassette Dub',desc:'Édition physique limitée en cassette avec mixtape et artwork imprimé.'},
+        'de-DE':{name:'Cassette Dub',desc:'Limitierte physische Kassettenedition mit Mixtape und gedrucktem Artwork.'},
+        'it-IT':{name:'Cassette Dub',desc:'Edizione fisica limitata su cassetta con mixtape e artwork stampato.'},
+        'ja-JP':{name:'カセット・ダブ',desc:'ミックステープと印刷アートワークを含む限定フィジカルカセット版。'},
+        'ko-KR':{name:'카세트 더브',desc:'믹스테이프와 인쇄 아트워크가 포함된 한정 피지컬 카세트 에디션입니다.'},
+        'zh-CN':{name:'Dub 磁带',desc:'限量实体磁带版本，包含 mixtape 和印刷艺术。'},
+        'ru-RU':{name:'Кассета Dub',desc:'Лимитированное физическое издание на кассете с микстейпом и печатной обложкой.'}
+      },
+      'photo-print':{
+        'pt-BR':{name:'Low Light Photo Print',desc:'Print fotográfico vertical em baixa luz para parede, arquivo ou instalação.'},
+        'en-US':{name:'Low Light Photo Print',desc:'Vertical low-light photo print for wall, archive or installation.'},
+        'en-GB':{name:'Low Light Photo Print',desc:'Vertical low-light photo print for wall, archive or installation.'},
+        'es-ES':{name:'Print Fotográfico Baja Luz',desc:'Print fotográfico vertical en baja luz para pared, archivo o instalación.'},
+        'fr-FR':{name:'Tirage Photo Basse Lumière',desc:'Tirage photo vertical en basse lumière pour mur, archive ou installation.'},
+        'de-DE':{name:'Low-Light Fotoprint',desc:'Vertikaler Low-Light-Fotoprint für Wand, Archiv oder Installation.'},
+        'it-IT':{name:'Stampa Foto Low Light',desc:'Stampa fotografica verticale in bassa luce per parete, archivio o installazione.'},
+        'ja-JP':{name:'ローライトフォトプリント',desc:'壁、アーカイブ、インスタレーション向けの縦型ローライト写真プリント。'},
+        'ko-KR':{name:'로우 라이트 포토 프린트',desc:'벽, 아카이브 또는 설치를 위한 세로형 저조도 사진 프린트입니다.'},
+        'zh-CN':{name:'低光摄影印刷',desc:'适用于墙面、档案或装置的竖版低光摄影印刷品。'},
+        'ru-RU':{name:'Фотопринт Low Light',desc:'Вертикальный фотопринт в низком свете для стены, архива или инсталляции.'}
+      }
+    };
+    Object.keys(FALLBACK_PRODUCT_TRANSLATIONS_EXTRA).forEach(id=>{
+      FALLBACK_PRODUCT_TRANSLATIONS[id] = Object.assign(FALLBACK_PRODUCT_TRANSLATIONS[id] || {}, FALLBACK_PRODUCT_TRANSLATIONS_EXTRA[id]);
+    });
+
+    function localizedProductValue(p,key,fallback=''){
+      const loc = selectedLocale();
+      const lang = localeShort();
+      const tr = productTranslation(p);
+      const fieldKeys = [key+'_'+loc, key+'_'+lang, key+'_'+loc.replace('-','_'), key+'_'+lang.toUpperCase()];
+      for(const k of fieldKeys){ if(p && clean(p[k])) return clean(p[k]); }
+      if(clean(tr[key])) return clean(tr[key]);
+      const fb = FALLBACK_PRODUCT_TRANSLATIONS[p?.id] || FALLBACK_PRODUCT_TRANSLATIONS[productSlug(p||{})] || {};
+      if(fb[loc] && clean(fb[loc][key])) return clean(fb[loc][key]);
+      if(fb[lang] && clean(fb[lang][key])) return clean(fb[lang][key]);
+      return clean(fallback || p?.[key] || '');
+    }
+    function productName(p){return localizedProductValue(p,'name',p?.name || p?.title || t('product'));}
+    function productDesc(p){return localizedProductValue(p,'desc',p?.description || p?.excerpt || p?.text || t('productDefault'));}
+    function productType(p){
+      const direct = localizedProductValue(p,'type',p?.type || p?.category || t('product'));
+      const key = clean(p?.type || p?.category || direct).toLowerCase();
+      return (TYPE_TRANSLATIONS[key] && (TYPE_TRANSLATIONS[key][selectedLocale()] || TYPE_TRANSLATIONS[key][localeShort()])) || direct || t('product');
+    }
+    function loadLocal(k,f){try{return JSON.parse(localStorage.getItem(k)) ?? f}catch{return f}}
+    function saveLocal(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+    function clean(v){return String(v ?? '').trim()}
+    function listify(v){if(Array.isArray(v))return v.filter(Boolean); if(typeof v==='string')return v.split(/[\n,|]/).map(x=>x.trim()).filter(Boolean); return []}
+    function esc(v){return String(v ?? '').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+    function slugify(v){return clean(v).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}
+    function productSlug(p){return clean(p.slug||p.id||slugify(p.name))}
+    function productUrl(p){return clean(p.shareUrl||p.url||`${location.origin}${location.pathname}#product-${encodeURIComponent(productSlug(p))}`)}
+    function looksLikeMediaUrl(v){
+      v = clean(v);
+      if(!v || /linear-gradient|radial-gradient|conic-gradient/i.test(v)) return false;
+      if(/^(https?:\/\/|\/|\.\/|\.\.\/|assets\/|images\/|img\/|media\/|uploads\/|shop\/|data:image\/|blob:)/i.test(v)) return true;
+      return /\.(png|jpe?g|webp|gif|svg|avif)(\?|#|$)/i.test(v);
+    }
+    function pushMediaValue(arr, value){
+      if(!value) return;
+      if(Array.isArray(value)){ value.forEach(v=>pushMediaValue(arr,v)); return; }
+      if(typeof value === 'object'){
+        pushMediaValue(arr, value.src || value.url || value.href || value.image || value.imageUrl || value.cover || value.photo || value.thumbnail || value.downloadURL);
+        return;
+      }
+      const raw = clean(value);
+      if(!raw) return;
+      if((raw.startsWith('[') || raw.startsWith('{'))){
+        try{ pushMediaValue(arr, JSON.parse(raw)); return; }catch(e){}
+      }
+      raw.split(/[\n,]+/).map(x=>x.trim()).filter(Boolean).forEach(part=>{
+        const first = part.split(/\s*(?:\|\||\|)\s*/)[0];
+        if(looksLikeMediaUrl(first)) arr.push(first);
+      });
+    }
+    function productImages(p){
+      const arr=[];
+      const keys=['image','images','cover','coverUrl','thumb','thumbnail','thumbnailUrl','imageUrl','imageURL','productImage','productPhoto','photo','photoUrl','mainImage','mainImageUrl','featuredImage','featuredImageUrl','gallery','photos','media','files','uploads','poster','posterUrl','src','url','downloadURL','downloadUrl','storageUrl','publicUrl'];
+      keys.forEach(k=>pushMediaValue(arr,p?.[k]));
+      if(looksLikeMediaUrl(p?.color)) arr.push(clean(p.color));
+      if(looksLikeMediaUrl(p?.background)) arr.push(clean(p.background));
+      return [...new Set(arr.map(clean).filter(Boolean))];
+    }
+
+    function currencyByLocale(locale){
+      const map = {'pt-BR':'BRL','en-US':'USD','en-GB':'GBP','es-ES':'EUR','fr-FR':'EUR','de-DE':'EUR','it-IT':'EUR','ja-JP':'JPY','ko-KR':'KRW','zh-CN':'CNY','ru-RU':'RUB'};
+      return map[locale] || 'USD';
+    }
+
+    function selectedLocale(){
+      const value = els.country && els.country.value ? els.country.value : 'pt-BR';
+      return I18N[value] ? value : 'pt-BR';
+    }
+    function selectedCurrency(){
+      const map = {
+        'pt-BR':'BRL',
+        'en-US':'USD',
+        'en-GB':'GBP',
+        'es-ES':'EUR',
+        'fr-FR':'EUR',
+        'de-DE':'EUR',
+        'it-IT':'EUR',
+        'ja-JP':'JPY',
+        'ko-KR':'KRW',
+        'zh-CN':'CNY',
+        'ru-RU':'RUB'
+      };
+      return map[selectedLocale()] || 'BRL';
+    }
+    function formatMoney(value){
+      const locale = selectedLocale();
+      const currency = selectedCurrency();
+      const n = Number(value || 0) * (RATE[currency] || 1);
+      try{
+        return new Intl.NumberFormat(locale,{style:'currency',currency}).format(n);
+      }catch(e){
+        return `${currency} ${n.toFixed(2)}`;
+      }
+    }
+    function refreshCurrencyVisuals(){
+      const locale = selectedLocale();
+      const currency = selectedCurrency();
+      document.documentElement.setAttribute('data-locale', locale);
+      document.documentElement.setAttribute('data-currency', currency);
+      if(els.country) els.country.title = locale + ' / ' + currency;
+
+      // Atualiza TODOS os preços renderizados na tela, inclusive o preço do canto inferior.
+      document.querySelectorAll('[data-price]').forEach(el=>{
+        el.textContent = formatMoney(el.dataset.price);
+      });
+      document.querySelectorAll('[data-base-price]').forEach(el=>{
+        el.textContent = formatMoney(el.dataset.basePrice);
+      });
+      if(activeProduct && els.modal.classList.contains('open')){
+        els.modalPrice.textContent = formatMoney(activeProduct.price);
+      }
+      if(cart && cart.length){
+        document.querySelectorAll('.cart-price').forEach((el, index)=>{
+          const item = cart[index];
+          if(item) el.textContent = formatMoney((Number(item.price)||0) * (Number(item.qty)||1));
+        });
+        els.cartTotal.textContent = formatMoney(cart.reduce((s,i)=>s+(Number(i.price)||0)*(Number(i.qty)||1),0));
+      }else if(els.cartTotal){
+        els.cartTotal.textContent = formatMoney(0);
+      }
+    }
+    function stockLabel(p){const s=p.stock ?? p.inventory ?? p.quantityAvailable; if(s===undefined||s===null||s==='') return ''; const n=Number(s); if(Number.isFinite(n)) return n>0 ? `${n} ${t('inStock')}` : t('soldOut'); return clean(s)}
+    function checkoutFor(p){return clean(p.checkoutUrl||p.checkout||p.buyUrl||p.purchaseUrl||p.paymentLink||p.mercadoPagoUrl||p.stripeUrl||p.externalCheckoutUrl||p.url||'')}
+    function normalizeProduct(raw={},i=0){const id=clean(raw.id||raw.slug||raw.sku||raw._docId||`product-${i+1}`); const sizes=listify(raw.sizes||raw.sizeOptions||raw.availableSizes); const variants=listify(raw.variants||raw.colors||raw.options); return {...raw,id,slug:clean(raw.slug||id),name:clean(raw.name||raw.title||raw.productName||`Produto ${i+1}`),type:clean(raw.type||raw.category||'Product'),price:Number(raw.price||raw.value||raw.amount||0),desc:clean(raw.desc||raw.description||raw.excerpt||raw.text||''),color:clean(raw.color||raw.gradient||''),images:productImages(raw),checkoutUrl:checkoutFor(raw),sku:clean(raw.sku||''),status:clean(raw.status||raw.visible||raw.published||''),stock:raw.stock ?? raw.inventory ?? raw.quantityAvailable ?? '',sizes,variants,shareUrl:clean(raw.shareUrl||''),shareTitle:clean(raw.shareTitle||raw.name||raw.title||''),shareText:clean(raw.shareText||raw.desc||raw.description||'')}}
+    function isVisible(p){const s=clean(p.status).toLowerCase(); return !['draft','hidden','inactive','disabled','false','private'].includes(s)}
+
+    async function getJSON(paths){for(const path of paths){try{const res=await fetch(path,{cache:'no-store'}); if(res.ok){const data=await res.json(); return Array.isArray(data)?data:(Array.isArray(data.items)?data.items:data)}}catch(e){}} return null}
+    async function getFirestoreProducts(){if(!db)return null; try{const snap=await getDocs(collection(db,'products')); return snap.docs.map(d=>({_docId:d.id,...d.data()}))}catch(e){console.warn('[SHOP] Firestore products unavailable', e); return null}}
+
+    let adminLiveStarted = false;
+    let adminLiveUnsubs = [];
+    function applyAdminProducts(rawProducts){
+      const nextProducts = (rawProducts || []).map(normalizeProduct).filter(isVisible);
+      if(nextProducts.length){
+        const currentSlug = products[current] ? productSlug(products[current]) : '';
+        products = nextProducts;
+        const sameIndex = currentSlug ? products.findIndex(p => productSlug(p) === currentSlug || p.id === currentSlug) : -1;
+        current = sameIndex >= 0 ? sameIndex : Math.min(current, Math.max(products.length - 1, 0));
+        renderTrack();
+        goTo(current, false);
+        if(activeProduct){
+          const activeSlug = productSlug(activeProduct);
+          const refreshed = products.find(p => productSlug(p) === activeSlug || p.id === activeProduct.id);
+          if(refreshed){ activeProduct = refreshed; renderProductModal(); }
+        }
+        updateCart();
+        updateAccountLists();
+      }
+    }
+    function applyAdminSettingsDoc(name, data){
+      if(!data) return;
+      if(name === 'cart') siteSettings = {...siteSettings, ...data};
+      if(name === 'site') { siteSettings = {...siteSettings, ...data}; applySiteIdentity(siteSettings); }
+      if(name === 'theme') { themeSettings = data; siteSettings = {...siteSettings, ...data}; applyThemeSettings(data); }
+      if(name === 'siteTexts') siteTexts = data;
+      if(name === 'share') shareSettings = data;
+      if(name === 'access') accessSettings = data;
+      if(name === 'globalSocials') globalSocials = Array.isArray(data.items) ? data.items : Array.isArray(data.socials) ? data.socials : globalSocials;
+      if(name === 'headerButtons') headerButtons = Array.isArray(data.items) ? data.items : Array.isArray(data.buttons) ? data.buttons : [];
+      if(name === 'homeButtons') homeButtons = Array.isArray(data.items) ? data.items : Array.isArray(data.buttons) ? data.buttons : [];
+      if(name === 'infoCards') infoCards = data;
+      applyHeaderButtons();
+      updateTexts();
+      refreshCurrencyVisuals();
+      updateCart();
+      if(activeProduct && els.modal.classList.contains('open')) renderProductModal();
+    }
+    function startAdminLiveSync(){
+      if(adminLiveStarted || !db) return;
+      adminLiveStarted = true;
+      try{
+        adminLiveUnsubs.push(onSnapshot(collection(db,'products'), snap => {
+          applyAdminProducts(snap.docs.map(d => ({_docId:d.id, ...d.data()})));
+        }, err => console.warn('[SHOP] live products unavailable', err)));
+        ['cart','site','theme','siteTexts','share','access','globalSocials','headerButtons','homeButtons','infoCards'].forEach(name => {
+          adminLiveUnsubs.push(onSnapshot(doc(db,'settings',name), snap => {
+            if(snap.exists()) applyAdminSettingsDoc(name, snap.data());
+          }, err => console.warn('[SHOP] live settings unavailable', name, err)));
+        });
+      }catch(e){ console.warn('[SHOP] live sync failed', e); }
+    }
+
+    let adminRefreshTimer = null;
+    async function adminRefreshOnce(){
+      if(!db) return;
+      try{
+        await getSettings();
+        const fire = await getFirestoreProducts();
+        if(Array.isArray(fire) && fire.length) applyAdminProducts(fire);
+      }catch(e){ console.warn('[SHOP] admin refresh failed', e); }
+    }
+    function startAdminPollingFallback(){
+      if(adminRefreshTimer || !db) return;
+      adminRefreshTimer = setInterval(adminRefreshOnce, 9000);
+      window.addEventListener('focus', adminRefreshOnce);
+      document.addEventListener('visibilitychange', () => { if(!document.hidden) adminRefreshOnce(); });
+    }
+    async function getSettings(){
+      applySiteIdentity(siteSettings);
+      if(!db) return;
+      try{
+        const docs = await Promise.all([
+          getSettingDoc('cart'), getSettingDoc('site'), getSettingDoc('theme'), getSettingDoc('siteTexts'),
+          getSettingDoc('share'), getSettingDoc('access'), getSettingDoc('globalSocials'),
+          getSettingDoc('headerButtons'), getSettingDoc('homeButtons'), getSettingDoc('infoCards')
+        ]);
+        const [cartDoc, siteDoc, themeDoc, siteTextsDoc, shareDoc, accessDoc, socialsDoc, headerDoc, homeDoc, infoDoc] = docs;
+        if(cartDoc) siteSettings = {...siteSettings, ...cartDoc};
+        if(siteDoc) siteSettings = {...siteSettings, ...siteDoc};
+        if(themeDoc) { themeSettings = themeDoc; siteSettings = {...siteSettings, ...themeDoc}; applyThemeSettings(themeDoc); }
+        if(siteTextsDoc) siteTexts = siteTextsDoc;
+        if(shareDoc) shareSettings = shareDoc;
+        if(accessDoc) accessSettings = accessDoc;
+        if(socialsDoc) globalSocials = Array.isArray(socialsDoc.items) ? socialsDoc.items : Array.isArray(socialsDoc.socials) ? socialsDoc.socials : globalSocials;
+        if(headerDoc) headerButtons = Array.isArray(headerDoc.items) ? headerDoc.items : Array.isArray(headerDoc.buttons) ? headerDoc.buttons : [];
+        if(homeDoc) homeButtons = Array.isArray(homeDoc.items) ? homeDoc.items : Array.isArray(homeDoc.buttons) ? homeDoc.buttons : [];
+        if(infoDoc) infoCards = infoDoc;
+        applySiteIdentity(siteSettings);
+        applyHeaderButtons();
+      }catch(e){ console.warn('[SHOP] settings unavailable', e); applySiteIdentity(siteSettings); }
+    }
+
+    async function loadProducts(){
+      updateTexts();
+      await getSettings();
+      const fire = await getFirestoreProducts();
+      const json = await getJSON(['/data/products.json','data/products.json','/products.json','products.json','/products(3).json','products(3).json']);
+      const source = Array.isArray(fire)&&fire.length ? fire : Array.isArray(json)&&json.length ? json : INLINE_PRODUCTS;
+      products = (source||[]).map(normalizeProduct).filter(isVisible);
+      if(!products.length) products = INLINE_PRODUCTS.map(normalizeProduct);
+      renderTrack();
+      const hash = decodeURIComponent(location.hash.replace('#product-',''));
+      const found = hash ? products.findIndex(p=>productSlug(p)===hash||p.id===hash) : -1;
+      if(found >= 0) current = found;
+      goTo(current, false);
+      updateCart();
+      updateAccountLists();
+      startAdminLiveSync();
+      startAdminPollingFallback();
+    }
+
+    function renderTrack(){
+      els.track.innerHTML = products.map((p,i)=>{
+        const img = productImages(p)[0]||'';
+        return `<article class="product-slide" data-index="${i}" style="--product-color:${esc(p.color||'linear-gradient(135deg,#111,#444,#aaa)')}">
+          <div class="product-bg"></div>
+          <div class="product-fallback">${esc(productName(p))}</div>
+          <img class="product-photo" src="${esc(img)}" alt="${esc(productName(p))}" loading="${i<2?'eager':'lazy'}" decoding="async" onerror="this.classList.add('is-missing')" />
+          <div class="product-caption"><div><h2 class="caption-title">${esc(productName(p))}</h2><div class="caption-meta">${esc(productType(p))}${p.sku?' / '+esc(p.sku):''}</div></div><div class="caption-price" aria-hidden="true"></div></div>
+        </article>`;
+      }).join('');
+      els.track.querySelectorAll('.product-slide').forEach(slide=>slide.addEventListener('click', e=>openProduct(Number(slide.dataset.index)||0)));
+    }
+    function goTo(i, animate=true){if(!products.length)return; current=(i+products.length)%products.length; els.track.style.transition=animate?'transform .42s cubic-bezier(.16,1,.3,1)':'none'; els.track.style.transform=`translate3d(-${current*100}vw,0,0)`; els.counter.textContent=`${String(current+1).padStart(2,'0')} / ${String(products.length).padStart(2,'0')}`; history.replaceState(null,'',`#product-${encodeURIComponent(productSlug(products[current]))}`)}
+    function next(){goTo(current+1)} function prev(){goTo(current-1)}
+
+    function hasAccess(p){ const access = clean(p.access || accessSettings.defaultAccess || 'public').toLowerCase(); if(access === 'locked') return false; if(access === 'login' && !user) return false; return true; }
+    function openProduct(i=current){const p=products[i]; if(!p)return; if(!hasAccess(p)){ toast(clean(p.lockedMessage||accessSettings.lockedMessage)||t('login')); if(clean(p.access||accessSettings.defaultAccess).toLowerCase()==='login') els.authModal.classList.add('open'); return; } activeProduct=p; activeImage=0; qty=1; selectedSize=(p.sizes||[])[0]||''; selectedVariant=(p.variants||[])[0]||''; addHistory(p); renderProductModal(); els.modal.classList.add('open'); document.body.classList.add('modal-lock');}
+    function closeProduct(){els.modal.classList.remove('open'); document.body.classList.remove('modal-lock')}
+
+
+
+    function fallbackTranslateProductText(text, locale){
+      const original = clean(text);
+      if(!original) return '';
+      const key = original.toUpperCase().replace(/\s+/g,' ').trim();
+      const dict = {
+        'FREE DOWNLOAD OF ALL MUSIC PRODUCED BY CYBERISDEAD SOUNDCLOUD FOR DJS AND PRODUCERS': {
+          'en-US':'FREE DOWNLOAD OF ALL MUSIC PRODUCED BY CYBERISDEAD SOUNDCLOUD FOR DJS AND PRODUCERS',
+          'en-GB':'FREE DOWNLOAD OF ALL MUSIC PRODUCED BY CYBERISDEAD SOUNDCLOUD FOR DJS AND PRODUCERS',
+          'pt-BR':'DOWNLOAD GRÁTIS DE TODAS AS MÚSICAS PRODUZIDAS POR CYBERISDEAD NO SOUNDCLOUD PARA DJS E PRODUTORES',
+          'es-ES':'DESCARGA GRATIS DE TODA LA MÚSICA PRODUCIDA POR CYBERISDEAD EN SOUNDCLOUD PARA DJS Y PRODUCTORES',
+          'fr-FR':'TÉLÉCHARGEMENT GRATUIT DE TOUTE LA MUSIQUE PRODUITE PAR CYBERISDEAD SUR SOUNDCLOUD POUR DJS ET PRODUCTEURS',
+          'de-DE':'KOSTENLOSER DOWNLOAD ALLER VON CYBERISDEAD PRODUZIERTEN MUSIK AUF SOUNDCLOUD FÜR DJS UND PRODUZENTEN',
+          'it-IT':'DOWNLOAD GRATUITO DI TUTTA LA MUSICA PRODOTTA DA CYBERISDEAD SU SOUNDCLOUD PER DJ E PRODUTTORI',
+          'ja-JP':'CYBERISDEADが制作した全楽曲をSOUNDCLOUDでDJ・プロデューサー向けに無料ダウンロード',
+          'ko-KR':'CYBERISDEAD가 제작한 모든 음악을 DJ와 프로듀서를 위해 SOUNDCLOUD에서 무료 다운로드',
+          'zh-CN':'CYBERISDEAD 制作的全部音乐可在 SOUNDCLOUD 免费下载，供 DJ 和制作人使用',
+          'ru-RU':'БЕСПЛАТНАЯ ЗАГРУЗКА ВСЕЙ МУЗЫКИ CYBERISDEAD В SOUNDCLOUD ДЛЯ ДИДЖЕЕВ И ПРОДЮСЕРОВ'
+        }
+      };
+      return dict[key]?.[locale] || original;
+    }
+
+    function localizedProductField(p, baseKeys, fallback=''){
+      const loc = selectedLocale ? selectedLocale() : (siteSettings.locale || 'en-US');
+      const lang = String(loc).split('-')[0];
+      const suffixes = [
+        '_' + loc,
+        '_' + loc.replace('-', '_'),
+        '_' + lang,
+        lang ? lang.toUpperCase() : '',
+        ''
+      ];
+      for(const base of baseKeys){
+        for(const suffix of suffixes){
+          const key = suffix ? base + suffix : base;
+          const raw = p?.[key];
+          if(raw !== undefined && raw !== null && String(raw).trim() !== ''){
+            if(Array.isArray(raw)) return raw.filter(Boolean).join('\\n');
+            return clean(raw);
+          }
+        }
+      }
+      return fallback;
+    }
+
+    function productDescFromAdmin(p){
+      const loc = selectedLocale ? selectedLocale() : 'en-US';
+      const direct = localizedProductField(p, [
+        'desc','description','descricao','descrição','bio','text','excerpt',
+        'details','content','body','summary','subtitle','productDescription',
+        'productDesc','productBio','about'
+      ], '');
+      return fallbackTranslateProductText(direct, loc);
+    }
+
+
+    function productNameLocalized(p){
+      return localizedProductField(p, ['name','title','productName','nome','label'], p?.name || p?.title || 'Product');
+    }
+    function productTypeLocalized(p){
+      return localizedProductField(p, ['type','category','categoria','tag','collection','kind'], p?.type || p?.category || t('product'));
+    }
+
+    function renderProductModal(){
+      const p=activeProduct; if(!p)return; const imgs=productImages(p); const img=imgs[activeImage]||'';
+      els.modalMedia.style.setProperty('--product-color', p.color||'linear-gradient(135deg,#111,#555,#aaa)');
+      els.modalImage.classList.remove('is-missing'); els.modalImage.src=img || ''; els.modalImage.alt=productName(p); if(!img) els.modalImage.classList.add('is-missing');
+      els.modalType.textContent = productTypeLocalized(p); els.modalTitle.textContent = productNameLocalized(p); els.modalDesc.textContent = productDescFromAdmin(p) || t('productDefault'); els.modalPrice.textContent=formatMoney(p.price); els.modalStock.textContent=stockLabel(p);
+      renderChoices(els.sizeBlock, els.sizeList, p.sizes, selectedSize, 'size');
+      renderChoices(els.variantBlock, els.variantList, p.variants, selectedVariant, 'variant');
+      els.qtyValue.textContent=1;
+      els.saveProduct.textContent=isSaved(p)?t('saved'):t('save');
+      els.modalThumbs.innerHTML=imgs.map((src,i)=>`<button type="button" class="thumb ${i===activeImage?'active':''}" data-img="${i}" style="background-image:url('${esc(src)}')"></button>`).join('');
+      $('shippingNote').textContent=clean(p['shippingNote_'+selectedLocale()]||p['shippingNote_'+localeShort()]||p.shippingNote||siteSettings['shippingNote_'+selectedLocale()]||siteSettings['shippingNote_'+localeShort()]||siteSettings.shippingNote)||t('ship');
+      $('returnsNote').textContent=clean(p['returnsNote_'+selectedLocale()]||p['returnsNote_'+localeShort()]||p.returnsNote||siteSettings['returnsNote_'+selectedLocale()]||siteSettings['returnsNote_'+localeShort()]||siteSettings.returnsNote)||t('secure');
+    }
+    function renderChoices(block,list,items,selected,type){if(!items||!items.length){block.style.display='none'; list.innerHTML=''; return} block.style.display='grid'; list.innerHTML=items.map(v=>`<button type="button" class="choice ${v===selected?'active':''}" data-${type}="${esc(v)}">${esc(v)}</button>`).join('')}
+    function imageStep(n){const imgs=productImages(activeProduct); if(!imgs.length)return; activeImage=(activeImage+n+imgs.length)%imgs.length; renderProductModal()}
+
+    function cartKey(p,size=selectedSize,variant=selectedVariant){return [p.id||productSlug(p),size,variant].join('::')}
+    function addCart(p=activeProduct, amount=qty, open=true){if(!p)return; const key=cartKey(p); const data={key,id:p.id,slug:productSlug(p),name:p.name,type:p.type,price:p.price,image:productImages(p)[0]||'',checkoutUrl:checkoutFor(p),size:selectedSize,variant:selectedVariant,qty:1}; cart=[data]; saveLocal('cid_cart_v6',cart); updateCart(); toast(t('added')); if(open) openCart()}
+    function updateCart(){els.cartCount.textContent=cart.length ? 1 : 0; if(!cart.length){els.cartItems.innerHTML=`<div class="empty">${t('empty')}</div>`; els.cartTotal.textContent=formatMoney(0); return} els.cartItems.innerHTML=cart.map(i=>{const p=products.find(pp=>pp.id===i.id||productSlug(pp)===i.slug); const nm=p?productName(p):i.name; return `<div class="cart-item"><div class="cart-thumb" style="${i.image?`background-image:url('${esc(i.image)}')`:''}"></div><div><div class="cart-name">${esc(nm)}</div><div class="cart-meta">${[i.size,i.variant].filter(Boolean).map(esc).join(' / ')}${i.sku?' / '+esc(i.sku):''}<br></div><div class="cart-qty"><button data-dec="${esc(i.key)}">−</button><span>${i.qty}</span><button data-inc="${esc(i.key)}">+</button></div><button class="remove" data-remove="${esc(i.key)}">${t('remove')}</button></div><strong class="cart-price" data-base-price="${esc((Number(i.price)||0)*(Number(i.qty)||1))}">${formatMoney(i.price*i.qty)}</strong></div>`}).join(''); els.cartTotal.textContent=formatMoney(cart.reduce((s,i)=>s+(Number(i.price)||0)*i.qty,0))}
+    function openCart(){els.cartDrawer.classList.add('open'); document.body.classList.add('modal-lock')} function closeCart(){els.cartDrawer.classList.remove('open'); document.body.classList.remove('modal-lock')}
+    function checkout(){if(!cart.length){toast(t('empty'));return} const item=cart[0]; const p=item?products.find(pp=>pp.id===item.id||productSlug(pp)===item.slug):null; const productLink=clean(item?.checkoutUrl||p?.checkoutUrl||checkoutFor(p||{})||''); const checkoutUrl=productLink||clean(siteSettings.checkoutUrl||siteSettings.buyUrl||siteSettings.paymentLink||''); if(checkoutUrl){window.open(checkoutUrl,'_blank','noopener,noreferrer'); return} const text=`CYBERISDEAD SHOP — ${t('checkout')}\n`+cart.map(i=>{const p=products.find(pp=>pp.id===i.id||productSlug(pp)===i.slug); const nm=p?productName(p):i.name; return `- ${nm} x${i.qty} ${[i.size,i.variant].filter(Boolean).join('/')} / ${formatMoney(i.price*i.qty)}`}).join('\n')+`\n${t('total')}: ${els.cartTotal.textContent}`; const whats=clean(siteSettings.whatsapp||siteSettings.whatsappUrl||''); if(whats){const url=whats.startsWith('http')?whats:`https://wa.me/${whats.replace(/\D/g,'')}`; window.open(`${url}?text=${encodeURIComponent(text)}`,'_blank','noopener,noreferrer'); return} navigator.clipboard?.writeText(text).then(()=>toast(t('orderCopied'))).catch(()=>alert(text)); try{if(db)addDoc(collection(db,'orders'),{items:cart,total:cart.reduce((s,i)=>s+(Number(i.price)||0)*i.qty,0),createdAt:serverTimestamp(),user:user?{uid:user.uid,email:user.email}:null})}catch(e){}}
+
+    function buyNow(){const p=activeProduct;if(!p)return; const link=checkoutFor(p)||clean(siteSettings.checkoutUrl||siteSettings.buyUrl||''); if(link){window.open(link,'_blank','noopener,noreferrer'); return} addCart(p,qty,true)}
+    function isSaved(p){return saved.some(x=>x.id===p.id)} function toggleSave(p=activeProduct){
+      if(!p)return;
+      if(!user){
+        pendingSaveProductId = String(p.id || activeProduct?.id || '');
+        els.authModal.classList.add('open');
+        toast(t('login'));
+        return;
+      }
+      if(isSaved(p)) saved=saved.filter(x=>x.id!==p.id); else saved.unshift({id:p.id,slug:productSlug(p),name:p.name,image:productImages(p)[0]||'',price:p.price}); saved=saved.slice(0,50); saveLocal('cid_saved_v6',saved); updateAccountLists(); renderProductModal(); toast(isSaved(p)?t('saved'):t('removed')); syncUserData()}
+    function addHistory(p){history=history.filter(x=>x.id!==p.id); history.unshift({id:p.id,slug:productSlug(p),name:p.name,image:productImages(p)[0]||'',price:p.price,at:Date.now()}); history=history.slice(0,50); saveLocal('cid_history_v6',history); updateAccountLists(); syncUserData()}
+
+    function openShare(p=activeProduct){if(!p)return; const url=productUrl(p); const title=localizedProductValue(p,'shareTitle',productName(p)); const text=localizedProductValue(p,'shareText',productDesc(p)||'CYBERISDEAD SHOP'); if(navigator.share && window.innerWidth < 760){navigator.share({title,text,url}).catch(()=>showSharePanel(p)); return} showSharePanel(p)}
+    function showSharePanel(p){
+      const url=productUrl(p);
+      const title=localizedProductValue(p,'shareTitle',productName(p));
+      const text=localizedProductValue(p,'shareText',productDesc(p)||clean(shareSettings.introText)||'CYBERISDEAD SHOP');
+      const meta=document.getElementById('shareMeta'); if(meta) meta.textContent=clean(shareSettings.productMeta||shareSettings.articleMeta)||t('shareProduct');
+      els.shareTitle.textContent=title; els.shareText.textContent=text||clean(shareSettings.introText)||t('shareHelp'); els.shareUrlInput.value=url;
+      const encoded=encodeURIComponent(url), et=encodeURIComponent(`${title} — ${text}`);
+      const opts=[];
+      const enabled=(k,def=true)=> shareSettings[k] === undefined ? def : !(shareSettings[k]===false || String(shareSettings[k]).toLowerCase()==='false');
+      if(enabled('enableTwitter')) opts.push(`<a href="https://twitter.com/intent/tweet?url=${encoded}&text=${et}" target="_blank" rel="noopener">${clean(shareSettings.twitterLabel)||t('xTwitter')}</a>`);
+      if(enabled('enableWhatsApp')) opts.push(`<a href="https://api.whatsapp.com/send?text=${et}%20${encoded}" target="_blank" rel="noopener">${clean(shareSettings.whatsappLabel)||t('whatsapp')}</a>`);
+      if(enabled('enableTumblr')) opts.push(`<a href="https://www.tumblr.com/widgets/share/tool?canonicalUrl=${encoded}&title=${encodeURIComponent(title)}" target="_blank" rel="noopener">${clean(shareSettings.tumblrLabel)||t('tumblr')}</a>`);
+      if(enabled('enableNative')) opts.push(`<button type="button" data-native-share>${clean(shareSettings.nativeLabel)||t('nativeShare')}</button>`);
+      const custom = Array.isArray(shareSettings.customButtons) ? shareSettings.customButtons : [];
+      custom.forEach(btn=>{ const u=clean(btn.url||'').replaceAll('{{url}}',encoded).replaceAll('{{text}}',et); if(u) opts.push(`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(btn.label||'Share')}</a>`); });
+      els.shareOptions.innerHTML=opts.join('') || `<button type="button" data-native-share>${t('nativeShare')}</button>`;
+      els.sharePanel.classList.add('open')
+    }
+    function closeShare(){els.sharePanel.classList.remove('open')}
+
+    function updateAccountLists(){els.savedList.innerHTML=saved.length?saved.map(x=>{const p=products.find(pp=>pp.id===x.id||productSlug(pp)===x.slug); return `<button class="account-item" data-open="${esc(x.id)}">${esc(p?productName(p):x.name)} / ${formatMoney(x.price)}</button>`}).join(''):`<span class="status-msg">${t('noSaved')}</span>`; els.historyList.innerHTML=history.length?history.slice(0,8).map(x=>{const p=products.find(pp=>pp.id===x.id||productSlug(pp)===x.slug); return `<button class="account-item" data-open="${esc(x.id)}">${esc(p?productName(p):x.name)} / ${formatMoney(x.price)}</button>`}).join(''):`<span class="status-msg">${t('noHistory')}</span>`}
+    async function syncUserData(){if(!db||!user)return; try{await setDoc(doc(db,'users',user.uid),{email:user.email,savedProducts:saved,history,updatedAt:serverTimestamp()},{merge:true})}catch(e){}}
+
+    function applyAllTextTranslations(){
+      document.documentElement.lang = selectedLocale();
+      document.title = `${t('brand')} ${t('shop')}`;
+      const metaDesc = document.querySelector('meta[name="description"]');
+      if(metaDesc) metaDesc.setAttribute('content', `${t('brand')} ${t('shop')}`);
+      const setText = (id, value) => { const el = document.getElementById(id); if(el) el.textContent = value; };
+      const setLabel = (selector, value) => { const el = document.querySelector(selector); if(el){ const input = el.querySelector('input'); el.childNodes[0].nodeValue = value; } };
+      setText('prevBtnTop', t('prev'));
+      setText('nextBtnTop', t('next'));
+      setText('accountOpen', t('account'));
+      if(els.cartOpen) els.cartOpen.childNodes[0].nodeValue = t('cart') + ' ';
+      if(els.buyNow) els.buyNow.textContent = t('buy');
+      if(els.addToCart) els.addToCart.textContent = t('add');
+      if(els.saveProduct) els.saveProduct.textContent = activeProduct && isSaved(activeProduct) ? t('saved') : t('save');
+      if(els.shareProduct) els.shareProduct.textContent = t('share');
+      setText('sizeLabel', t('size'));
+      setText('variantLabel', t('variant'));
+      setText('qtyLabel', t('quantity'));
+      setText('checkoutBtn', clean(siteSettings.checkoutLabel)||t('checkout'));
+      setText('cartTitle', t('cart'));
+      const totalLabel = document.querySelector('.total-line span'); if(totalLabel) totalLabel.textContent = t('total');
+      const cartNote = document.getElementById('cartNote'); if(cartNote) cartNote.textContent = clean(siteSettings['cartNote_'+selectedLocale()]||siteSettings['cartNote_'+localeShort()]||siteSettings.cartNote)||t('cartNote');
+      const shareMeta = document.getElementById('shareMeta'); if(shareMeta) shareMeta.textContent = t('shareProduct');
+      if(!activeProduct){ setText('shareTitle', t('product')); setText('shareText', t('shareHelp')); }
+      setText('copyShare', t('copy'));
+      setText('authMeta', t('accountAccess'));
+      setText('authTitle', t('account'));
+      setText('authIntro', t('login'));
+      setLabel('.auth-form label:nth-child(1)', t('email'));
+      setLabel('.auth-form label:nth-child(2)', t('password'));
+      setText('authSubmit', t('login'));
+      setText('logoutBtn', t('logout')); if(user && els.authState) els.authState.textContent = `${t('loggedIn')}: ${user.email}`;
+      const panels = document.querySelectorAll('.account-panel h3');
+      if(panels[0]) panels[0].textContent = t('savedPanel');
+      if(panels[1]) panels[1].textContent = t('history');
+      document.querySelectorAll('[aria-label="Fechar"]').forEach(el=>el.setAttribute('aria-label', t('remove')));
+      document.querySelectorAll('[data-native-share]').forEach(el=>el.textContent=t('nativeShare'));
+      applySiteIdentity(siteSettings);
+      applyHeaderButtons();
+    }
+    function updateTexts(){
+      applyAllTextTranslations();
+      renderTrack();
+      goTo(current,false);
+      refreshCurrencyVisuals();
+      updateCart();
+      if(activeProduct) renderProductModal();
+      updateAccountLists();
+    }
+    function toast(msg){els.toast.textContent=msg; els.toast.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>els.toast.classList.remove('show'),1400)}
+    function openById(id){const idx=products.findIndex(p=>p.id===id||productSlug(p)===id); if(idx>=0){goTo(idx); openProduct(idx)}}
+
+    let sx=0, sy=0;
+    document.querySelector('.shop-stage').addEventListener('touchstart',e=>{sx=e.touches[0].clientX; sy=e.touches[0].clientY},{passive:true});
+    document.querySelector('.shop-stage').addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx; const dy=e.changedTouches[0].clientY-sy; if(Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)) dx<0?next():prev()},{passive:true});
+    document.addEventListener('keydown',e=>{if(e.key==='ArrowRight')next(); if(e.key==='ArrowLeft')prev(); if(e.key==='Escape'){closeProduct(); closeCart(); closeShare(); els.authModal.classList.remove('open')}});
+
+    [els.next,els.nextTop].forEach(b=>b.addEventListener('click',next)); [els.prev,els.prevTop].forEach(b=>b.addEventListener('click',prev));
+    els.modalClose.addEventListener('click',closeProduct); els.modal.addEventListener('click',e=>{if(e.target===els.modal)closeProduct()});
+    els.modalPrevImage.addEventListener('click',()=>imageStep(-1)); els.modalNextImage.addEventListener('click',()=>imageStep(1));
+    els.modalThumbs.addEventListener('click',e=>{const b=e.target.closest('[data-img]'); if(b){activeImage=Number(b.dataset.img)||0; renderProductModal()}});
+    els.sizeList.addEventListener('click',e=>{const b=e.target.closest('[data-size]'); if(b){selectedSize=b.dataset.size; renderProductModal()}});
+    els.variantList.addEventListener('click',e=>{const b=e.target.closest('[data-variant]'); if(b){selectedVariant=b.dataset.variant; renderProductModal()}});
+    els.qtyMinus.addEventListener('click',()=>{qty=Math.max(1,qty-1);els.qtyValue.textContent=qty}); els.qtyPlus.addEventListener('click',()=>{qty+=1;els.qtyValue.textContent=qty});
+    els.addToCart.addEventListener('click',()=>addCart()); els.buyNow.addEventListener('click',buyNow); els.saveProduct.addEventListener('click',()=>toggleSave()); els.shareProduct.addEventListener('click',()=>openShare());
+    els.cartOpen.addEventListener('click',openCart); els.cartClose.addEventListener('click',closeCart); els.checkout.addEventListener('click',checkout);
+    els.cartItems.addEventListener('click',e=>{const rem=e.target.closest('[data-remove]'); if(rem)cart=[]; saveLocal('cid_cart_v6',cart); updateCart()});
+    els.shareClose.addEventListener('click',closeShare); els.sharePanel.addEventListener('click',e=>{if(e.target===els.sharePanel)closeShare(); if(e.target.closest('[data-native-share]')&&activeProduct)navigator.share?.({title:activeProduct.name,text:activeProduct.desc,url:productUrl(activeProduct)}).catch(()=>{})});
+    els.copyShare.addEventListener('click',()=>navigator.clipboard?.writeText(els.shareUrlInput.value).then(()=>toast(t('copied'))));
+    els.authOpen.addEventListener('click',()=>els.authModal.classList.add('open')); els.authClose.addEventListener('click',()=>els.authModal.classList.remove('open')); els.authModal.addEventListener('click',e=>{if(e.target===els.authModal)els.authModal.classList.remove('open')});
+    els.savedList.addEventListener('click',e=>{const b=e.target.closest('[data-open]'); if(b)openById(b.dataset.open)}); els.historyList.addEventListener('click',e=>{const b=e.target.closest('[data-open]'); if(b)openById(b.dataset.open)});
+    els.country.addEventListener('change',()=>{
+      saveLocal('cid_locale_v6',els.country.value);
+      updateTexts();
+      // Garante que o preço fixo do canto inferior, popup e carrinho usem a mesma moeda imediatamente.
+      requestAnimationFrame(()=>{
+        refreshCurrencyVisuals();
+        renderTrack();
+        goTo(current,false);
+        if(activeProduct) renderProductModal();
+        updateCart();
+        updateAccountLists();
+        refreshCurrencyVisuals();
+      });
+    });
+    els.authForm.addEventListener('submit',async e=>{e.preventDefault(); const email=els.authEmail.value.trim(); const pass=els.authPassword.value; if(!auth){els.authState.textContent=t('localMode'); toast(t('saved')); return} try{await signInWithEmailAndPassword(auth,email,pass)}catch(err){try{await createUserWithEmailAndPassword(auth,email,pass)}catch(e2){els.authState.textContent=e2.message||t('loginFailed')}}});
+    els.logoutBtn.addEventListener('click',()=>auth&&signOut(auth));
+    if(auth) onAuthStateChanged(auth,async u=>{
+user=u; if(u){els.authState.textContent=`${t('loggedIn')}: ${u.email}`; els.logoutBtn.style.display='block'; els.authForm.style.display='none'; syncUserData(); if(pendingSaveProductId){const pendingProduct=products.find(p=>String(p.id)===String(pendingSaveProductId)); pendingSaveProductId=''; if(pendingProduct && !isSaved(pendingProduct)){activeProduct=pendingProduct; toggleSave(pendingProduct)}}} else {els.authState.textContent=''; els.logoutBtn.style.display='none'; els.authForm.style.display='grid'}});
+
+    function detectVisitorLocale(){
+      const navLang = navigator.language || '';
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      if (tz === 'America/Sao_Paulo' || tz.startsWith('America/Fortaleza') || tz.startsWith('America/Recife') || tz.startsWith('America/Bahia') || tz.startsWith('America/Manaus') || tz.startsWith('America/Belem') || navLang.toLowerCase().startsWith('pt-br')) return 'pt-BR';
+      if (tz === 'Europe/London' || tz === 'Europe/Jersey' || tz === 'Europe/Guernsey' || tz === 'Europe/Isle_of_Man' || navLang.toLowerCase().startsWith('en-gb')) return 'en-GB';
+      if (tz.startsWith('America/') && !tz.includes('Sao_Paulo')) return 'en-US';
+      if (tz.startsWith('Europe/Madrid') || navLang.startsWith('es')) return 'es-ES';
+      if (tz.startsWith('Europe/Paris') || navLang.startsWith('fr')) return 'fr-FR';
+      if (tz.startsWith('Europe/Berlin') || navLang.startsWith('de')) return 'de-DE';
+      if (tz.startsWith('Europe/Rome') || navLang.startsWith('it')) return 'it-IT';
+      if (tz.startsWith('Asia/Tokyo') || navLang.startsWith('ja')) return 'ja-JP';
+      if (tz.startsWith('Asia/Seoul') || navLang.startsWith('ko')) return 'ko-KR';
+      if (tz.startsWith('Asia/Shanghai') || tz.startsWith('Asia/Chongqing') || tz.startsWith('Asia/Urumqi') || navLang.startsWith('zh')) return 'zh-CN';
+      if (tz.startsWith('Europe/Moscow') || tz.startsWith('Asia/Yekaterinburg') || navLang.startsWith('ru')) return 'ru-RU';
+      if (I18N[navLang]) return navLang;
+      if (navLang.startsWith('pt')) return 'pt-BR';
+      return 'en-US';
+    }
+    const savedLocale = loadLocal('cid_locale_v6','');
+    // Auto: usa preferência salva; se não existir, detecta idioma/timezone do visitante.
+    els.country.value = I18N[savedLocale] ? savedLocale : detectVisitorLocale();
+    applySiteIdentity(siteSettings);
+    refreshCurrencyVisuals();
+    loadProducts().catch(e=>{console.error(e); products=INLINE_PRODUCTS.map(normalizeProduct); renderTrack(); updateCart(); startAdminLiveSync(); startAdminPollingFallback();});
+    setTimeout(forceSecureCartNote, 0);
+    setTimeout(forceSecureCartNote, 500);
+  </script>
+</body>
+</html>

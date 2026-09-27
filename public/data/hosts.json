@@ -1,0 +1,100 @@
+{
+  "items": [
+    {
+      "id": "aura",
+      "name": "AURA",
+      "photo": "assets/hosts/aura.jpg",
+      "bio": "Curadoria, transmissão e pesquisa visual do arquivo.",
+      "episodes": [
+        "live",
+        "archive",
+        "talk"
+      ],
+      "socials": [
+        {
+          "label": "Instagram",
+          "url": "https://instagram.com/"
+        },
+        {
+          "label": "SoundCloud",
+          "url": "https://soundcloud.com/"
+        },
+        {
+          "label": "YouTube",
+          "url": "https://youtube.com/"
+        }
+      ]
+    },
+    {
+      "id": "sinal",
+      "name": "Sinal Bruto",
+      "photo": "assets/hosts/sinal-bruto.jpg",
+      "bio": "Host focado em club, rua, ruído e texturas de pista.",
+      "episodes": [
+        "mixtape",
+        "live"
+      ],
+      "socials": [
+        {
+          "label": "Instagram",
+          "url": "https://instagram.com/"
+        },
+        {
+          "label": "Bandcamp",
+          "url": "https://bandcamp.com/"
+        },
+        {
+          "label": "SoundCloud",
+          "url": "https://soundcloud.com/"
+        }
+      ]
+    },
+    {
+      "id": "arquivo",
+      "name": "Arquivo Vivo",
+      "photo": "assets/hosts/arquivo-vivo.jpg",
+      "bio": "Sessões de cinema encontrado, memória digital e notas editoriais.",
+      "episodes": [
+        "archive",
+        "talk"
+      ],
+      "socials": [
+        {
+          "label": "Tumblr",
+          "url": "https://tumblr.com/"
+        },
+        {
+          "label": "Instagram",
+          "url": "https://instagram.com/"
+        },
+        {
+          "label": "YouTube",
+          "url": "https://youtube.com/"
+        }
+      ]
+    },
+    {
+      "id": "conversa",
+      "name": "Conversa Editorial",
+      "photo": "assets/hosts/conversa-editorial.jpg",
+      "bio": "Entrevistas, comentários, diário de pesquisa e cena local.",
+      "episodes": [
+        "talk"
+      ],
+      "socials": [
+        {
+          "label": "Instagram",
+          "url": "https://instagram.com/"
+        },
+        {
+          "label": "Twitter",
+          "url": "https://twitter.com/"
+        },
+        {
+          "label": "Spotify",
+          "url": "https://open.spotify.com/"
+        }
+      ]
+    }
+  ]
+}

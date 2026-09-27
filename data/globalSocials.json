@@ -1,0 +1,40 @@
+{
+  "items": [
+    {
+      "label": "Twitter",
+      "url": "https://twitter.com/"
+    },
+    {
+      "label": "Tumblr",
+      "url": "https://www.tumblr.com/"
+    },
+    {
+      "label": "Instagram",
+      "url": "https://www.instagram.com/"
+    },
+    {
+      "label": "SoundCloud",
+      "url": "https://soundcloud.com/"
+    },
+    {
+      "label": "Pinterest",
+      "url": "https://www.pinterest.com/"
+    },
+    {
+      "label": "YouTube",
+      "url": "https://www.youtube.com/"
+    },
+    {
+      "label": "Spotify",
+      "url": "https://open.spotify.com/"
+    },
+    {
+      "label": "Apple Music",
+      "url": "https://music.apple.com/"
+    },
+    {
+      "label": "Bandcamp",
+      "url": "https://bandcamp.com/"
+    }
+  ]
+}

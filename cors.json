@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["https://cyberisdeadesite.web.app", "https://cyberisdeadesite.firebaseapp.com", "http://localhost:8080"],
+    "method": ["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"],
+    "maxAgeSeconds": 3600
+  }
+]

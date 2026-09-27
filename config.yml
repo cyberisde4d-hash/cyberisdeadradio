@@ -1,0 +1,189 @@
+backend:
+  name: github
+  repo: cyberisde4d-hash/aura-archive-cms
+  branch: main
+
+local_backend: true
+
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "articles"
+    label: "Artigos / Materiais"
+    files:
+      - label: "Artigos"
+        name: "articles_file"
+        file: "data/articles.json"
+        format: "json"
+        fields:
+          - label: "Itens"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.title}}"
+            fields:
+              - {label: "Título", name: "title", widget: "string"}
+              - {label: "Categoria", name: "category", widget: "select", options: ["Essay", "Radio", "Cinema", "Scene", "Music", "Visual", "Archive", "Design"]}
+              - {label: "Ano", name: "year", widget: "string"}
+              - {label: "Data", name: "date", widget: "datetime", required: false, format: "YYYY-MM-DD"}
+              - {label: "Resumo", name: "excerpt", widget: "text"}
+              - {label: "Fundo/Cor CSS", name: "color", widget: "string", required: false}
+              - label: "Mídias do popup"
+                name: "media"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Tipo", name: "type", widget: "select", options: ["image", "video", "embed"]}
+                  - {label: "URL/Arquivo", name: "src", widget: "string"}
+                  - {label: "Legenda", name: "caption", widget: "string", required: false}
+              - label: "Texto"
+                name: "body"
+                widget: "list"
+                field: {label: "Parágrafo", name: "paragraph", widget: "text"}
+
+  - name: "episodes"
+    label: "Rádio / Episódios"
+    files:
+      - label: "Episódios"
+        name: "stations_file"
+        file: "data/stations.json"
+        format: "json"
+        fields:
+          - label: "Itens"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}}"
+            fields:
+              - {label: "ID", name: "id", widget: "string"}
+              - {label: "Host ID", name: "hostId", widget: "string", required: false}
+              - {label: "Título visual", name: "title", widget: "string"}
+              - {label: "Kicker", name: "kicker", widget: "string"}
+              - {label: "Nome", name: "name", widget: "string"}
+              - {label: "Tipo", name: "type", widget: "string"}
+              - {label: "Descrição curta", name: "desc", widget: "text"}
+              - {label: "Áudio", name: "audio", widget: "string", required: false}
+              - {label: "Vídeo", name: "video", widget: "string", required: false}
+              - {label: "Capa", name: "cover", widget: "image", required: false}
+              - label: "Background"
+                name: "background"
+                widget: "object"
+                required: false
+                fields:
+                  - {label: "Tipo", name: "type", widget: "select", options: ["image", "video"], required: false}
+                  - {label: "Arquivo/URL", name: "src", widget: "string", required: false}
+              - label: "Links de plataformas"
+                name: "links"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Label", name: "label", widget: "string"}
+                  - {label: "URL", name: "url", widget: "string"}
+              - {label: "Gêneros", name: "genres", widget: "list", required: false, field: {label: "Gênero", name: "genre", widget: "string"}}
+              - {label: "Tracklist", name: "tracklist", widget: "list", required: false, field: {label: "Faixa", name: "track", widget: "string"}}
+              - {label: "Descrição completa", name: "episodeDescription", widget: "text", required: false}
+              - {label: "Download", name: "download", widget: "string", required: false}
+              - {label: "Share URL", name: "shareUrl", widget: "string", required: false}
+
+  - name: "shop"
+    label: "Loja"
+    files:
+      - label: "Produtos"
+        name: "products_file"
+        file: "data/products.json"
+        format: "json"
+        fields:
+          - label: "Itens"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}}"
+            fields:
+              - {label: "ID", name: "id", widget: "string"}
+              - {label: "Nome", name: "name", widget: "string"}
+              - {label: "Tipo", name: "type", widget: "string"}
+              - {label: "Preço", name: "price", widget: "number", value_type: "float"}
+              - {label: "Cor fallback CSS", name: "color", widget: "string", required: false}
+              - {label: "Descrição", name: "desc", widget: "text"}
+              - {label: "Imagens", name: "images", widget: "list", required: false, field: {label: "Imagem", name: "image", widget: "image"}}
+
+  - name: "hosts"
+    label: "Hosts"
+    files:
+      - label: "Hosts"
+        name: "hosts_file"
+        file: "data/hosts.json"
+        format: "json"
+        fields:
+          - label: "Itens"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}}"
+            fields:
+              - {label: "ID", name: "id", widget: "string"}
+              - {label: "Nome", name: "name", widget: "string"}
+              - {label: "Foto", name: "photo", widget: "image", required: false}
+              - {label: "Bio", name: "bio", widget: "text"}
+              - {label: "Episódios", name: "episodes", widget: "list", required: false, field: {label: "ID do episódio", name: "episode", widget: "string"}}
+              - label: "Redes"
+                name: "socials"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Label", name: "label", widget: "string"}
+                  - {label: "URL", name: "url", widget: "string"}
+
+  - name: "settings"
+    label: "Configurações"
+    files:
+      - label: "Redes globais"
+        name: "global_socials_file"
+        file: "data/globalSocials.json"
+        format: "json"
+        fields:
+          - label: "Links"
+            name: "items"
+            widget: "list"
+            fields:
+              - {label: "Label", name: "label", widget: "string"}
+              - {label: "URL", name: "url", widget: "string"}
+      - label: "About / Contact / Donate"
+        name: "info_content_file"
+        file: "data/infoContent.json"
+        format: "json"
+        fields:
+          - label: "About"
+            name: "about"
+            widget: "object"
+            fields:
+              - {label: "Meta", name: "meta", widget: "string", required: false}
+              - {label: "Título", name: "title", widget: "string"}
+              - {label: "Texto", name: "text", widget: "list", field: {label: "Parágrafo", name: "paragraph", widget: "text"}}
+              - label: "Mídia"
+                name: "media"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Tipo", name: "type", widget: "select", options: ["image", "video"]}
+                  - {label: "Arquivo/URL", name: "src", widget: "string"}
+          - label: "Contact"
+            name: "contact"
+            widget: "object"
+            fields:
+              - {label: "Meta", name: "meta", widget: "string", required: false}
+              - {label: "Título", name: "title", widget: "string"}
+              - {label: "Texto", name: "text", widget: "list", field: {label: "Parágrafo", name: "paragraph", widget: "text"}}
+              - {label: "Mostrar formulário", name: "form", widget: "boolean", default: true}
+          - label: "Donate"
+            name: "donate"
+            widget: "object"
+            fields:
+              - {label: "Meta", name: "meta", widget: "string", required: false}
+              - {label: "Título", name: "title", widget: "string"}
+              - {label: "Texto", name: "text", widget: "list", field: {label: "Parágrafo", name: "paragraph", widget: "text"}}
+              - {label: "Link de pagamento", name: "donateUrl", widget: "string"}
+              - label: "Mídia"
+                name: "media"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Tipo", name: "type", widget: "select", options: ["image", "video"]}
+                  - {label: "Arquivo/URL", name: "src", widget: "string"}

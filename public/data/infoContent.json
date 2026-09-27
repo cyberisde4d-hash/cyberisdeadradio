@@ -1,0 +1,69 @@
+{
+  "about": {
+    "meta": "",
+    "title": "About",
+    "text": [
+      "AURA ARCHIVE é um sistema editorial independente para rádio, arquivo, loja e publicações visuais.",
+      "Aqui você pode colocar a história do projeto, manifesto, ficha técnica ou qualquer texto institucional curto."
+    ],
+    "media": [
+      {
+        "type": "image",
+        "src": "assets/about/about-cover.jpg"
+      },
+      {
+        "type": "video",
+        "src": "assets/about/about-video.mp4"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Close",
+        "action": "close"
+      }
+    ]
+  },
+  "contact": {
+    "meta": "GENERAL INQUIRY",
+    "title": "Contact",
+    "text": [
+      "Preencha o formulário abaixo para propostas, colaborações, bookings, envio de materiais ou mensagens gerais."
+    ],
+    "media": [],
+    "form": true,
+    "actions": [
+      {
+        "label": "Send inquiry",
+        "action": "submit"
+      },
+      {
+        "label": "Close",
+        "action": "close"
+      }
+    ]
+  },
+  "donate": {
+    "meta": "",
+    "title": "Donate",
+    "text": [
+      "Apoie o projeto com uma contribuição direta. Troque o link abaixo pelo seu link real de pagamento."
+    ],
+    "media": [
+      {
+        "type": "image",
+        "src": "assets/about/donate-cover.jpg"
+      }
+    ],
+    "donateUrl": "https://seu-link-de-pagamento-aqui.com",
+    "actions": [
+      {
+        "label": "Open donate link",
+        "action": "donate"
+      },
+      {
+        "label": "Close",
+        "action": "close"
+      }
+    ]
+  }
+}

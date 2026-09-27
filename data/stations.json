@@ -1,0 +1,220 @@
+{
+  "items": [
+    {
+      "id": "live",
+      "hostId": "aura",
+      "title": "CYBER<br>ISDEAD",
+      "kicker": "Live / Transmission",
+      "name": "AURA Frequency 001",
+      "type": "Live",
+      "desc": "Seleção noturna com arquivo sonoro, ruído visual e notas de cena.",
+      "audio": "assets/radio-live.mp3",
+      "video": "assets/radio-live.mp4",
+      "cover": "assets/covers/noite-aberta.jpg",
+      "background": {
+        "type": "image",
+        "src": "assets/covers/noite-aberta.jpg"
+      },
+      "links": [
+        {
+          "label": "Spotify Playlist",
+          "url": "https://open.spotify.com/"
+        },
+        {
+          "label": "Apple Music Playlist",
+          "url": "https://music.apple.com/"
+        },
+        {
+          "label": "YouTube Full EP",
+          "url": "https://youtube.com/"
+        },
+        {
+          "label": "SoundCloud Full EP",
+          "url": "https://soundcloud.com/"
+        },
+        {
+          "label": "Instagram Release",
+          "url": "https://instagram.com/"
+        }
+      ],
+      "genres": [
+        "ambient",
+        "experimental",
+        "club",
+        "brazilian underground"
+      ],
+      "tracklist": [
+        "Intro — AURA Signal",
+        "DJ Python — Angel",
+        "Badsista — Na Madrugada",
+        "Nídia — House Musik Dedo",
+        "Outro — Field Recording"
+      ],
+      "episodeDescription": "Episódio de abertura com seleção noturna, ruído visual e arquivos de cena. Use este campo para escrever a descrição completa do episódio.",
+      "download": "assets/downloads/noite-aberta-full-ep.mp3",
+      "shareUrl": "https://seudominio.com/episodes/noite-aberta"
+    },
+    {
+      "id": "archive",
+      "hostId": "arquivo",
+      "title": "ARQUIVO<br>VIVO",
+      "kicker": "Archive / Episode",
+      "name": "Cinema encontrado",
+      "type": "Archive",
+      "desc": "Sessão editorial com trilhas, fragmentos de cinema e memória digital.",
+      "audio": "assets/radio-archive.mp3",
+      "video": "assets/radio-archive.mp4",
+      "cover": "assets/covers/arquivo-vivo.jpg",
+      "background": {
+        "type": "image",
+        "src": "assets/covers/arquivo-vivo.jpg"
+      },
+      "links": [
+        {
+          "label": "Spotify Playlist",
+          "url": "https://open.spotify.com/"
+        },
+        {
+          "label": "Apple Music Playlist",
+          "url": "https://music.apple.com/"
+        },
+        {
+          "label": "YouTube Full EP",
+          "url": "https://youtube.com/"
+        },
+        {
+          "label": "SoundCloud Full EP",
+          "url": "https://soundcloud.com/"
+        },
+        {
+          "label": "Instagram Release",
+          "url": "https://instagram.com/"
+        }
+      ],
+      "genres": [
+        "cinema",
+        "ambient",
+        "experimental",
+        "archive"
+      ],
+      "tracklist": [
+        "Opening Titles",
+        "Memory Tape 01",
+        "Found Footage Theme",
+        "Late Room Dialogue",
+        "Credits Loop"
+      ],
+      "episodeDescription": "Sessão editorial com trilhas, fragmentos de cinema, notas visuais e memória digital.",
+      "download": "assets/downloads/arquivo-vivo-full-ep.mp3",
+      "shareUrl": "https://seudominio.com/episodes/arquivo-vivo"
+    },
+    {
+      "id": "mixtape",
+      "hostId": "sinal",
+      "title": "SINAL<br>BRUTO",
+      "kicker": "Mixtape / Club",
+      "name": "Rua, club e ruído",
+      "type": "Mixtape",
+      "desc": "Mixtape de pista, texturas urbanas e transmissão de baixa luz.",
+      "audio": "assets/radio-mixtape.mp3",
+      "video": "assets/radio-mixtape.mp4",
+      "cover": "assets/covers/sinal-bruto.jpg",
+      "background": {
+        "type": "image",
+        "src": "assets/covers/sinal-bruto.jpg"
+      },
+      "links": [
+        {
+          "label": "Spotify Playlist",
+          "url": "https://open.spotify.com/"
+        },
+        {
+          "label": "Apple Music Playlist",
+          "url": "https://music.apple.com/"
+        },
+        {
+          "label": "YouTube Full EP",
+          "url": "https://youtube.com/"
+        },
+        {
+          "label": "SoundCloud Full EP",
+          "url": "https://soundcloud.com/"
+        },
+        {
+          "label": "Instagram Release",
+          "url": "https://instagram.com/"
+        }
+      ],
+      "genres": [
+        "club",
+        "techno",
+        "mixtape",
+        "brazilian underground"
+      ],
+      "tracklist": [
+        "Warm Up Tool",
+        "Rua 01",
+        "Percussion Break",
+        "Club Pressure",
+        "Afterhours Outro"
+      ],
+      "episodeDescription": "Mixtape de pista, texturas urbanas e transmissão de baixa luz.",
+      "download": "assets/downloads/sinal-bruto-full-ep.mp3",
+      "shareUrl": "https://seudominio.com/episodes/sinal-bruto"
+    },
+    {
+      "id": "talk",
+      "hostId": "conversa",
+      "title": "NOTAS<br>DE CENA",
+      "kicker": "Talk / Field Notes",
+      "name": "Conversa editorial",
+      "type": "Talk",
+      "desc": "Bloco falado para entrevistas, comentários e diário de pesquisa.",
+      "audio": "assets/radio-talk.mp3",
+      "video": "assets/radio-talk.mp4",
+      "cover": "assets/covers/notas-de-cena.jpg",
+      "background": {
+        "type": "image",
+        "src": "assets/covers/notas-de-cena.jpg"
+      },
+      "links": [
+        {
+          "label": "Spotify Playlist",
+          "url": "https://open.spotify.com/"
+        },
+        {
+          "label": "Apple Music Playlist",
+          "url": "https://music.apple.com/"
+        },
+        {
+          "label": "YouTube Full EP",
+          "url": "https://youtube.com/"
+        },
+        {
+          "label": "SoundCloud Full EP",
+          "url": "https://soundcloud.com/"
+        },
+        {
+          "label": "Instagram Release",
+          "url": "https://instagram.com/"
+        }
+      ],
+      "genres": [
+        "talk",
+        "interview",
+        "scene notes",
+        "archive"
+      ],
+      "tracklist": [
+        "Abertura",
+        "Notas de cena",
+        "Conversa editorial",
+        "Perguntas rápidas",
+        "Encerramento"
+      ],
+      "episodeDescription": "Bloco falado para entrevistas, comentários, diário de pesquisa e notas de cena.",
+      "download": "assets/downloads/notas-de-cena-full-ep.mp3",
+      "shareUrl": "https://seudominio.com/episodes/notas-de-cena"
+    }
+  ]
+}

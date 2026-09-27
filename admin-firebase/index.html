@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<meta name="theme-color" content="#050505"/>
+<meta name="description" content="CYBERISDEAD — painel administrativo Firebase (conteúdo, mídia, membership e backups)."/>
+<title>CYBERISDEAD ADMIN</title>
+<link rel="manifest" href="./manifest.webmanifest"/>
+<link rel="stylesheet" href="./admin.css?v=renewal-5"/>
+</head>
+<body>
+<main id="loginScreen" class="login-screen">
+  <section class="login-box">
+    <p class="eyebrow">Firebase Admin</p>
+    <h1>CYBERISDEAD ADMIN</h1>
+    <input id="email" type="email" placeholder="Email do admin" autocomplete="email"/>
+    <input id="password" type="password" placeholder="Senha" autocomplete="current-password"/>
+    <button id="loginBtn">Entrar</button>
+    <p id="loginMessage" class="message"></p>
+    <p class="message"><a class="admin-member-link" href="../" style="text-decoration:none">← Voltar ao site</a></p>
+    <p class="message" style="opacity:.6">RENEWAL FIX v1 · Firestore cyberisdeadesite</p>
+  </section>
+</main>
+<main id="dashboard" class="dashboard hidden">
+  <header class="topbar"><div><p class="eyebrow">CMS / Firebase</p><h1>CYBERISDEAD ADMIN</h1><p class="message" id="adminUserEmail" style="margin-top:6px"></p></div><div class="admin-top-actions"><a class="admin-member-link" href="../" target="_blank" rel="noopener">Ver site</a><a id="openMemberAreaBtn" class="admin-member-link" href="./member-area.html?adminPreview=1" target="_blank">Ver Member Area</a><button id="logoutBtn" class="ghost">Sair</button></div></header>
+  <div class="tabs-toolbar"><input id="tabFilter" class="tab-filter" placeholder="Filtrar abas… (ex: radio, backup, theme)" autocomplete="off"/><span class="message" id="tabCount"></span></div>
+  <nav class="tabs">
+    <button class="tab active" data-tab="dashboardHome">Dashboard</button>
+    <button class="tab" data-tab="articles">Articles + Flipbook</button>
+    <button class="tab" data-tab="articles" data-tab-scroll="articles_flipbookEnabled">Flipbook</button>
+    <button class="tab" data-tab="stations">Stations</button>
+    <button class="tab" data-tab="order">Ordem</button>
+    <button class="tab" data-tab="live">Ao Vivo</button>
+    <button class="tab" data-tab="products">Products</button>
+    <button class="tab" data-tab="hosts">Hosts</button>
+    <button class="tab" data-tab="settings">Settings</button>
+    <button class="tab" data-tab="websiteBuilder">Website Builder</button>
+    <button class="tab" data-tab="siteMeta">Site Meta</button>
+    <button class="tab" data-tab="siteTexts">Textos do Site</button>
+    <button class="tab" data-tab="share">Share</button>
+    <button class="tab" data-tab="theme">Theme</button>
+    <button class="tab" data-tab="cart">Cart</button>
+    <button class="tab" data-tab="homeButtons">Home Buttons</button>
+    <button class="tab" data-tab="headerButtons">Header Buttons</button>
+    <button class="tab" data-tab="archiveTags">Archive Tags</button>
+    <button class="tab" data-tab="infoCards">Info Popups</button>
+    <button class="tab" data-tab="access">Access</button>
+    <button class="tab" data-tab="membership">Membership</button>
+    <button class="tab" data-tab="membershipPopup">Membership Popup</button>
+    <button class="tab" data-tab="memberContent">Member Content</button>
+    <button class="tab" data-tab="memberCalendar">Calendar</button>
+    <button class="tab" data-tab="memberComments">Comments</button>
+    <button class="tab" data-tab="media">Media</button>
+    <button class="tab" data-tab="homepage">Homepage</button>
+    <button class="tab" data-tab="backup">Backup</button>
+    <button class="tab" data-tab="logs">Logs</button>
+    <button class="tab" data-tab="import">Import</button>
+  </nav>
+  <section class="panel" id="dashboardHomePanel"></section>
+  <section class="panel hidden" id="articlesPanel"></section>
+  <section class="panel hidden" id="stationsPanel"></section>
+  <section class="panel hidden" id="orderPanel"></section>
+  <section class="panel hidden" id="livePanel"></section>
+  <section class="panel hidden" id="productsPanel"></section>
+  <section class="panel hidden" id="hostsPanel"></section>
+  <section class="panel hidden" id="settingsPanel"></section>
+  <section class="panel hidden" id="websiteBuilderPanel"></section>
+  <section class="panel hidden" id="siteMetaPanel"></section>
+  <section class="panel hidden" id="siteTextsPanel"></section>
+  <section class="panel hidden" id="sharePanel"></section>
+  <section class="panel hidden" id="themePanel"></section>
+  <section class="panel hidden" id="cartPanel"></section>
+  <section class="panel hidden" id="homeButtonsPanel"></section>
+  <section class="panel hidden" id="headerButtonsPanel"></section>
+  <section class="panel hidden" id="archiveTagsPanel"></section>
+  <section class="panel hidden" id="infoCardsPanel"></section>
+  <section class="panel hidden" id="accessPanel"></section>
+  <section class="panel hidden" id="membershipPanel"></section>
+  <section class="panel hidden" id="membershipPopupPanel"></section>
+  <section class="panel hidden" id="memberContentPanel"></section>
+  <section class="panel hidden" id="memberCalendarPanel"></section>
+  <section class="panel hidden" id="memberCommentsPanel"></section>
+  <section class="panel hidden" id="mediaPanel"></section>
+  <section class="panel hidden" id="homepagePanel"></section>
+  <section class="panel hidden" id="backupPanel"></section>
+  <section class="panel hidden" id="logsPanel"></section>
+  <section class="panel hidden" id="importPanel"></section>
+  <footer class="statusbar"><span>Firestore · cyberisdeadesite</span><span id="statusbarUser">visitante</span><span>RENEWAL FIX v1</span></footer>
+</main>
+<script type="module" src="./admin.js?v=renewal-17"></script>
+<script type="module" src="./membership-admin.js?v=2"></script>
+</body>
+</html>

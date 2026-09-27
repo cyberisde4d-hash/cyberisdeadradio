@@ -1,0 +1,378 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, doc, setDoc, addDoc, getDocs, getDoc, deleteDoc, serverTimestamp, writeBatch, limit, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject, listAll } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBOl8WXhHyG8M2Uh9zFTwt4mClqRYO4GIc",
+  authDomain: "cyberisdeadesite.firebaseapp.com",
+  projectId: "cyberisdeadesite",
+  storageBucket: "cyberisdeadesite.firebasestorage.app",
+  messagingSenderId: "145227236840",
+  appId: "1:145227236840:web:c691a4f7e31ca32cff905d",
+  measurementId: "G-3QBSY750TT"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const COLLECTIONS = ["articles","stations","products","hosts"];
+const SETTINGS_DOCS = ["globalSocials","theme","cart","homeButtons","headerButtons","infoCards","access"];
+
+const $ = (id) => document.getElementById(id);
+const csv = (v) => String(v || "").split(",").map(s => s.trim()).filter(Boolean);
+const lines = (v) => String(v || "").split("\n").map(s => s.trim()).filter(Boolean);
+const splitMediaList = (v) => String(v || "").split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+const jsonSafe = (v, fallback) => { try { return v ? JSON.parse(v) : fallback; } catch { alert("JSON inválido em um campo avançado."); throw new Error("invalid json"); } };
+const slug = (v) => String(v || crypto.randomUUID()).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"");
+const escapeHtml = (v) => String(v ?? "").replace(/[&<>'"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+const nowFile = () => new Date().toISOString().replace(/[:.]/g,"-");
+let editing = { articles:null, stations:null, products:null, hosts:null };
+let panelsBuilt = false;
+let currentUser = null;
+
+const input = (name,label,type="text",extra="") => {
+  if(type === "textarea") return `<div class="field"><label for="${name}">${label}</label><textarea id="${name}" ${extra}></textarea></div>`;
+  return `<div class="field"><label for="${name}">${label}</label><input id="${name}" type="${type}" ${extra}></div>`;
+};
+function panelHTML(collectionName,label,fields){
+  return `<div class="editor"><h2>Novo / Editar ${label}</h2>${fields}<div class="actions"><button id="${collectionName}_save">Salvar</button><button class="ghost" id="${collectionName}_clear">Limpar</button></div><p class="note">Cole URLs ou use a aba Mídia / Uploads para gerar URLs reais do Firebase Storage.</p></div><div class="list"><h2>${label}s salvos</h2><input class="searchbar" id="${collectionName}Search" placeholder="Buscar ${label.toLowerCase()}..."><div class="cards" id="${collectionName}List"></div></div>`;
+}
+function toast(msg, type="ok"){
+  const el = document.createElement("div");
+  el.className = `toast ${type === "error" ? "error" : ""}`;
+  el.textContent = msg;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+async function logAction(action, target="system", details={}){
+  try{
+    await addDoc(collection(db,"logs"), { action, target, details, email: currentUser?.email || null, uid: currentUser?.uid || null, createdAt: serverTimestamp() });
+  }catch(e){ console.warn("log failed", e); }
+}
+function safeJSONPlaceholder(obj){ return `placeholder='${escapeHtml(JSON.stringify(obj, null, 2))}'`; }
+
+
+function infoPopupEditor(id, smallDefault, titleDefault){
+  return `<fieldset class="popup-editor" data-popup-editor="${id}">
+    <legend>${titleDefault}</legend>
+    <div class="grid2">${input(`info_${id}_small`,"Card small label")}${input(`info_${id}_title`,"Card título")}</div>
+    ${input(`info_${id}_description`,"Descrição do card","textarea")}
+    <div class="grid2">${input(`info_${id}_popupTitle`,"Título do popup")}${input(`info_${id}_meta`,"Meta/eyebrow do popup")}</div>
+    ${input(`info_${id}_popupText`,"Texto principal do popup — um parágrafo por linha","textarea")}
+    ${input(`info_${id}_extraText`,"Textos extras — um por linha","textarea")}
+    ${input(`info_${id}_images`,"Imagens do popup — uma URL por linha","textarea")}
+    ${input(`info_${id}_videos`,"Vídeos diretos do popup — uma URL por linha","textarea")}
+    ${input(`info_${id}_embedUrl`,"Embed URL / iframe src")}
+    <div class="grid2">${input(`info_${id}_buttonLabel`,"Botão principal")}${input(`info_${id}_buttonUrl`,"Link do botão principal")}</div>
+    ${input(`info_${id}_socials`,"Redes sociais — JSON","textarea", safeJSONPlaceholder([{label:"Instagram",url:"https://..."}]))}
+    ${input(`info_${id}_actions`,"Botões extras — JSON","textarea", safeJSONPlaceholder([{label:"Close",action:"close"},{label:"Open link",action:"link",url:"https://..."}]))}
+    <div class="grid2">${input(`info_${id}_form`,"Mostrar formulário? true/false")}${input(`info_${id}_access`,"Acesso: public, login, subscriber ou locked")}</div>
+  </fieldset>`;
+}
+const DEFAULT_INFO_POPUPS = [
+  {id:"about", small:"01 / INFO", title:"About", description:"Sobre o projeto, com espaço para texto, foto e vídeo.", popupTitle:"About", meta:"Info", popupText:"Sobre o AURA ARCHIVE.", extraText:"", images:"", videos:"", embedUrl:"", buttonLabel:"Close", buttonUrl:"", form:false, access:"public", socials:[], actions:[{label:"Close",action:"close"}]},
+  {id:"contact", small:"02 / CONTACT", title:"Contact", description:"General inquiry para propostas, mensagens e colaborações.", popupTitle:"Contact", meta:"General inquiry", popupText:"Envie propostas, mensagens e colaborações.", extraText:"", images:"", videos:"", embedUrl:"", buttonLabel:"Submit", buttonUrl:"", form:true, access:"public", socials:[], actions:[{label:"Submit",action:"submit"},{label:"Close",action:"close"}]},
+  {id:"donate", small:"03 / SUPPORT", title:"Donate", description:"Link de pagamento para apoiar o projeto diretamente.", popupTitle:"Donate", meta:"Support", popupText:"Apoie o projeto diretamente.", extraText:"", images:"", videos:"", embedUrl:"", buttonLabel:"Open donate link", buttonUrl:"", form:false, access:"public", socials:[], actions:[{label:"Open donate link",action:"donate"},{label:"Close",action:"close"}]}
+];
+function normalizeInfoPopupCard(card={}, fallback={}){
+  const id = card.id || fallback.id || "about";
+  const textFromArray = Array.isArray(card.text) ? card.text.join("\n") : "";
+  const media = Array.isArray(card.media) ? card.media : [];
+  return {
+    id,
+    small: card.small || fallback.small || "",
+    title: card.title || fallback.title || id,
+    description: card.description || fallback.description || "",
+    popupTitle: card.popupTitle || card.title || fallback.popupTitle || fallback.title || id,
+    meta: card.meta || fallback.meta || "",
+    popupText: card.popupText || textFromArray || fallback.popupText || "",
+    extraText: card.extraText || fallback.extraText || "",
+    images: Array.isArray(card.images) ? card.images.join("\n") : (card.image ? card.image : media.filter(m=>m.type==="image").map(m=>m.src).join("\n")) || fallback.images || "",
+    videos: Array.isArray(card.videos) ? card.videos.join("\n") : (card.video ? card.video : media.filter(m=>m.type==="video").map(m=>m.src).join("\n")) || fallback.videos || "",
+    embedUrl: card.embedUrl || fallback.embedUrl || "",
+    buttonLabel: card.buttonLabel || fallback.buttonLabel || "Close",
+    buttonUrl: card.buttonUrl || card.url || card.donateUrl || fallback.buttonUrl || "",
+    form: String(card.form ?? fallback.form ?? (id === "contact")),
+    access: card.access || fallback.access || "public",
+    socials: Array.isArray(card.socials) ? card.socials : (fallback.socials || []),
+    actions: Array.isArray(card.actions) ? card.actions : (fallback.actions || [{label:"Close",action:"close"}])
+  };
+}
+function infoPopupPayload(id){
+  const socials = jsonSafe($(`info_${id}_socials`).value, []);
+  const actions = jsonSafe($(`info_${id}_actions`).value, []);
+  const buttonLabel = $(`info_${id}_buttonLabel`).value;
+  const buttonUrl = $(`info_${id}_buttonUrl`).value;
+  const normalizedActions = actions.length ? actions : [{label: buttonLabel || "Close", action: buttonUrl ? "link" : "close", url: buttonUrl || ""}];
+  return {
+    id,
+    small:$(`info_${id}_small`).value,
+    title:$(`info_${id}_title`).value,
+    description:$(`info_${id}_description`).value,
+    popupTitle:$(`info_${id}_popupTitle`).value,
+    meta:$(`info_${id}_meta`).value,
+    popupText:$(`info_${id}_popupText`).value,
+    extraText:$(`info_${id}_extraText`).value,
+    images:lines($(`info_${id}_images`).value),
+    videos:lines($(`info_${id}_videos`).value),
+    embedUrl:$(`info_${id}_embedUrl`).value,
+    buttonLabel,
+    buttonUrl,
+    donateUrl: id === "donate" ? buttonUrl : "",
+    form:String($(`info_${id}_form`).value).toLowerCase()==="true",
+    access:$(`info_${id}_access`).value || "public",
+    socials,
+    actions: normalizedActions
+  };
+}
+function fillInfoPopupFields(card){
+  const c = normalizeInfoPopupCard(card, DEFAULT_INFO_POPUPS.find(x=>x.id===card.id)||{});
+  const set=(suffix,val)=>{const el=$(`info_${c.id}_${suffix}`); if(el) el.value = val ?? "";};
+  set("small",c.small); set("title",c.title); set("description",c.description); set("popupTitle",c.popupTitle); set("meta",c.meta);
+  set("popupText",c.popupText); set("extraText",c.extraText); set("images",c.images); set("videos",c.videos); set("embedUrl",c.embedUrl);
+  set("buttonLabel",c.buttonLabel); set("buttonUrl",c.buttonUrl); set("form",c.form); set("access",c.access);
+  set("socials",JSON.stringify(c.socials||[],null,2)); set("actions",JSON.stringify(c.actions||[],null,2));
+}
+
+function buildPanels(){
+  const required = ["dashboardHomePanel","articlesPanel","stationsPanel","productsPanel","hostsPanel","settingsPanel","themePanel","cartPanel","homeButtonsPanel","headerButtonsPanel","infoCardsPanel","accessPanel","mediaPanel","backupPanel","logsPanel","importPanel"];
+  if(!required.every(id => $(id))) return;
+
+  $("dashboardHomePanel").innerHTML = `<div class="box"><h2>Dashboard</h2><div class="stats" id="dashboardStats"></div><div class="toolbar"><button id="refreshDashboardBtn">Atualizar</button><button class="ghost" data-tab-jump="media">Abrir mídia</button><button class="ghost" data-tab-jump="backup">Abrir backup</button></div><div id="dashboardRecent" class="cards"></div></div>`;
+
+  $("articlesPanel").innerHTML = panelHTML("articles","Artigo", `
+    ${input("articles_title","Título")}${input("articles_category","Categoria")}
+    <div class="grid2">${input("articles_year","Ano")}${input("articles_date","Data","date")}</div>
+    ${input("articles_excerpt","Resumo","textarea")}
+    ${input("articles_color","Fundo/Cor CSS ou URL de imagem")}
+    ${input("articles_cover","Capa URL")}
+    ${input("articles_embedUrl","Vídeo/Embed URL")}
+    ${input("articles_slug","Slug / URL manual")}
+    ${input("articles_hosts","Hosts relacionados — IDs ou nomes separados por vírgula")}
+    <fieldset><legend>Acesso</legend><div class="grid2">${input("articles_status","Status: draft, published ou archived")}${input("articles_access","Acesso: public, login, subscriber ou locked")}</div>${input("articles_lockedMessage","Mensagem quando bloqueado")}</fieldset>
+    ${input("articles_body","Texto — um parágrafo por linha","textarea")}
+    ${input("articles_popupImages","Mídias do popup — imagens, uma URL por linha","textarea", `placeholder="assets/articles/foto-01.jpg&#10;https://site.com/imagem.jpg"`)}
+    ${input("articles_popupEmbeds","Mídias do popup — vídeos/embeds, uma URL por linha","textarea", `placeholder="https://www.youtube.com/embed/VIDEO_ID&#10;https://player.vimeo.com/video/ID"`)}
+    ${input("articles_media","Mídias do popup — JSON avançado opcional","textarea", safeJSONPlaceholder([{type:"image",src:"assets/uploads/img.jpg",caption:"Legenda"},{type:"embed",src:"https://www.youtube.com/embed/...",caption:"Embed"}]))}
+  `);
+
+  $("stationsPanel").innerHTML = panelHTML("stations","Episódio", `
+    <div class="grid2">${input("stations_id","ID")}${input("stations_hostId","Host principal ID")}</div>
+    ${input("stations_relatedHosts","Hosts relacionados — IDs ou nomes separados por vírgula")}
+    <fieldset><legend>Acesso</legend><div class="grid2">${input("stations_status","Status: draft, published ou archived")}${input("stations_access","Acesso: public, login, subscriber ou locked")}</div>${input("stations_lockedMessage","Mensagem quando bloqueado")}</fieldset>
+    ${input("stations_title","Título visual")}${input("stations_kicker","Kicker")}${input("stations_name","Nome")}${input("stations_type","Tipo")}
+    ${input("stations_desc","Descrição curta","textarea")}
+    <div class="grid2">${input("stations_audio","Áudio URL")}${input("stations_video","Vídeo/Embed URL")}</div>
+    ${input("stations_cover","Capa URL")}<div class="url-preview" id="stations_coverPreview"></div>
+    <div class="grid2">${input("stations_background","Background URL")}<div class="url-preview" id="stations_backgroundPreview"></div>${input("stations_backgroundType","Tipo do background: image ou video")}</div>
+    ${input("stations_genres","Gêneros separados por vírgula")}${input("stations_tracklist","Tracklist — uma faixa por linha","textarea")}
+    ${input("stations_episodeDescription","Descrição completa","textarea")}${input("stations_links","Links — JSON","textarea", safeJSONPlaceholder([{label:"Spotify Playlist",url:"https://..."}]))}
+  `);
+
+  $("productsPanel").innerHTML = panelHTML("products","Produto", `
+    <div class="grid2">${input("products_id","ID")}${input("products_price","Preço","number",'step="0.01"')}</div>
+    ${input("products_name","Nome")}${input("products_type","Tipo")}${input("products_desc","Descrição","textarea")}
+    ${input("products_color","Cor fallback CSS ou URL de imagem principal")}
+    ${input("products_images","Imagens separadas por vírgula")}
+    ${input("products_checkoutUrl","Checkout URL específico do produto")}
+    <fieldset><legend>Acesso</legend><div class="grid2">${input("products_status","Status: draft, published ou archived")}${input("products_access","Acesso: public, login, subscriber ou locked")}</div>${input("products_lockedMessage","Mensagem quando bloqueado")}</fieldset>
+  `);
+
+  $("hostsPanel").innerHTML = panelHTML("hosts","Host", `
+    <div class="grid2">${input("hosts_id","ID")}${input("hosts_name","Nome")}</div>
+    ${input("hosts_photo","Foto URL")}${input("hosts_bio","Bio","textarea")}${input("hosts_episodes","IDs de episódios separados por vírgula")}${input("hosts_socials","Redes — JSON","textarea", safeJSONPlaceholder([{label:"Instagram",url:"https://..."}]))}
+  `);
+
+  $("settingsPanel").innerHTML = `<div class="editor"><h2>Configurações globais</h2>${input("settings_siteName","Nome do site")}${input("settings_siteDescription","Descrição SEO","textarea")}${input("settings_favicon","Favicon URL")}${input("settings_logo","Logo URL")}${input("settings_analytics","Analytics / scripts externos","textarea")}${input("settings_socials","Redes globais — JSON","textarea", safeJSONPlaceholder([{label:"Instagram",url:"https://..."}]))}<button id="saveSettingsBtn">Salvar configurações</button><p class="note">Salva no Firestore em settings/globalSocials e settings/site.</p></div><div class="list"><h2>Dados atuais</h2><pre id="settingsPreview" class="preview-code"></pre></div>`;
+
+  $("themePanel").innerHTML = `<div class="editor wide-editor"><h2>Visual / Theme</h2><p class="help">Controle visual global sem mexer no código. Para deixar o fundo mais visível, aumente Opacidade/Brilho e reduza Overlay escuro.</p><fieldset><legend>Background dinâmico — Desktop</legend><div class="grid3">${input("theme_bgOpacity","Opacidade do background","number",'step="0.01" min="0" max="1" placeholder="0.62"')}${input("theme_bgBrightness","Brilho do background","number",'step="0.01" min="0" max="2" placeholder="0.78"')}${input("theme_bgContrast","Contraste","number",'step="0.01" min="0" max="2" placeholder="1.08"')}</div><div class="grid3">${input("theme_bgGrayscale","Preto e branco do fundo","number",'step="0.01" min="0" max="1" placeholder="1"')}${input("theme_bgBlur","Blur em px","number",'step="1" min="0" placeholder="0"')}${input("theme_noiseOpacity","Opacidade do noise","number",'step="0.01" min="0" max="1" placeholder="0.045"')}</div>${input("theme_overlay","Overlay CSS do fundo","textarea",'placeholder="linear-gradient(to right,rgba(0,0,0,.68),rgba(0,0,0,.28),rgba(0,0,0,.66)),linear-gradient(to top,rgba(0,0,0,.66),transparent 55%)"')}<p class="note">Dica: overlay mais transparente = imagem do fundo mais aparente.</p></fieldset><fieldset><legend>Background — Mobile opcional</legend><div class="grid3">${input("theme_mobileBgOpacity","Opacidade mobile","number",'step="0.01" min="0" max="1" placeholder="0.54"')}${input("theme_mobileBgBrightness","Brilho mobile","number",'step="0.01" min="0" max="2" placeholder="0.72"')}${input("theme_mobileBgBlur","Blur mobile px","number",'step="1" min="0" placeholder="0"')}</div></fieldset><fieldset><legend>Cores principais</legend><div class="grid2">${input("theme_textColor","Cor do texto")}${input("theme_mutedColor","Cor secundária")}</div><div class="grid2">${input("theme_lineColor","Cor das linhas")}${input("theme_buttonColor","Cor dos botões")}</div><div class="grid2">${input("theme_buttonTextColor","Texto dos botões")}${input("theme_siteBackground","Background base")}</div></fieldset><fieldset><legend>Layout</legend><div class="grid2">${input("theme_heroHeight","Altura da home/hero CSS")}${input("theme_globalSpacing","Espaçamento global CSS")}</div><div class="grid2">${input("theme_cardMinWidth","Largura mínima dos cards CSS")}${input("theme_popupWidth","Largura dos popups CSS")}</div></fieldset><div class="actions"><button id="saveThemeBtn">Salvar visual</button><button id="themePresetVisibleBtn" type="button" class="ghost">Preset fundo mais visível</button><button id="themePresetDarkBtn" type="button" class="ghost">Preset mais escuro</button></div></div><div class="list"><h2>Preview Visual</h2><div class="theme-live-preview"><div class="theme-preview-bg"></div><div class="theme-preview-shade"></div><div class="theme-preview-card"><span>PREVIEW</span><b>BACKGROUND MAIS VISÍVEL</b><small>O site aplica isso automaticamente pelo Firestore.</small></div></div><pre id="themePreview" class="preview-code"></pre></div>`;
+
+  $("cartPanel").innerHTML = `<div class="editor"><h2>Cart</h2><p class="help">Conecte Finalizar Pedido a Shopify, Stripe, Mercado Pago, Gumroad, Bandcamp ou qualquer URL.</p>${input("cart_checkoutUrl","Link de checkout final")}${input("cart_checkoutLabel","Texto do botão checkout")}${input("cart_checkoutNote","Texto abaixo do checkout","textarea")}<fieldset><legend>Visual do Cart</legend><div class="grid2">${input("cart_width","Largura CSS")}${input("cart_background","Background")}</div><div class="grid2">${input("cart_textColor","Cor do texto")}${input("cart_lineColor","Cor das linhas")}</div><div class="grid2">${input("cart_buttonBackground","Background do botão")}${input("cart_buttonText","Texto do botão")}</div></fieldset><button id="saveCartBtn">Salvar cart</button></div><div class="list"><h2>Preview Cart</h2><pre id="cartPreview" class="preview-code"></pre></div>`;
+
+  $("homeButtonsPanel").innerHTML = jsonPanel("homeButtons","Botões Home / Rodapé","Edite label, URL, popup e exigência de login/assinatura.","homeButtons_items","homeButtonsPreview",[{label:"Genres",type:"popup",url:"",popupTitle:"Genres",popupText:"Texto do popup",access:"public"}]);
+  $("headerButtonsPanel").innerHTML = jsonPanel("headerButtons","Botões Header","Controle os botões do cabeçalho. Use type system para radio/account/cart.","headerButtons_items","headerButtonsPreview",[{label:"Latest",type:"link",url:"#latest",access:"public"},{label:"Radio",type:"system",system:"radio"}]);
+  $("infoCardsPanel").innerHTML = `
+    <div class="editor wide-editor">
+      <h2>Popups About / Contact / Donate</h2>
+      <p class="help">Edite os três popups principais sem mexer no código. Use URLs externas de imagens/vídeos; não depende de Storage.</p>
+      ${infoPopupEditor("about","01 / INFO","About")}
+      ${infoPopupEditor("contact","02 / CONTACT","Contact")}
+      ${infoPopupEditor("donate","03 / SUPPORT","Donate")}
+      <div class="actions"><button id="saveInfoCardsBtn">Salvar popups</button><button class="ghost" id="resetInfoCardsBtn" type="button">Recarregar salvos</button></div>
+      <p class="note">Salva no Firestore em settings/infoCards. Campos de mídia aceitam uma URL por linha.</p>
+    </div>
+    <div class="list"><h2>Preview JSON</h2><pre id="infoCardsPreview" class="preview-code"></pre></div>`;
+
+  $("accessPanel").innerHTML = `<div class="editor wide-editor"><h2>Acesso / Assinatura</h2><p class="help">Controle bloqueio global, assinatura e quem pode abrir cards, episódios, matérias e produtos.</p><fieldset><legend>Bloqueio global</legend><div class="grid2">${input("access_lockAllCards","Bloquear todos os cards? true/false")}${input("access_defaultAccess","Acesso padrão: public, login, subscriber ou locked")}</div>${input("access_lockedMessage","Mensagem geral de bloqueio","textarea")}</fieldset><fieldset><legend>Assinantes</legend>${input("access_subscriberEmails","Emails pagantes/liberados — separados por vírgula","textarea")}${input("access_subscriberUids","UIDs Firebase liberados — separados por vírgula","textarea")}</fieldset><fieldset><legend>Textos da assinatura</legend>${input("access_subscriptionTitle","Título do popup")}${input("access_subscriptionText","Texto do popup","textarea")}${input("access_subscribeUrl","Link de assinatura/pagamento")}</fieldset><button id="saveAccessBtn">Salvar acesso</button></div><div class="list"><h2>Preview</h2><pre id="accessPreview" class="preview-code"></pre></div>`;
+
+  $("mediaPanel").innerHTML = `<div class="editor"><h2>Mídia / Uploads</h2><p class="help">Upload real no Firebase Storage com preview, progresso e URL copiável.</p><div id="dropzone" class="dropzone"><input id="mediaFile" type="file" accept="image/*,video/*,audio/*" multiple><p>Arraste arquivos aqui ou selecione no botão acima.</p></div><div class="grid2">${input("mediaFolder","Pasta destino")}${input("mediaTag","Tag / uso")}</div><div class="progress"><span id="uploadProgress"></span></div><p id="uploadStatus" class="note"></p><button id="refreshMediaBtn" class="ghost">Atualizar biblioteca</button></div><div class="list"><h2>Biblioteca de mídia</h2><div id="mediaLibrary" class="media-grid"></div></div>`;
+
+  $("backupPanel").innerHTML = `<div class="editor"><h2>Backup</h2><p class="help">Exporte e restaure dados do Firestore. Antes de restaurar, salve uma cópia do JSON atual.</p><div class="actions"><button id="exportBackupBtn">Exportar backup JSON</button><button class="ghost" id="createSnapshotBtn">Salvar snapshot no Firestore</button></div><textarea id="backupImport" placeholder="Cole aqui um backup JSON para restaurar"></textarea><button class="danger" id="restoreBackupBtn">Restaurar backup colado</button></div><div class="list"><h2>Preview backup</h2><pre id="backupPreview" class="preview-code"></pre></div>`;
+
+  $("logsPanel").innerHTML = `<div class="box wide"><h2>Logs</h2><div class="toolbar"><button id="refreshLogsBtn">Atualizar logs</button><button class="ghost" id="clearLocalErrorsBtn">Limpar erros locais</button></div><div id="logsList" class="cards"></div></div>`;
+
+  $("importPanel").innerHTML = `<div class="box wide"><h2>Importar JSON atual para Firestore</h2><p class="note">Use para copiar seus arquivos data/*.json atuais para o Firestore.</p><div class="import-grid"><button data-import="articles">Importar artigos</button><button data-import="stations">Importar episódios</button><button data-import="products">Importar produtos</button><button data-import="hosts">Importar hosts</button><button data-import="globalSocials">Importar redes globais</button></div><p id="importMessage" class="note"></p></div>`;
+
+  bindButtons();
+  panelsBuilt = true;
+}
+function jsonPanel(docId,title,help,fieldId,previewId,example){ return `<div class="editor wide-editor"><h2>${title}</h2><p class="help">${help}</p>${input(fieldId,"Itens — JSON","textarea",safeJSONPlaceholder(example))}<button id="save${docId[0].toUpperCase()+docId.slice(1)}Btn">Salvar</button></div><div class="list"><h2>Preview</h2><pre id="${previewId}" class="preview-code"></pre></div>`; }
+function bindButtons(){
+  COLLECTIONS.forEach(c=>{ $(`${c}_save`).onclick = () => saveItem(c); $(`${c}_clear`).onclick = () => clearForm(c); const s=$(`${c}Search`); if(s) s.oninput=debounce(()=>loadList(c,s.value),250); });
+  $("saveSettingsBtn").onclick = saveSettings; $("saveThemeBtn").onclick = saveTheme; $("saveCartBtn").onclick = saveCart;
+  if($("themePresetVisibleBtn")) $("themePresetVisibleBtn").onclick = () => setThemePreset("visible");
+  if($("themePresetDarkBtn")) $("themePresetDarkBtn").onclick = () => setThemePreset("dark");
+  ["theme_bgOpacity","theme_bgBrightness","theme_bgContrast","theme_bgGrayscale","theme_bgBlur","theme_noiseOpacity","theme_overlay"].forEach(id=>{ const el=$(id); if(el) el.addEventListener("input",()=>applyThemePreview()); });
+  $("saveHomeButtonsBtn").onclick = saveHomeButtons; $("saveHeaderButtonsBtn").onclick = saveHeaderButtons; $("saveInfoCardsBtn").onclick = saveInfoCards; if($("resetInfoCardsBtn")) $("resetInfoCardsBtn").onclick = loadInfoCards; $("saveAccessBtn").onclick = saveAccess;
+  $("refreshDashboardBtn").onclick = loadDashboard; $("refreshMediaBtn").onclick = loadMediaLibrary; $("exportBackupBtn").onclick = exportBackup; $("createSnapshotBtn").onclick = createSnapshot; $("restoreBackupBtn").onclick = restoreBackup; $("refreshLogsBtn").onclick = loadLogs;
+  $("clearLocalErrorsBtn").onclick = () => { localStorage.removeItem("auraLocalErrors"); loadLogs(); };
+  document.querySelectorAll("[data-import]").forEach(b=> b.onclick = () => importJson(b.dataset.import));
+  document.querySelectorAll("[data-tab-jump]").forEach(b=> b.onclick = () => activateTab(b.dataset.tabJump));
+  setupUpload();
+}
+function debounce(fn,ms){ let t; return (...args)=>{ clearTimeout(t); t=setTimeout(()=>fn(...args),ms); }; }
+
+
+function installStationImagePreviews(){
+  const pairs = [
+    {input:"stations_cover", preview:"stations_coverPreview", type:"image", label:"Preview da capa"},
+    {input:"stations_background", preview:"stations_backgroundPreview", typeField:"stations_backgroundType", label:"Preview do fundo"}
+  ];
+  const render = ({input, preview, type, typeField, label}) => {
+    const field = $(input);
+    const box = $(preview);
+    if(!field || !box) return;
+    const url = String(field.value || "").trim();
+    const chosenType = String(typeField && $(typeField) ? $(typeField).value : type || "image").toLowerCase();
+    if(!url){ box.innerHTML = `<small>${label}: cole uma URL para visualizar.</small>`; return; }
+    const isVideo = chosenType.includes("video") || /\.(mp4|webm|mov)(\?|$)/i.test(url);
+    box.innerHTML = isVideo
+      ? `<small>${label}</small><video src="${escapeHtml(url)}" muted controls playsinline></video>`
+      : `<small>${label}</small><img src="${escapeHtml(url)}" alt="${escapeHtml(label)}">`;
+  };
+  pairs.forEach(pair=>{
+    const field = $(pair.input);
+    const typeField = pair.typeField ? $(pair.typeField) : null;
+    if(field){ field.oninput = () => render(pair); field.onchange = () => render(pair); }
+    if(typeField){ typeField.oninput = () => render(pair); typeField.onchange = () => render(pair); }
+    render(pair);
+  });
+}
+
+function activateTab(name){ document.querySelectorAll(".tab").forEach(b=>b.classList.toggle("active", b.dataset.tab === name)); document.querySelectorAll(".panel").forEach(p=>p.classList.add("hidden")); const panel = $(`${name}Panel`); if(panel) panel.classList.remove("hidden"); }
+function bootAdmin(){ if(!panelsBuilt) buildPanels(); document.querySelectorAll(".tab").forEach(btn => btn.onclick = () => activateTab(btn.dataset.tab)); activateTab(document.querySelector(".tab.active")?.dataset.tab || "dashboardHome"); }
+
+const loginBtn = $("loginBtn"), logoutBtn = $("logoutBtn"), loginMessage = $("loginMessage");
+if(loginBtn){ loginBtn.onclick = async () => { if(loginMessage) loginMessage.textContent = "Entrando..."; const email = String($("email")?.value || "").trim(); const password = String($("password")?.value || ""); if(!email || !password){ if(loginMessage) loginMessage.textContent = "Preencha email e senha."; return; } try { await signInWithEmailAndPassword(auth, email, password); if(loginMessage) loginMessage.textContent = "Login realizado."; } catch(e){ console.error("Erro no login:", e); if(loginMessage) loginMessage.textContent = e?.message || "Erro ao entrar."; } }; }
+if(logoutBtn){ logoutBtn.onclick = async () => { await logAction("logout","auth"); return signOut(auth); }; }
+onAuthStateChanged(auth, async (user) => { currentUser = user; $("loginScreen")?.classList.toggle("hidden", !!user); $("dashboard")?.classList.toggle("hidden", !user); if(user){ try{ bootAdmin(); await logAction("login","auth"); await refreshAll(); }catch(e){ console.error("Erro ao carregar admin:", e); alert("Você logou, mas houve erro ao carregar algum painel. Veja o Console do navegador."); } } });
+
+async function refreshAll(){ await Promise.all([loadDashboard(), ...COLLECTIONS.map(c=>loadList(c)), loadSettings(), loadTheme(), loadCart(), loadHomeButtons(), loadHeaderButtons(), loadInfoCards(), loadAccess(), loadMediaLibrary(), loadLogs()]); }
+async function loadDashboard(){ const box=$("dashboardStats"); const recent=$("dashboardRecent"); if(!box) return; const counts={}; for(const c of COLLECTIONS){ try{ const snap=await getDocs(collection(db,c)); counts[c]=snap.size; }catch{ counts[c]="?"; } } box.innerHTML = `<div class="stat"><b>${counts.articles}</b><span>Artigos</span></div><div class="stat"><b>${counts.stations}</b><span>Episódios</span></div><div class="stat"><b>${counts.products}</b><span>Produtos</span></div><div class="stat"><b>${counts.hosts}</b><span>Hosts</span></div>`; if(recent) recent.innerHTML = `<article class="card"><h3>Status Firebase</h3><p>Login ativo: ${escapeHtml(currentUser?.email || "")}</p><span class="badge">Firestore conectado</span></article><article class="card"><h3>Próximos passos</h3><p>Use Mídia para uploads, Backup para exportar dados e Logs para auditoria.</p></article>`; }
+async function loadList(c, term=""){ const box = $(`${c}List`); if(!box) return; box.innerHTML = "Carregando..."; try{ const snap = await getDocs(collection(db,c)); const cards=[]; snap.forEach(d => { const item = d.data(); const text = `${d.id} ${item.title||""} ${item.name||""} ${item.excerpt||""} ${item.desc||""}`.toLowerCase(); if(term && !text.includes(term.toLowerCase())) return; cards.push(`<article class="card"><small>${escapeHtml(d.id)}</small><h3>${escapeHtml(item.title || item.name || item.id || "Sem título")}</h3><p>${escapeHtml(item.excerpt || item.desc || item.bio || item.type || "")}</p><div class="row"><button class="ghost" data-edit="${c}:${d.id}">Editar</button><button class="danger" data-del="${c}:${d.id}">Excluir</button></div></article>`); }); box.innerHTML = cards.join("") || `<p class="note">Nenhum item salvo ainda.</p>`; document.querySelectorAll(`[data-edit^='${c}:']`).forEach(b => b.onclick = () => editItem(c,b.dataset.edit.split(":")[1])); document.querySelectorAll(`[data-del^='${c}:']`).forEach(b => b.onclick = () => delItem(c,b.dataset.del.split(":")[1])); }catch(e){ box.innerHTML = `<p class="error">Erro ao carregar: ${escapeHtml(e.message)}</p>`; } }
+
+function getPayload(c){
+  if(c==="articles") { const advancedMedia = jsonSafe($("articles_media").value,[]); const imageMedia = lines($("articles_popupImages").value).map(src => ({type:"image", src})); const embedMedia = lines($("articles_popupEmbeds").value).map(src => ({type:"embed", src})); const embedUrl = $("articles_embedUrl").value.trim(); const title=$("articles_title").value; return { title, category:$("articles_category").value, year:$("articles_year").value, date:$("articles_date").value, excerpt:$("articles_excerpt").value, color:$("articles_color").value, cover:$("articles_cover").value, embedUrl, slug:$("articles_slug").value || slug(title), hosts:csv($("articles_hosts").value), status:$("articles_status").value || "published", access:$("articles_access").value || "public", lockedMessage:$("articles_lockedMessage").value, body:lines($("articles_body").value), popupImages:lines($("articles_popupImages").value), popupEmbeds:lines($("articles_popupEmbeds").value), media:[...(embedUrl ? [{type:"embed", src:embedUrl, caption:"Embed"}] : []), ...imageMedia, ...embedMedia, ...advancedMedia], updatedAt:serverTimestamp() }; }
+  if(c==="stations") { const cover=$("stations_cover").value.trim(); const bgUrl=$("stations_background").value.trim() || cover; const bgType=String($("stations_backgroundType").value || "image").toLowerCase().includes("video") ? "video" : "image"; return { id:$("stations_id").value, hostId:$("stations_hostId").value, relatedHosts:csv($("stations_relatedHosts").value), status:$("stations_status").value || "published", access:$("stations_access").value || "public", lockedMessage:$("stations_lockedMessage").value, title:$("stations_title").value, kicker:$("stations_kicker").value, name:$("stations_name").value, type:$("stations_type").value, desc:$("stations_desc").value, audio:$("stations_audio").value, video:$("stations_video").value, cover, background:{type:bgType, src:bgUrl}, backgroundUrl:bgUrl, backgroundType:bgType, genres:csv($("stations_genres").value), tracklist:lines($("stations_tracklist").value), episodeDescription:$("stations_episodeDescription").value, links:jsonSafe($("stations_links").value,[]), updatedAt:serverTimestamp() }; }
+  if(c==="products") { const name=$("products_name").value.trim(); const id=($("products_id").value || slug(name || "produto")).trim(); return { id, name, type:$("products_type").value, price:Number(String($("products_price").value || "0").replace(",",".")) || 0, desc:$("products_desc").value, color:$("products_color").value, images:splitMediaList($("products_images").value), checkoutUrl:$("products_checkoutUrl").value, status:$("products_status").value || "published", access:$("products_access").value || "public", lockedMessage:$("products_lockedMessage").value, updatedAt:serverTimestamp() }; }
+  if(c==="hosts") return { id:$("hosts_id").value, name:$("hosts_name").value, photo:$("hosts_photo").value, bio:$("hosts_bio").value, episodes:csv($("hosts_episodes").value), socials:jsonSafe($("hosts_socials").value,[]), updatedAt:serverTimestamp() };
+}
+async function saveItem(c){ const data = getPayload(c); const id = editing[c] || data.id || slug(data.title || data.name); if(id) await setDoc(doc(db,c,id), data, {merge:true}); else await addDoc(collection(db,c), data); await logAction("save",c,{id}); editing[c]=null; clearForm(c); await loadList(c); await loadDashboard(); toast("Salvo no Firestore."); }
+async function editItem(c,id){ const s = await getDoc(doc(db,c,id)); if(!s.exists()) return; editing[c]=id; const x=s.data(); Object.entries(x).forEach(([k,v])=>{ const el=$(`${c}_${k}`); if(el) el.value = Array.isArray(v) ? v.join(k==="tracklist"||k==="body"?"\n":", ") : typeof v === "object" ? JSON.stringify(v,null,2) : v; }); if(c==="stations" && x.background){ $("stations_background").value=x.background.src||""; $("stations_backgroundType").value=x.background.type||"image"; } if(c==="articles"){ if($("articles_popupImages")) $("articles_popupImages").value = Array.isArray(x.popupImages) ? x.popupImages.join("\n") : ""; if($("articles_popupEmbeds")) $("articles_popupEmbeds").value = Array.isArray(x.popupEmbeds) ? x.popupEmbeds.join("\n") : ""; if($("articles_media")) $("articles_media").value = Array.isArray(x.media) ? JSON.stringify(x.media,null,2) : ""; } installStationImagePreviews(); window.scrollTo({top:0,behavior:"smooth"}); }
+async function delItem(c,id){ if(confirm("Excluir este item?")){ await deleteDoc(doc(db,c,id)); await logAction("delete",c,{id}); await loadList(c); await loadDashboard(); toast("Excluído."); } }
+function clearForm(c){ editing[c]=null; document.querySelectorAll(`#${c}Panel input,#${c}Panel textarea,#${c}Panel select`).forEach(el=>el.value=""); if(c==="stations") installStationImagePreviews(); }
+
+async function saveSettings(){ const items=jsonSafe($("settings_socials").value,[]); await setDoc(doc(db,"settings","globalSocials"), {items, updatedAt:serverTimestamp()}); await setDoc(doc(db,"settings","site"), { siteName:$("settings_siteName").value, siteDescription:$("settings_siteDescription").value, favicon:$("settings_favicon").value, logo:$("settings_logo").value, analytics:$("settings_analytics").value, updatedAt:serverTimestamp() }, {merge:true}); await logAction("save","settings/site"); await loadSettings(); toast("Configurações salvas."); }
+async function loadSettings(){ const el=$("settingsPreview"); if(!el) return; const social=await getDoc(doc(db,"settings","globalSocials")); const site=await getDoc(doc(db,"settings","site")); const payload={site:site.exists()?site.data():{}, globalSocials:social.exists()?social.data():{items:[]}}; el.textContent=JSON.stringify(payload,null,2); if(social.exists()) $("settings_socials").value=JSON.stringify(social.data().items||[],null,2); if(site.exists()) Object.entries(site.data()).forEach(([k,v])=>{ const f=$("settings_"+k); if(f) f.value=v??""; }); }
+function numOrBlank(id){ return $(id).value === "" ? "" : Number($(id).value); }
+function themeDataFromFields(){
+  return {
+    bgOpacity:numOrBlank("theme_bgOpacity"),
+    bgBrightness:numOrBlank("theme_bgBrightness"),
+    bgContrast:numOrBlank("theme_bgContrast"),
+    bgGrayscale:numOrBlank("theme_bgGrayscale"),
+    bgBlur:numOrBlank("theme_bgBlur"),
+    mobileBgOpacity:numOrBlank("theme_mobileBgOpacity"),
+    mobileBgBrightness:numOrBlank("theme_mobileBgBrightness"),
+    mobileBgBlur:numOrBlank("theme_mobileBgBlur"),
+    overlay:$("theme_overlay")?.value || "",
+    textColor:$("theme_textColor")?.value || "",
+    mutedColor:$("theme_mutedColor")?.value || "",
+    lineColor:$("theme_lineColor")?.value || "",
+    buttonColor:$("theme_buttonColor")?.value || "",
+    buttonTextColor:$("theme_buttonTextColor")?.value || "",
+    siteBackground:$("theme_siteBackground")?.value || "",
+    heroHeight:$("theme_heroHeight")?.value || "",
+    globalSpacing:$("theme_globalSpacing")?.value || "",
+    cardMinWidth:$("theme_cardMinWidth")?.value || "",
+    popupWidth:$("theme_popupWidth")?.value || "",
+    noiseOpacity:numOrBlank("theme_noiseOpacity")
+  };
+}
+function applyThemePreview(data = themeDataFromFields()){
+  const bg = document.querySelector('.theme-preview-bg');
+  const shade = document.querySelector('.theme-preview-shade');
+  if(bg){
+    bg.style.opacity = data.bgOpacity || .62;
+    bg.style.filter = `brightness(${data.bgBrightness || .78}) contrast(${data.bgContrast || 1.08}) grayscale(${data.bgGrayscale === '' ? 1 : data.bgGrayscale}) blur(${data.bgBlur || 0}px)`;
+  }
+  if(shade){ shade.style.background = data.overlay || 'linear-gradient(to right,rgba(0,0,0,.68),rgba(0,0,0,.28),rgba(0,0,0,.66)),linear-gradient(to top,rgba(0,0,0,.66),transparent 55%)'; }
+}
+async function saveTheme(){ const data = { ...themeDataFromFields(), updatedAt:serverTimestamp() }; await setDoc(doc(db,"settings","theme"), data, {merge:true}); await logAction("save","settings/theme"); await loadTheme(); toast("Visual salvo."); }
+async function loadTheme(){ const el=$("themePreview"); if(!el) return; const s=await getDoc(doc(db,"settings","theme")); if(s.exists()){ const x=s.data(); el.textContent=JSON.stringify(x,null,2); Object.entries(x).forEach(([k,v])=>{const field=$("theme_"+k); if(field) field.value = v ?? "";}); applyThemePreview(x); } else { el.textContent="Ainda sem visual salvo. Use o preset para deixar o fundo mais visível."; applyThemePreview(); } }
+function setThemePreset(type="visible"){
+  const visible = {
+    bgOpacity:.68, bgBrightness:.82, bgContrast:1.08, bgGrayscale:1, bgBlur:0, noiseOpacity:.04,
+    mobileBgOpacity:.58, mobileBgBrightness:.76, mobileBgBlur:0,
+    overlay:'linear-gradient(to right,rgba(0,0,0,.64),rgba(0,0,0,.22),rgba(0,0,0,.62)),linear-gradient(to top,rgba(0,0,0,.62),transparent 58%)'
+  };
+  const dark = {
+    bgOpacity:.42, bgBrightness:.48, bgContrast:1.08, bgGrayscale:1, bgBlur:0, noiseOpacity:.045,
+    mobileBgOpacity:.42, mobileBgBrightness:.48, mobileBgBlur:0,
+    overlay:'linear-gradient(to right,rgba(0,0,0,.88),rgba(0,0,0,.48),rgba(0,0,0,.82)),linear-gradient(to top,rgba(0,0,0,.84),transparent 55%)'
+  };
+  const data = type === "dark" ? dark : visible;
+  Object.entries(data).forEach(([k,v])=>{ const field=$("theme_"+k); if(field) field.value = v; });
+  applyThemePreview({...themeDataFromFields(), ...data});
+}
+async function saveCart(){ const data = { checkoutUrl:$("cart_checkoutUrl").value, checkoutLabel:$("cart_checkoutLabel").value, checkoutNote:$("cart_checkoutNote").value, width:$("cart_width").value, background:$("cart_background").value, textColor:$("cart_textColor").value, lineColor:$("cart_lineColor").value, buttonBackground:$("cart_buttonBackground").value, buttonText:$("cart_buttonText").value, updatedAt:serverTimestamp() }; await setDoc(doc(db,"settings","cart"), data, {merge:true}); await logAction("save","settings/cart"); await loadCart(); toast("Cart salvo."); }
+async function loadCart(){ const el=$("cartPreview"); if(!el) return; const s=await getDoc(doc(db,"settings","cart")); if(s.exists()){ const x=s.data(); el.textContent=JSON.stringify(x,null,2); Object.entries(x).forEach(([k,v])=>{const field=$("cart_"+k); if(field) field.value = v ?? "";}); } else el.textContent="Ainda sem configuração do carrinho salva."; }
+async function saveJsonSetting(docId, fieldId, previewId){ const items = jsonSafe($(fieldId).value, []); await setDoc(doc(db,"settings",docId), {items, updatedAt:serverTimestamp()}, {merge:true}); await logAction("save","settings/"+docId); await loadJsonSetting(docId, fieldId, previewId); toast("Salvo no Firestore."); }
+async function loadJsonSetting(docId, fieldId, previewId){ const preview=$(previewId); if(!preview) return; const s=await getDoc(doc(db,"settings",docId)); if(s.exists()){ const data=s.data(); preview.textContent=JSON.stringify(data,null,2); const field=$(fieldId); if(field) field.value=JSON.stringify(data.items||[],null,2); }else preview.textContent="Ainda sem configuração salva."; }
+async function saveHomeButtons(){ return saveJsonSetting("homeButtons","homeButtons_items","homeButtonsPreview"); } async function loadHomeButtons(){ return loadJsonSetting("homeButtons","homeButtons_items","homeButtonsPreview"); }
+async function saveHeaderButtons(){ return saveJsonSetting("headerButtons","headerButtons_items","headerButtonsPreview"); } async function loadHeaderButtons(){ return loadJsonSetting("headerButtons","headerButtons_items","headerButtonsPreview"); }
+async function saveInfoCards(){
+  const items = ["about","contact","donate"].map(infoPopupPayload);
+  await setDoc(doc(db,"settings","infoCards"), {items, updatedAt:serverTimestamp()}, {merge:true});
+  await logAction("save","settings/infoCards",{count:items.length});
+  await loadInfoCards();
+  toast("Popups About / Contact / Donate salvos.");
+}
+async function loadInfoCards(){
+  const preview=$("infoCardsPreview"); if(!preview) return;
+  const snap = await getDoc(doc(db,"settings","infoCards"));
+  const items = snap.exists() && Array.isArray(snap.data().items) ? snap.data().items : DEFAULT_INFO_POPUPS;
+  const merged = DEFAULT_INFO_POPUPS.map(def => normalizeInfoPopupCard(items.find(x=>x.id===def.id) || {}, def));
+  merged.forEach(fillInfoPopupFields);
+  preview.textContent = JSON.stringify({items: merged}, null, 2);
+}
+function accessPayload(){ return { lockAllCards:String($("access_lockAllCards").value).toLowerCase()==="true", defaultAccess:$("access_defaultAccess").value || "public", lockedMessage:$("access_lockedMessage").value, subscriberEmails:csv($("access_subscriberEmails").value), subscriberUids:csv($("access_subscriberUids").value), subscriptionTitle:$("access_subscriptionTitle").value, subscriptionText:$("access_subscriptionText").value, subscribeUrl:$("access_subscribeUrl").value, updatedAt:serverTimestamp() }; }
+async function saveAccess(){ await setDoc(doc(db,"settings","access"), accessPayload(), {merge:true}); await logAction("save","settings/access"); await loadAccess(); toast("Acesso salvo."); }
+async function loadAccess(){ const preview=$("accessPreview"); if(!preview) return; const s=await getDoc(doc(db,"settings","access")); if(s.exists()){ const x=s.data(); preview.textContent=JSON.stringify(x,null,2); Object.entries(x).forEach(([k,v])=>{const field=$("access_"+k); if(field) field.value=Array.isArray(v)?v.join(", "): (v ?? "");}); }else preview.textContent="Ainda sem regras de acesso salvas."; }
+
+async function compressImage(file){ if(!file.type.startsWith("image/")) return file; const img = await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=URL.createObjectURL(file); }); const max=1800; const scale=Math.min(1, max/Math.max(img.width,img.height)); const canvas=document.createElement("canvas"); canvas.width=Math.round(img.width*scale); canvas.height=Math.round(img.height*scale); const ctx=canvas.getContext("2d"); ctx.drawImage(img,0,0,canvas.width,canvas.height); return await new Promise(res=>canvas.toBlob(blob=>res(new File([blob], file.name.replace(/\.[^.]+$/, ".jpg"), {type:"image/jpeg"})), "image/jpeg", .82)); }
+function setupUpload(){ const inputFile=$("mediaFile"), drop=$("dropzone"); if(!inputFile || !drop) return; inputFile.onchange = () => uploadFiles([...inputFile.files]); ["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("drag");})); ["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("drag");})); drop.addEventListener("drop", e=> uploadFiles([...e.dataTransfer.files])); }
+async function uploadFiles(files){ const folder=($("mediaFolder")?.value || "uploads").replace(/^\/+|\/+$/g,""); const tag=$("mediaTag")?.value || ""; for(const raw of files){ const file=await compressImage(raw); const path=`${folder}/${Date.now()}-${slug(file.name)}`; const task=uploadBytesResumable(ref(storage,path), file, {contentType:file.type, customMetadata:{tag}}); await new Promise((resolve,reject)=>{ task.on("state_changed", snap=>{ const p=Math.round((snap.bytesTransferred/snap.totalBytes)*100); if($("uploadProgress")) $("uploadProgress").style.width=p+"%"; if($("uploadStatus")) $("uploadStatus").textContent=`Enviando ${file.name}: ${p}%`; }, reject, resolve); }); const url=await getDownloadURL(task.snapshot.ref); await addDoc(collection(db,"media"), {name:file.name,path,url,type:file.type,size:file.size,tag,createdAt:serverTimestamp(),createdBy:currentUser?.email||null}); await logAction("upload","media",{path,url}); await navigator.clipboard?.writeText(url).catch(()=>{}); toast("Upload concluído e URL copiada."); } if($("uploadProgress")) $("uploadProgress").style.width="0"; await loadMediaLibrary(); }
+async function loadMediaLibrary(){ const box=$("mediaLibrary"); if(!box) return; box.innerHTML="Carregando mídia..."; try{ const snap=await getDocs(collection(db,"media")); const items=[]; snap.forEach(d=>{ const m=d.data(); const isImg=String(m.type||"").startsWith("image/"); const isVid=String(m.type||"").startsWith("video/"); const preview=isImg?`<img src="${escapeHtml(m.url)}" alt="">`:isVid?`<video src="${escapeHtml(m.url)}" muted></video>`:`<div class="badge">${escapeHtml(m.type||"file")}</div>`; items.push(`<article class="media-card">${preview}<small>${escapeHtml(m.name||d.id)}</small><input readonly value="${escapeHtml(m.url||"")}"><div class="row"><button data-copy-url="${escapeHtml(m.url||"")}">Copiar</button><button class="danger" data-media-del="${d.id}" data-path="${escapeHtml(m.path||"")}">Excluir</button></div></article>`); }); box.innerHTML=items.join("")||"<p class='note'>Nenhuma mídia enviada ainda.</p>"; document.querySelectorAll("[data-copy-url]").forEach(b=>b.onclick=()=>{navigator.clipboard?.writeText(b.dataset.copyUrl);toast("URL copiada.");}); document.querySelectorAll("[data-media-del]").forEach(b=>b.onclick=()=>deleteMedia(b.dataset.mediaDel,b.dataset.path)); }catch(e){ box.innerHTML=`<p class="error">Erro ao carregar mídia: ${escapeHtml(e.message)}</p>`; } }
+async function deleteMedia(id,path){ if(!confirm("Excluir esta mídia?")) return; try{ if(path) await deleteObject(ref(storage,path)).catch(()=>{}); await deleteDoc(doc(db,"media",id)); await logAction("delete","media",{id,path}); await loadMediaLibrary(); toast("Mídia excluída."); }catch(e){ toast(e.message,"error"); } }
+
+async function collectBackup(){ const data={ exportedAt:new Date().toISOString(), collections:{}, settings:{} }; for(const c of [...COLLECTIONS,"media"]){ const snap=await getDocs(collection(db,c)); data.collections[c]=[]; snap.forEach(d=>data.collections[c].push({id:d.id,data:d.data()})); } for(const id of SETTINGS_DOCS.concat(["site"])){ const s=await getDoc(doc(db,"settings",id)); if(s.exists()) data.settings[id]=s.data(); } return data; }
+async function exportBackup(){ const data=await collectBackup(); const text=JSON.stringify(data,null,2); $("backupPreview").textContent=text; const blob=new Blob([text],{type:"application/json"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`aura-backup-${nowFile()}.json`; a.click(); await logAction("export","backup"); }
+async function createSnapshot(){ const data=await collectBackup(); await addDoc(collection(db,"backups"), {data, createdAt:serverTimestamp(), createdBy:currentUser?.email||null}); await logAction("snapshot","backup"); toast("Snapshot salvo no Firestore."); }
+async function restoreBackup(){ const raw=$("backupImport").value.trim(); if(!raw) return alert("Cole um JSON de backup primeiro."); if(!confirm("Restaurar backup pode sobrescrever dados. Continuar?")) return; const backup=JSON.parse(raw); const batch=writeBatch(db); Object.entries(backup.collections||{}).forEach(([c,items])=>{ (items||[]).forEach(item=> batch.set(doc(db,c,item.id), {...item.data, updatedAt:serverTimestamp()}, {merge:true})); }); Object.entries(backup.settings||{}).forEach(([id,data])=> batch.set(doc(db,"settings",id), {...data, updatedAt:serverTimestamp()}, {merge:true})); await batch.commit(); await logAction("restore","backup"); await refreshAll(); toast("Backup restaurado."); }
+async function loadLogs(){ const box=$("logsList"); if(!box) return; try{ const q=query(collection(db,"logs"), orderBy("createdAt","desc"), limit(60)); const snap=await getDocs(q); const rows=[]; snap.forEach(d=>{ const l=d.data(); rows.push(`<article class="card"><small>${escapeHtml(l.email||"system")}</small><h3>${escapeHtml(l.action||"")} / ${escapeHtml(l.target||"")}</h3><p>${escapeHtml(JSON.stringify(l.details||{}))}</p></article>`); }); box.innerHTML=rows.join("")||"<p class='note'>Sem logs ainda.</p>"; }catch(e){ box.innerHTML=`<p class="error">Logs exigem índice/permite rules. ${escapeHtml(e.message)}</p>`; } }
+
+async function importJson(name){ const map={articles:"/data/articles.json",stations:"/data/stations.json",products:"/data/products.json",hosts:"/data/hosts.json",globalSocials:"/data/globalSocials.json"}; $("importMessage").textContent = `Importando ${name}...`; const res = await fetch(map[name]); const json = await res.json(); const items=json.items || []; if(name==="globalSocials"){ await setDoc(doc(db,"settings","globalSocials"), {items, updatedAt:serverTimestamp()}); } else { const batch=writeBatch(db); items.forEach((item,i)=> batch.set(doc(db,name,item.id || slug(item.title || item.name || `item-${i}`)), {...item, updatedAt:serverTimestamp()})); await batch.commit(); } await logAction("import",name,{count:items.length}); $("importMessage").textContent = `Importado: ${name}`; await refreshAll(); }
+window.addEventListener("error", e=>{ const list=JSON.parse(localStorage.getItem("auraLocalErrors")||"[]"); list.unshift({message:e.message,source:e.filename,line:e.lineno,time:new Date().toISOString()}); localStorage.setItem("auraLocalErrors",JSON.stringify(list.slice(0,20))); });

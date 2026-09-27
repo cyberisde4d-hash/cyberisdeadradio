@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CYBERISDEAD / MEMBER AREA 2.0</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif;text-transform:uppercase;font-size:10px;line-height:1;overflow-x:hidden}a,button,input,textarea{font:inherit;color:inherit}a{text-decoration:none}button{cursor:pointer;background:none;border:0}.hidden{display:none!important}.site-bg{position:fixed;inset:0;background:radial-gradient(circle at 50% 18%,rgba(255,255,255,.10),transparent 22%),linear-gradient(180deg,#050505,#000);z-index:0;pointer-events:none}.topbar{position:fixed;top:0;left:0;right:0;height:48px;border-bottom:1px solid #333;background:#000;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 12px;z-index:20}.brand{font-weight:700;letter-spacing:.06em}.nav{justify-self:end;display:flex;gap:10px;color:#aaa}.nav a:hover,.nav button:hover{color:#fff}.wrap{position:relative;z-index:2;min-height:100vh;padding:62px 12px 28px}.admin-banner{max-width:1280px;margin:0 auto 10px;padding:9px 10px;background:#fff;color:#000;border:1px solid #fff;letter-spacing:.04em}.hero{max-width:1280px;margin:0 auto 10px;border:1px solid #333;min-height:360px;display:grid;grid-template-columns:1.2fr .8fr;background:rgba(0,0,0,.6);overflow:hidden}.hero-copy{padding:18px;display:flex;flex-direction:column;justify-content:space-between}.kicker{color:#aaa;letter-spacing:.08em;margin-bottom:12px}h1{font-size:clamp(48px,8vw,128px);line-height:.78;letter-spacing:-.085em;font-weight:400}.hero p,.lock p{font-size:13px;line-height:18px;text-transform:none;color:#ddd;max-width:780px;margin-top:14px}.profile-strip{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}.pill{border:1px solid #333;padding:7px 9px;color:#ddd;background:#050505}.pill strong{color:#fff}.hero-live{border-left:1px solid #333;display:grid;grid-template-rows:1fr auto;min-height:260px}.cover-big{background:#090909 center/cover no-repeat;min-height:250px;filter:grayscale(1) contrast(1.08);position:relative}.cover-big:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.75),transparent)}.hero-live .mini-info{padding:12px;border-top:1px solid #333}.mini-info h2{font-size:26px;line-height:26px;letter-spacing:-.04em;font-weight:400;margin-bottom:8px}.mini-info p{font-size:11px;line-height:15px;text-transform:none;color:#aaa}.quick{max-width:1280px;margin:0 auto 10px;display:flex;gap:6px;overflow:auto}.quick a{flex:0 0 auto;border:1px solid #333;padding:8px 10px;background:#050505;color:#aaa}.quick a:hover{background:#fff;color:#000}.section{max-width:1280px;margin:0 auto 10px;border:1px solid #333;background:rgba(0,0,0,.66);padding:12px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:10px}.section-title{font-size:32px;line-height:32px;letter-spacing:-.05em;font-weight:400}.section-text{font-size:11px;line-height:15px;text-transform:none;color:#999;max-width:500px}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px}.wide-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.card{border:1px solid #333;background:#050505;min-height:220px;display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.12s linear;color:#fff;overflow:hidden;text-align:left}.card:hover{background:#fff;color:#000}.thumb{height:150px;background:#111 center/cover no-repeat;filter:grayscale(1) contrast(1.08);border-bottom:1px solid #333}.card:hover .thumb{filter:grayscale(.1) contrast(1.05)}.card-body{padding:10px}.card small,.meta{font-size:10px;color:#888;letter-spacing:.04em}.card h3{font-size:22px;line-height:22px;letter-spacing:-.04em;font-weight:400;margin:7px 0}.card p{font-size:11px;line-height:15px;text-transform:none;color:#aaa}.card:hover p,.card:hover small{color:#555}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}.btn{border:1px solid #fff;background:#fff;color:#000;padding:9px 11px;text-transform:uppercase;font-size:10px;letter-spacing:.05em;display:inline-flex}.btn.dark{background:#000;color:#fff;border-color:#333}.btn:hover{opacity:.85}.feed-layout{display:grid;grid-template-columns:1fr 360px;gap:8px}.composer,.sidebox{border:1px solid #333;background:#050505;padding:10px}.composer textarea,.comment-form textarea{width:100%;min-height:84px;border:1px solid #333;background:#000;color:#fff;padding:10px;text-transform:none;resize:vertical}.composer input{width:100%;border:1px solid #333;background:#000;color:#fff;padding:9px;text-transform:none;margin-bottom:6px}.post{border:1px solid #333;background:#040404;padding:10px;margin-bottom:8px}.post-head{display:flex;justify-content:space-between;gap:8px;color:#888;margin-bottom:8px}.post h3{font-size:18px;line-height:20px;font-weight:400;margin-bottom:7px}.post p{font-size:12px;line-height:17px;text-transform:none;color:#ccc}.emoji-row{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.emoji-row button{border:1px solid #333;padding:5px 7px;background:#050505}.empty{border:1px dashed #333;padding:24px;color:#888;text-transform:none;font-size:13px;line-height:18px}.radio-grid{display:grid;grid-template-columns:minmax(280px,420px) 1fr;gap:8px}.radio-player,.comments-box{border:1px solid #333;background:#050505;padding:10px}.radio-cover{height:230px;background:#111 center/cover no-repeat;filter:grayscale(1);margin-bottom:10px}.comment{border-top:1px solid #222;padding:9px 0}.comment b{display:block;margin-bottom:5px}.comment p{font-size:12px;line-height:16px;text-transform:none;color:#ccc}.comment-form{display:grid;gap:7px;margin-bottom:10px}.comment-form input{border:1px solid #333;background:#000;color:#fff;padding:9px;text-transform:none}.modal{position:fixed;z-index:60;inset:0;background:rgba(0,0,0,.84);display:none;align-items:center;justify-content:center;padding:14px;backdrop-filter:blur(5px)}.modal.open{display:flex}.modal-box{width:min(1120px,100%);max-height:92vh;overflow:auto;background:#fff;color:#000;border:1px solid #fff}.modal-top{height:40px;display:grid;grid-template-columns:1fr 42px;border-bottom:1px solid #000;align-items:center;font-size:10px;letter-spacing:.05em}.modal-top span{padding:0 12px}.modal-top button{height:40px;border-left:1px solid #000;font-size:22px;color:#000}.modal-top button:hover{background:#000;color:#fff}.modal-body{padding:12px}.modal-title{font-size:clamp(34px,6vw,82px);line-height:.88;letter-spacing:-.07em;font-weight:400;margin-bottom:10px}.modal-desc{font-size:14px;line-height:20px;text-transform:none;color:#333;max-width:780px;margin-bottom:12px}.embed-wrap{aspect-ratio:16/9;background:#000;margin:10px 0}.embed-wrap iframe,.embed-wrap video{width:100%;height:100%;border:0;background:#000}.flipbook{border:1px solid #000;background:#fff;color:#000}.flip-stage{position:relative;background:#000;min-height:520px;display:flex;align-items:center;justify-content:center;overflow:hidden}.flip-stage img{max-width:100%;max-height:78vh;display:block}.flip-controls{display:grid;grid-template-columns:1fr auto 1fr;border-top:1px solid #000}.flip-controls button{padding:12px;color:#000}.flip-controls button:hover{background:#000;color:#fff}.flip-counter{display:flex;align-items:center;padding:0 12px;border-left:1px solid #000;border-right:1px solid #000}.lock{max-width:980px;margin:0 auto;border:1px solid #333;background:rgba(0,0,0,.72);padding:18px}.toast{position:fixed;right:12px;bottom:12px;z-index:90;background:#fff;color:#000;padding:10px 12px;border:1px solid #fff;text-transform:none}.member-profile-card{position:relative;border:1px solid #333;background:#030303;overflow:hidden}.member-cover{height:220px;background:#111 center/cover no-repeat;filter:grayscale(1) contrast(1.08);border-bottom:1px solid #333;position:relative}.member-cover:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.82),rgba(0,0,0,.18))}.member-profile-main{display:grid;grid-template-columns:112px 1fr;gap:14px;padding:0 14px 14px;margin-top:-54px;position:relative;z-index:2}.member-avatar{width:108px;height:108px;border:1px solid #fff;background:#111 center/cover no-repeat;filter:grayscale(1) contrast(1.08)}.member-profile-info{padding-top:58px}.member-profile-info h2{font-size:34px;line-height:34px;letter-spacing:-.05em;font-weight:400}.profile-edit{display:grid;gap:8px}.profile-edit input,.profile-edit textarea{width:100%;border:1px solid #333;background:#000;color:#fff;padding:9px;text-transform:none}.profile-edit textarea{min-height:70px;resize:vertical}.profile-edit label{display:grid;gap:5px;font-size:10px;color:#999;letter-spacing:.05em}.upload-row{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:end}.file-input{font-size:10px;border:1px dashed #333!important}.profile-hint{font-size:11px!important;line-height:15px!important;color:#888!important;text-transform:none!important;margin-top:8px}.save-state{font-size:11px;color:#aaa;text-transform:none}@media(max-width:900px){.hero,.wide-grid,.feed-layout,.radio-grid{grid-template-columns:1fr}.hero-live{border-left:0;border-top:1px solid #333}.topbar{grid-template-columns:1fr auto}.nav{display:none}h1{font-size:62px}.section-title{font-size:26px;line-height:27px}.flip-stage{min-height:300px}}
+
+/* PROFILE TOP MERGED FIX */
+.hero.profile-hero{grid-template-columns:minmax(320px,1.15fr) minmax(280px,.85fr);min-height:0;align-items:stretch}
+.hero-profile-wrap{padding:12px;display:grid;gap:10px}
+.hero-profile-wrap .section-title{margin-bottom:2px}
+.hero-profile-wrap .member-profile-card{min-height:100%}
+.hero-profile-wrap .member-cover{height:250px}
+.hero-profile-wrap .profile-edit{margin-top:10px;border-top:1px solid #333;padding-top:10px}
+.hero-profile-wrap .member-profile-info h2{font-size:clamp(30px,4vw,58px);line-height:.9}
+.hero-profile-wrap .profile-hint{max-width:720px}
+.hero-side-content{border-left:1px solid #333;display:grid;grid-template-rows:1fr auto;min-height:360px}
+.saved-only{display:block}
+.saved-only .grid{margin-top:10px}.hero-saved-panel{height:100%;padding:12px;display:flex;flex-direction:column;gap:10px}.hero-saved-panel .section-head{margin-bottom:0}.hero-saved-panel .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;overflow:auto;align-content:start;padding-right:4px}.hero-saved-panel .card{min-height:160px}.hero-saved-panel .card .thumb{height:84px}.hero-saved-panel .card h3{font-size:18px;line-height:18px}.hero-saved-panel .empty{min-height:180px;display:flex;align-items:center}.saved-only{display:none!important}
+@media(max-width:900px){.hero.profile-hero{grid-template-columns:1fr}.hero-side-content{border-left:0;border-top:1px solid #333}.hero-profile-wrap .member-cover{height:190px}.hero-profile-wrap .member-profile-main{grid-template-columns:86px 1fr}.hero-profile-wrap .member-avatar{width:82px;height:82px}.hero-profile-wrap .member-profile-info{padding-top:44px}}
+
+
+/* === FIX: profile top compact + saved fills the empty area without amateur blank space === */
+.hero.profile-hero{
+  align-items:start!important;
+  min-height:0!important;
+  grid-template-columns:minmax(420px,1.25fr) minmax(320px,.75fr)!important;
+}
+.hero-profile-wrap{
+  align-content:start!important;
+}
+.hero-profile-wrap .member-profile-card{
+  min-height:0!important;
+}
+.hero-profile-wrap .member-cover{
+  height:175px!important;
+}
+.hero-profile-wrap .member-profile-main{
+  grid-template-columns:88px 1fr!important;
+  margin-top:-44px!important;
+  padding:0 12px 12px!important;
+}
+.hero-profile-wrap .member-avatar{
+  width:88px!important;
+  height:88px!important;
+}
+.hero-profile-wrap .member-profile-info{
+  padding-top:46px!important;
+}
+.hero-profile-wrap .member-profile-info h2{
+  font-size:clamp(28px,4vw,48px)!important;
+  line-height:.9!important;
+}
+.hero-profile-wrap .profile-edit{
+  margin-top:8px!important;
+  border:1px solid #333!important;
+  padding:10px!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:8px!important;
+}
+.hero-profile-wrap .profile-edit .grid2{
+  grid-column:1/-1!important;
+}
+.hero-profile-wrap .profile-edit label{
+  min-width:0!important;
+}
+.hero-profile-wrap .profile-edit .upload-row{
+  grid-template-columns:1fr auto!important;
+}
+.hero-profile-wrap .profile-edit .actions,
+.hero-profile-wrap .profile-edit .profile-hint{
+  grid-column:1/-1!important;
+}
+.hero-side-content{
+  min-height:420px!important;
+  height:100%!important;
+}
+.hero-saved-panel{
+  min-height:420px!important;
+}
+.hero-saved-panel .grid{
+  max-height:350px!important;
+  overflow:auto!important;
+}
+.hero-saved-panel .card{
+  min-height:145px!important;
+}
+.hero-saved-panel .empty{
+  min-height:260px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+.profile-media-tools{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:6px;
+}
+@media(max-width:900px){
+  .hero.profile-hero{grid-template-columns:1fr!important}
+  .hero-profile-wrap .profile-edit{grid-template-columns:1fr!important}
+  .hero-side-content,.hero-saved-panel{min-height:260px!important}
+}
+
+
+
+/* === REFINED MEMBER PROFILE: clean top + edit in popup === */
+.hero.profile-hero{grid-template-columns:minmax(520px,1.2fr) minmax(320px,.8fr)!important;align-items:start!important;min-height:0!important;background:rgba(0,0,0,.72)!important}
+.hero-profile-wrap{padding:14px!important;gap:12px!important;align-content:start!important}
+.hero-profile-wrap .section-text{max-width:640px!important;color:#aaa!important}
+.member-profile-card{border-color:#2c2c2c!important;background:linear-gradient(180deg,#050505,#010101)!important}
+.hero-profile-wrap .member-profile-card{min-height:0!important}
+.hero-profile-wrap .member-cover{height:210px!important;background-size:cover!important;background-position:center!important}
+.hero-profile-wrap .member-profile-main{grid-template-columns:96px 1fr!important;gap:14px!important;margin-top:-48px!important;padding:0 14px 14px!important;align-items:end!important}
+.hero-profile-wrap .member-avatar{width:96px!important;height:96px!important;background-size:cover!important;background-position:center!important}
+.hero-profile-wrap .member-profile-info{padding-top:48px!important;min-width:0!important}
+.hero-profile-wrap .member-profile-info h2{font-size:clamp(32px,4vw,58px)!important;line-height:.9!important;letter-spacing:-.065em!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile-strip{gap:6px!important;margin-top:10px!important}.pill{font-size:9px!important;padding:6px 8px!important;border-color:#3a3a3a!important;background:#030303!important;color:#aaa!important}.pill strong{font-weight:400!important;color:#fff!important}.profile-hint{max-width:720px!important;color:#8f8f8f!important}.profile-view-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.profile-edit{display:none!important}.hero-side-content{min-height:360px!important}.hero-saved-panel{min-height:360px!important}.hero-saved-panel .grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))!important;align-content:start!important}.hero-saved-panel .card{min-height:150px!important}.hero-saved-panel .card .thumb{height:78px!important}.hero-saved-panel .card h3{font-size:17px!important;line-height:17px!important}.profile-edit-modal .modal-box{width:min(760px,100%)!important;background:#070707!important;color:#fff!important;border:1px solid #3a3a3a!important}.profile-edit-modal .modal-top{border-bottom:1px solid #333!important;color:#fff!important;background:#070707!important}.profile-edit-modal .modal-top button{color:#fff!important;border-left:1px solid #333!important}.profile-edit-modal .modal-top button:hover{background:#fff!important;color:#000!important}.profile-edit-body{display:grid;gap:12px}.profile-edit-preview{border:1px solid #333;background:#020202;overflow:hidden}.profile-edit-preview .member-cover{height:150px!important}.profile-edit-preview .member-profile-main{grid-template-columns:74px 1fr;margin-top:-37px;padding:0 12px 12px;gap:10px}.profile-edit-preview .member-avatar{width:74px;height:74px}.profile-edit-preview .member-profile-info{padding-top:38px}.profile-edit-preview .member-profile-info h2{font-size:28px;line-height:28px;font-weight:400;letter-spacing:-.05em}.profile-edit-form{display:grid!important;gap:9px}.profile-edit-form label{display:grid;gap:5px;font-size:10px;color:#aaa;letter-spacing:.05em}.profile-edit-form input,.profile-edit-form textarea{width:100%;border:1px solid #333;background:#000;color:#fff;padding:10px;text-transform:none}.profile-edit-form textarea{min-height:82px;resize:vertical}.profile-edit-form .grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.profile-edit-form .upload-row{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:end}.profile-edit-form .file-input{border:1px dashed #444!important}.profile-edit-form .hint{font-size:11px;line-height:15px;color:#888;text-transform:none}.save-state{font-size:11px;color:#aaa;text-transform:none;align-self:center}.admin-banner{font-size:10px;letter-spacing:.05em}.sidebox .section-text{color:#aaa}.sidebox .section-text strong{color:#fff}
+@media(max-width:900px){.hero.profile-hero{grid-template-columns:1fr!important}.hero-side-content{border-left:0!important;border-top:1px solid #333!important}.profile-edit-form .grid2{grid-template-columns:1fr!important}.profile-edit-form .upload-row{grid-template-columns:1fr!important}}
+
+
+
+/* === COMMUNITY FEED REFINED SAFE UPDATE === */
+#community.community-section{max-width:1280px;border:0;background:transparent;padding:0}.community-shell{max-width:920px;margin:0 auto;background:#111;border:1px solid #242424;border-radius:18px;padding:18px;text-transform:none}.community-head{display:grid;grid-template-columns:112px 1fr;gap:16px;align-items:center;margin-bottom:18px}.community-icon{width:112px;height:112px;border-radius:16px;border:1px solid #333;background:radial-gradient(circle at 42% 35%,rgba(255,255,255,.28),transparent 22%),linear-gradient(135deg,#050505,#191919);display:grid;place-items:end start;padding:10px;color:#fff;font-weight:700;letter-spacing:.02em}.community-title{font-size:36px;line-height:1;letter-spacing:-.045em;font-weight:700;text-transform:none}.community-meta{display:flex;align-items:center;gap:7px;color:#d7d7d7;margin:8px 0 10px;font-size:14px}.community-avatars{display:flex;margin-right:4px}.community-avatars span{width:24px;height:24px;border-radius:50%;border:1px solid #111;background:#333;margin-left:-6px;display:block}.community-avatars span:first-child{margin-left:0}.community-avatars span:nth-child(1){background:linear-gradient(135deg,#fff,#777)}.community-avatars span:nth-child(2){background:linear-gradient(135deg,#3a3a3a,#dcdcdc)}.community-avatars span:nth-child(3){background:linear-gradient(135deg,#111,#777)}.community-desc{color:#aaa;font-size:14px;line-height:1.45;max-width:680px}.community-tabs{display:flex;gap:10px;margin:12px 0 16px;flex-wrap:wrap}.community-tabs button{background:#242424;color:#fff;border:0;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;text-transform:none}.community-tabs button.active{background:#fff;color:#000}.community-compose{border:1px solid #333;border-radius:14px;background:#0b0b0b;padding:14px 16px;margin-bottom:20px}.community-compose-top{display:flex;gap:12px;align-items:flex-start}.community-user-dot,.community-post-avatar{width:36px;height:36px;border-radius:50%;border:1px solid #333;background:#161616;display:grid;place-items:center;color:#fff;font-weight:700;flex:0 0 auto;text-transform:uppercase}.community-compose-fields{flex:1;min-width:0}.community-compose input,.community-compose textarea{width:100%;border:0!important;background:transparent!important;color:#fff;padding:8px 0!important;text-transform:none!important;font-size:15px!important}.community-compose textarea{min-height:48px!important;resize:vertical}.community-compose input::placeholder,.community-compose textarea::placeholder{color:#aaa}.community-compose-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #222;margin-top:8px;padding-top:10px}.community-add-media{color:#fff;font-size:13px;font-weight:700;display:flex;gap:8px;align-items:center}.community-post-btn{border-radius:999px!important;padding:9px 18px!important;background:#fff!important;color:#000!important;border:0!important;font-weight:700!important;text-transform:none!important}.community-list{display:grid;gap:18px}.community-post{border:1px solid #333;border-radius:14px;background:#0b0b0b;padding:16px;text-transform:none}.community-post-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:8px}.community-post-name{font-size:14px;font-weight:700;color:#fff}.community-post-badge{display:inline-flex;align-items:center;gap:4px;border-radius:999px;background:#fff;color:#000;padding:3px 7px;margin-left:6px;font-size:11px;font-weight:700}.community-post-time{color:#999;font-size:12px;margin-left:6px}.community-menu{margin-left:auto;color:#aaa;font-size:22px;line-height:1}.community-post-title{font-size:16px!important;line-height:1.35!important;font-weight:700!important;text-transform:none!important;margin:8px 0 4px!important;letter-spacing:0!important}.community-post-text{font-size:15px!important;line-height:1.45!important;color:#f0f0f0!important;text-transform:none!important;margin:0 0 10px!important}.community-post-actions{display:flex;gap:18px;align-items:center;color:#ddd;font-size:13px;margin-top:12px;flex-wrap:wrap}.community-post-actions button{border:0!important;background:transparent!important;color:#ddd!important;padding:0!important;text-transform:none!important;font-size:13px!important}.community-empty{border:1px dashed #333;border-radius:14px;padding:26px;color:#aaa;text-align:center;font-size:14px;line-height:1.4;text-transform:none;background:#0b0b0b}@media(max-width:760px){.community-shell{padding:12px;border-radius:0;border-left:1px solid #242424;border-right:1px solid #242424}.community-head{grid-template-columns:74px 1fr;gap:12px}.community-icon{width:74px;height:74px;border-radius:12px;font-size:10px}.community-title{font-size:26px}.community-desc{font-size:13px}}
+
+</style>
+<script>
+window.addEventListener('error', function(e){
+  var root=document.querySelector('.wrap');
+  if(root && !document.getElementById('memberRuntimeError')){
+    var box=document.createElement('div');
+    box.id='memberRuntimeError';
+    box.style.cssText='position:relative;z-index:999;margin:70px auto 10px;max-width:900px;border:1px solid #700;background:#180000;color:#ffbdbd;padding:12px;font:12px Arial;text-transform:none';
+    box.textContent='Erro ao carregar Member Area: '+(e.message||'erro desconhecido')+'. Verifique deploy/cache.';
+    root.prepend(box);
+  }
+});
+</script>
+</head>
+<body>
+<div class="site-bg"></div>
+<header class="topbar"><a class="brand" href="index.html">CYBERISDEAD</a><div>MEMBER AREA</div><nav class="nav"><a href="index.html">Home</a><a href="index.html#shop">Shop</a></nav></header>
+<main class="wrap">
+  <div id="adminBanner" class="admin-banner hidden">ADMIN PREVIEW / VOCÊ ESTÁ VISUALIZANDO A MEMBER AREA COMO ADMINISTRADOR.</div>
+  <section id="lockedView" class="lock hidden"><div class="kicker">MEMBER AREA / LOCKED</div><h1 id="lockedTitle">VOCÊ PRECISA DE UMA ASSINATURA ATIVA.</h1><p id="lockedText">A Member Area é exclusiva para assinantes. Volte para o site, abra Membership e escolha um plano para liberar a dashboard.</p><div class="actions"><a class="btn" href="index.html">Ver planos</a><a class="btn dark" href="index.html">Voltar</a></div></section>
+  <section id="dashboardView" class="hidden">
+    <section class="hero profile-hero" id="home">
+    <div class="hero-profile-wrap">
+      <div>
+        <div class="kicker">EXCLUSIVE DASHBOARD / PERFIL DO ASSINANTE</div>
+        <h2 class="section-title">Perfil</h2>
+        <p class="section-text">Seu cartão de assinante fica no topo. Para alterar imagem, nome e bio, use o botão Editar perfil.</p>
+      </div>
+      <div id="heroProfileBox"></div>
+    </div>
+    <div class="hero-side-content">
+      <div class="hero-saved-panel">
+        <div class="section-head">
+          <div>
+            <h2 class="section-title">Salvos</h2>
+            <p class="section-text">Conteúdos que você salvou: vídeos, magazine, vault e rádio.</p>
+          </div>
+        </div>
+        <div id="heroSavedList" class="grid"></div>
+      </div>
+    </div>
+  </section>
+  <nav class="quick"><a href="#magazine">Magazine</a><a href="#radio">Rádio</a><a href="#community">Comunidade</a><a href="#vault">Vault</a><a href="#videos">Vídeos</a><a href="#saved">Salvos</a></nav>
+    <section class="section" id="magazine"><div class="section-head"><div><h2 class="section-title">Magazine</h2><p class="section-text">Capas grandes, popup editorial e flipbook navegável para scans/páginas.</p></div></div><div class="grid" id="magazineGrid"></div></section>
+    <section class="section" id="radio"><div class="section-head"><div><h2 class="section-title">Rádio + Comentários</h2><p class="section-text">Episódios exclusivos com feed de comentários, emojis e respostas básicas salvas no Firestore.</p></div></div><div class="radio-grid"><div class="radio-player"><div id="radioCover" class="radio-cover"></div><small id="radioMeta">episode</small><h2 class="section-title" id="radioTitle">Rádio</h2><p class="section-text" id="radioDesc">Selecione ou cadastre um episódio exclusivo.</p><div class="actions"><button class="btn" id="saveEpisodeBtn">Salvar episódio</button></div><div class="grid" id="radioGrid" style="margin-top:10px"></div></div><div class="comments-box"><h2 class="section-title">Comentários</h2><form class="comment-form" id="commentForm"><input id="commentName" placeholder="Seu nome"><textarea id="commentText" placeholder="Comente aqui..."></textarea><div class="emoji-row"><button type="button" data-emoji="🔥">🔥</button><button type="button" data-emoji="🖤">🖤</button><button type="button" data-emoji="👁️">👁️</button><button type="button" data-emoji="📡">📡</button><button type="submit" class="btn">Enviar</button></div></form><div id="commentsList"></div></div></div></section>
+    <section class="section community-section" id="community">
+      <div class="community-shell">
+        <div class="community-head"><div class="community-icon">CID</div><div><h2 class="community-title">Comunidade CYBERISDEAD</h2><div class="community-meta"><span class="community-avatars"><span></span><span></span><span></span></span><span>Assinantes • Privada</span></div><p class="community-desc">Um espaço exclusivo para trocar referências, bastidores, sons, filmes, links, ideias e conversar com outros membros do projeto.</p></div></div>
+        <div class="community-tabs" role="tablist" aria-label="Filtros da comunidade"><button type="button" class="active">Principais</button><button type="button">Mais recentes</button><button type="button">Posts do criador</button></div>
+        <form class="community-compose" id="postForm"><div class="community-compose-top"><div class="community-user-dot" id="communityUserDot">C</div><div class="community-compose-fields"><input id="postTitle" placeholder="Título opcional"><textarea id="postText" placeholder="No que você está pensando agora?"></textarea></div></div><div class="community-compose-footer"><span class="community-add-media">▧ Imagem</span><button class="community-post-btn" type="submit">Postar</button></div></form>
+        <div id="postsList" class="community-list"></div><div id="memberMiniProfile" class="hidden"></div>
+      </div>
+    </section>
+    <section class="section" id="vault"><div class="section-head"><div><h2 class="section-title">Vault</h2><p class="section-text">Downloads, tracks, arquivos, materiais antecipados e links com capa visível.</p></div></div><div class="grid" id="vaultGrid"></div></section>
+    <section class="section" id="videos"><div class="section-head"><div><h2 class="section-title">Vídeos</h2><p class="section-text">Feed estilo YouTube. Clicou, abre embed grande, comenta e salva.</p></div></div><div class="grid" id="videosGrid"></div></section>
+    <section class="section saved-only" id="saved"><div class="section-head"><div><h2 class="section-title">Salvos</h2><p class="section-text">Conteúdos que você salvou: vídeos, magazine, vault e rádio.</p></div></div><div id="savedList" class="grid"></div></section>
+  </section>
+</main>
+<div class="modal" id="contentModal"><div class="modal-box"><div class="modal-top"><span id="modalKicker">MEMBER CONTENT</span><button id="modalClose">×</button></div><div class="modal-body" id="modalBody"></div></div></div>
+<div class="modal profile-edit-modal" id="profileEditModal"><div class="modal-box"><div class="modal-top"><span>EDITAR PERFIL</span><button id="profileEditClose" type="button">×</button></div><div class="modal-body"><div id="profileEditBody" class="profile-edit-body"></div></div></div></div>
+<script type="module">
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, addDoc, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js";
+const firebaseConfig={apiKey:"AIzaSyBOl8WXhHyG8M2Uh9zFTwt4mClqRYO4GIc",authDomain:"cyberisdeadesite.firebaseapp.com",projectId:"cyberisdeadesite",storageBucket:"cyberisdeadesite.firebasestorage.app",messagingSenderId:"145227236840",appId:"1:145227236840:web:c691a4f7e31ca32cff905d",measurementId:"G-3QBSY750TT"};
+const app=getApps().length?getApp():initializeApp(firebaseConfig); const auth=getAuth(app); const db=getFirestore(app); const storage=getStorage(app);
+const ADMIN_EMAILS=["aura1000x@gmail.com","cyberisdead4d@gmail.com","cyberisdead4@gmail.com","cyberisdead2015@gmail.com"];
+const $=id=>document.getElementById(id); const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+const params=new URLSearchParams(location.search); const adminPreview=params.get("adminPreview")==="1"; let currentUser=null, userData={}, content=[], selectedEpisode="member-radio", saved=JSON.parse(localStorage.getItem("cyberisdead_member_saved")||"[]");
+function toast(t){const el=document.createElement('div');el.className='toast';el.textContent=t;document.body.appendChild(el);setTimeout(()=>el.remove(),2400)}
+function canAccess(u,d){ if(adminPreview) return true; if(!u) return localStorage.getItem('cyberisdead_subscription_active')==='true'; const email=(u.email||'').toLowerCase(); const role=String(d.role||'').toLowerCase(); const st=String(d.membershipStatus||d.status||'').toLowerCase(); return ADMIN_EMAILS.includes(email)||role==='admin'||st==='active'||st==='paid'||d.isAdmin===true||d.subscriptionActive===true; }
+async function loadUser(u){ if(!u) return {}; try{const s=await getDoc(doc(db,'users',u.uid)); return s.exists()?s.data():{};}catch(e){console.warn(e);return {}} }
+function initialsFrom(name){return String(name||'M').trim().split(/\\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'M'}
+function defaultAvatar(name){return `https://dummyimage.com/400x400/111/fff&text=${encodeURIComponent(initialsFrom(name))}`}
+function defaultCover(name){return `https://dummyimage.com/1600x520/050505/ffffff&text=${encodeURIComponent('CYBERISDEAD / '+String(name||'MEMBER').toUpperCase())}`}
+function monthsText(d){const raw=d.memberSince||d.subscriptionStartedAt||d.createdAt; let months=0; try{ const date=raw?.toDate?raw.toDate():(raw?new Date(raw):null); if(date&&!isNaN(date)){ const now=new Date(); months=Math.max(0,(now.getFullYear()-date.getFullYear())*12+(now.getMonth()-date.getMonth())); }}catch(e){} return `${months||1} MÊS${(months||1)>1?'ES':''}`}
+function applyProfile(u,d){
+  if(adminPreview && !u){try{d={...d,...JSON.parse(localStorage.getItem('cyberisdead_admin_preview_profile')||'{}')}}catch(e){}}
+  const email=u?.email||d.email||'admin preview';
+  const name=d.displayName||d.name||email.split('@')[0]||'member';
+  const bio=d.bio||'Edite sua bio, foto de perfil e banner. Esses dados ficam salvos no Firestore.';
+  const badge=d.tier||d.plan||d.membershipTier||'ASSINANTE';
+  const status=d.membershipStatus||d.status||'ATIVO';
+  const avatar=d.avatarUrl||d.photoURL||defaultAvatar(name);
+  const cover=d.coverUrl||d.bannerUrl||defaultCover(name);
+  if($('profileName')) $('profileName').textContent=name; if($('profileBadge')) $('profileBadge').textContent=String(badge).toUpperCase(); if($('profileStatus')) $('profileStatus').textContent=String(status).toUpperCase(); if($('commentName')) $('commentName').value=name;
+  $('memberMiniProfile').innerHTML=`<div class="member-profile-card"><div class="member-cover" style="height:92px;background-image:url('${esc(cover)}')"></div><div class="member-profile-main" style="grid-template-columns:58px 1fr;margin-top:-30px;padding:0 8px 10px;gap:8px"><div class="member-avatar" style="width:58px;height:58px;background-image:url('${esc(avatar)}')"></div><div class="member-profile-info" style="padding-top:30px"><h2 style="font-size:18px;line-height:19px">${esc(name)}</h2><p>${esc(email)}</p></div></div><div class="emoji-row" style="padding:0 8px 10px"><button>${esc(monthsText(d))}</button><button>${esc(String(badge).toUpperCase())}</button><button>📡 comunidade</button></div></div>`;
+  $('heroProfileBox').innerHTML=`
+    <div class="member-profile-card">
+      <div id="profileCoverPreview" class="member-cover" style="background-image:url('${esc(cover)}')"></div>
+      <div class="member-profile-main">
+        <div id="profileAvatarPreview" class="member-avatar" style="background-image:url('${esc(avatar)}')"></div>
+        <div class="member-profile-info">
+          <h2 id="profileName">${esc(name)}</h2>
+          <p class="section-text">${esc(email)}</p>
+          <div class="profile-strip"><span class="pill">Plano: <strong>${esc(String(badge).toUpperCase())}</strong></span><span class="pill">Status: <strong>${esc(String(status).toUpperCase())}</strong></span><span class="pill">Distintivo: <strong>${esc(monthsText(d))}</strong></span></div>
+          <p class="profile-hint">${esc(bio)}</p>
+          <div class="profile-view-actions"><button type="button" class="btn" id="openProfileEditBtn">Editar perfil</button></div>
+        </div>
+      </div>
+    </div>`;
+  bindProfileEditor();
+}
+async function uploadProfileImage(kind){
+  const fileEl=$(kind==='avatar'?'editAvatarFile':'editCoverFile');
+  const file=fileEl?.files?.[0];
+  if(!file){toast('Selecione uma imagem primeiro.');return null}
+  if(!file.type || !file.type.startsWith('image/')){toast('Escolha um arquivo de imagem.');return null}
+  const inputId=kind==='avatar'?'editAvatarUrl':'editCoverUrl';
+  const preview=kind==='avatar'?'editAvatarPreview':'editCoverPreview';
+  $('profileSaveState').textContent='Carregando imagem local...';
+
+  // Primeiro salva como data URL no próprio perfil. Assim funciona mesmo sem Firebase Storage/Blaze/regras de upload.
+  const dataUrl=await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>reject(reader.error||new Error('Falha ao ler imagem'));
+    reader.readAsDataURL(file);
+  });
+  $(inputId).value=dataUrl;
+  $(preview).style.backgroundImage=`url('${dataUrl}')`; const mainPrev=$(kind==='avatar'?'profileAvatarPreview':'profileCoverPreview'); if(mainPrev) mainPrev.style.backgroundImage=`url('${dataUrl}')`;
+  $('profileSaveState').textContent='Imagem aplicada. Clique em Salvar perfil.';
+  return dataUrl;
+}
+async function saveProfile(e){
+  e?.preventDefault?.();
+  const previewUid='admin-preview-profile';
+  const payload={
+    email:currentUser?.email||userData.email||'admin-preview@cyberisdead.local',
+    uid:currentUser?.uid||previewUid,
+    displayName:$('editDisplayName').value.trim()||currentUser?.email?.split('@')[0]||'member',
+    name:$('editDisplayName').value.trim()||currentUser?.email?.split('@')[0]||'member',
+    bio:$('editBio').value.trim(),
+    avatarUrl:$('editAvatarUrl').value.trim(),
+    coverUrl:$('editCoverUrl').value.trim(),
+    role:userData.role||'member',
+    membershipStatus:userData.membershipStatus||userData.status||(adminPreview?'admin_preview':'active'),
+    updatedAt:serverTimestamp()
+  };
+  $('profileSaveState').textContent='Salvando...';
+  if(currentUser){ await setDoc(doc(db,'users',currentUser.uid),payload,{merge:true}); } else { localStorage.setItem('cyberisdead_admin_preview_profile',JSON.stringify({...payload,updatedAt:new Date().toISOString()})); }
+  userData={...userData,...payload};
+  applyProfile(currentUser,userData);
+  closeProfileEdit();
+  toast('Perfil atualizado.');
+}
+function renderProfileEditModal(){
+  const email=currentUser?.email||userData.email||'admin preview';
+  const name=userData.displayName||userData.name||email.split('@')[0]||'member';
+  const bio=userData.bio||'Edite sua bio, foto de perfil e banner. Esses dados ficam salvos no Firestore.';
+  const avatar=userData.avatarUrl||userData.photoURL||defaultAvatar(name);
+  const cover=userData.coverUrl||userData.bannerUrl||defaultCover(name);
+  $('profileEditBody').innerHTML=`
+    <div class="profile-edit-preview">
+      <div id="editCoverPreview" class="member-cover" style="background-image:url('${esc(cover)}')"></div>
+      <div class="member-profile-main">
+        <div id="editAvatarPreview" class="member-avatar" style="background-image:url('${esc(avatar)}')"></div>
+        <div class="member-profile-info"><h2 id="editNamePreview">${esc(name)}</h2><p class="section-text">${esc(email)}</p></div>
+      </div>
+    </div>
+    <form id="profileEditForm" class="profile-edit-form">
+      <div class="grid2"><label>Nome público<input id="editDisplayName" value="${esc(name)}"></label><label>Bio<input id="editBio" value="${esc(bio)}"></label></div>
+      <div class="grid2"><label>Foto de perfil por URL<input id="editAvatarUrl" value="${esc(avatar)}" placeholder="https://..."></label><label>Banner/capa por URL<input id="editCoverUrl" value="${esc(cover)}" placeholder="https://..."></label></div>
+      <div class="grid2"><div class="upload-row"><label>Enviar foto do computador<input id="editAvatarFile" class="file-input" type="file" accept="image/*"></label><button type="button" class="btn dark" id="uploadAvatarBtn">Usar foto</button></div><div class="upload-row"><label>Enviar banner do computador<input id="editCoverFile" class="file-input" type="file" accept="image/*"></label><button type="button" class="btn dark" id="uploadCoverBtn">Usar banner</button></div></div>
+      <p class="hint">As imagens são aplicadas na hora. Clique em salvar para gravar no perfil. Em modo admin preview, salva localmente no navegador.</p>
+      <div class="actions"><button type="submit" class="btn">Salvar perfil</button><button type="button" class="btn dark" id="cancelProfileEditBtn">Cancelar</button><span id="profileSaveState" class="save-state"></span></div>
+    </form>`;
+  $('profileEditForm')?.addEventListener('submit',saveProfile);
+  $('uploadAvatarBtn')?.addEventListener('click',()=>uploadProfileImage('avatar'));
+  $('uploadCoverBtn')?.addEventListener('click',()=>uploadProfileImage('cover'));
+  $('editAvatarFile')?.addEventListener('change',()=>uploadProfileImage('avatar'));
+  $('editCoverFile')?.addEventListener('change',()=>uploadProfileImage('cover'));
+  $('editDisplayName')?.addEventListener('input',e=>{$('editNamePreview').textContent=e.target.value||name});
+  $('editAvatarUrl')?.addEventListener('input',e=>{const v=e.target.value; $('editAvatarPreview').style.backgroundImage=`url('${v}')`; const p=$('profileAvatarPreview'); if(p) p.style.backgroundImage=`url('${v}')`;});
+  $('editCoverUrl')?.addEventListener('input',e=>{const v=e.target.value; $('editCoverPreview').style.backgroundImage=`url('${v}')`; const p=$('profileCoverPreview'); if(p) p.style.backgroundImage=`url('${v}')`;});
+  $('cancelProfileEditBtn')?.addEventListener('click',closeProfileEdit);
+}
+function openProfileEdit(){renderProfileEditModal(); $('profileEditModal')?.classList.add('open')}
+function closeProfileEdit(){$('profileEditModal')?.classList.remove('open')}
+function bindProfileEditor(){
+  $('openProfileEditBtn')?.addEventListener('click',openProfileEdit);
+  $('profileEditClose')?.addEventListener('click',closeProfileEdit);
+  $('profileEditModal')?.addEventListener('click',e=>{if(e.target===$('profileEditModal')) closeProfileEdit()});
+}
+function normalizeItem(id,x){return {id,type:x.type||'feed',title:x.title||id,description:x.description||'',cover:x.cover||x.image||x.thumbnail||'',url:x.url||x.video||x.file||'',body:Array.isArray(x.body)?x.body:(x.body?String(x.body).split('\n'):[]),tags:Array.isArray(x.tags)?x.tags:[],status:x.status||'published',...x}}
+function fallbackContent(){return [
+{id:'magazine-demo',type:'magazine',title:'MAGAZINE / EDIÇÃO 01',description:'Capa de exemplo. Cadastre scans no admin usando body como URLs ou url principal.',cover:'',body:['https://dummyimage.com/1200x1600/111/fff&text=CYBERISDEAD+MAGAZINE+01','https://dummyimage.com/1200x1600/222/fff&text=PAGE+02'],status:'published'},
+{id:'radio-demo',type:'radio',title:'RÁDIO / EPISÓDIO EXCLUSIVO',description:'Episódio exclusivo para membros com comentários em tempo real.',cover:'',url:'',status:'published'},
+{id:'vault-demo',type:'vault',title:'VAULT / PACK DE ARQUIVOS',description:'Downloads, tracks, PDFs e materiais antecipados aparecem aqui com capa.',cover:'',url:'#',status:'published'},
+{id:'video-demo',type:'video',title:'VÍDEO / GRAVAÇÃO EXCLUSIVA',description:'Cole um embed do YouTube no campo URL do admin para abrir aqui.',cover:'',url:'https://www.youtube.com/embed/dQw4w9WgXcQ',status:'published'},
+{id:'feed-demo',type:'feed',title:'BEM-VINDO À COMUNIDADE',description:'Posts de membros e atualizações exclusivas aparecem nesse feed.',cover:'',status:'published'}]}
+async function loadContent(){ try{const snap=await getDocs(collection(db,'memberContent')); const arr=[]; snap.forEach(d=>{const x=normalizeItem(d.id,d.data()); if(x.status!=='draft'&&x.status!=='archived') arr.push(x)}); content=arr.length?arr:fallbackContent(); }catch(e){console.warn(e); content=fallbackContent();} renderAll(); }
+function card(item){const bg=item.cover?`style="background-image:url('${esc(item.cover)}')"`:''; return `<button class="card" data-open="${esc(item.id)}"><div class="thumb" ${bg}></div><div class="card-body"><small>${esc(item.type)} ${item.tags?.length?' / '+esc(item.tags.join(', ')):''}</small><h3>${esc(item.title)}</h3><p>${esc(item.description)}</p><div class="actions"><span class="btn dark">Abrir</span></div></div></button>`}
+function renderGrid(id, types){const items=content.filter(x=>types.includes(String(x.type).toLowerCase())); $(id).innerHTML=items.map(card).join('')||'<div class="empty">Nada cadastrado ainda. Use a aba Member Content do admin.</div>'}
+function renderAll(){ renderGrid('magazineGrid',['magazine']); renderGrid('vaultGrid',['vault','download','track','file','link']); renderGrid('videosGrid',['video']); const radios=content.filter(x=>['radio','episode','audio'].includes(String(x.type).toLowerCase())); $('radioGrid').innerHTML=radios.map(card).join('')||'<div class="empty">Cadastre episódios exclusivos em Member Content com tipo radio.</div>'; if(radios[0]) selectRadio(radios[0]); renderPosts(); renderSaved(); bindCards(); }
+function bindCards(){document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openItem(b.dataset.open));}
+function saveItem(id){ if(!saved.includes(id)) saved.unshift(id); localStorage.setItem('cyberisdead_member_saved',JSON.stringify(saved.slice(0,80))); renderSaved(); toast('Salvo.'); }
+function renderSaved(){const items=saved.map(id=>content.find(x=>x.id===id)).filter(Boolean); const html=items.map(x=>`<button class="card" data-open="${esc(x.id)}"><div class="thumb" ${x.cover?`style="background-image:url('${esc(x.cover)}')"`:''}></div><div class="card-body"><small>${esc(x.type)}</small><h3>${esc(x.title)}</h3><p>${esc(x.description)}</p></div></button>`).join('')||'<div class="empty">Nada salvo ainda. Clique em Salvar nos conteúdos para aparecerem aqui no topo do perfil.</div>'; if($('savedList')) $('savedList').innerHTML=html; if($('heroSavedList')) $('heroSavedList').innerHTML=html; bindCards();}
+function videoEmbed(url){ if(!url) return ''; if(url.includes('youtube.com/embed')||url.includes('player.vimeo')) return url; const yt=url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/); if(yt) return `https://www.youtube.com/embed/${yt[1]}`; return url; }
+function openItem(id){const item=content.find(x=>x.id===id); if(!item)return; if(['radio','episode','audio'].includes(String(item.type).toLowerCase())) selectRadio(item); $('modalKicker').textContent=String(item.type||'content').toUpperCase(); let body=`<h2 class="modal-title">${esc(item.title)}</h2><p class="modal-desc">${esc(item.description)}</p>`; const type=String(item.type).toLowerCase(); if(type==='magazine'){const pages=(Array.isArray(item.pages)?item.pages:[]).concat(item.body||[]).filter(Boolean); body+=renderFlipbook(pages.length?pages:[item.cover].filter(Boolean));}
+else if(type==='video'){const src=videoEmbed(item.url); body+=src?`<div class="embed-wrap"><iframe src="${esc(src)}" allowfullscreen></iframe></div>`:''; body+=commentsMini(item.id);}
+else { if(item.cover) body+=`<img src="${esc(item.cover)}" style="width:100%;max-height:480px;object-fit:cover;background:#000;margin:8px 0">`; if(item.url) body+=`<div class="actions"><a class="btn" href="${esc(item.url)}" target="_blank" rel="noopener">Abrir / baixar</a></div>`; if(item.body?.length) body+=`<div class="modal-desc">${item.body.map(p=>`<p>${esc(p)}</p>`).join('')}</div>`; }
+body+=`<div class="actions"><button class="btn dark" id="saveModalItem">Salvar</button></div>`; $('modalBody').innerHTML=body; $('contentModal').classList.add('open'); $('saveModalItem').onclick=()=>saveItem(item.id); setupFlipbook();}
+function renderFlipbook(pages){return `<div class="flipbook" data-page="0">${pages.map((p,i)=>`<div class="flip-page ${i?'hidden':''}" data-i="${i}"><div class="flip-stage"><img src="${esc(typeof p==='string'?p:(p.src||p.url||''))}" alt="page"></div></div>`).join('')}<div class="flip-controls"><button data-flip="prev">←</button><span class="flip-counter">1 / ${pages.length}</span><button data-flip="next">→</button></div></div>`}
+function setupFlipbook(){const fb=document.querySelector('.flipbook'); if(!fb)return; const pages=[...fb.querySelectorAll('.flip-page')], counter=fb.querySelector('.flip-counter'); const go=n=>{let i=Number(fb.dataset.page||0); i=(i+n+pages.length)%pages.length; fb.dataset.page=i; pages.forEach((p,idx)=>p.classList.toggle('hidden',idx!==i)); counter.textContent=`${i+1} / ${pages.length}`}; fb.querySelector('[data-flip="prev"]').onclick=()=>go(-1); fb.querySelector('[data-flip="next"]').onclick=()=>go(1);}
+function selectRadio(item){ selectedEpisode=item.id; $('radioTitle').textContent=item.title; $('radioDesc').textContent=item.description; $('radioMeta').textContent=(item.type||'episode')+' / '+item.id; $('radioCover').style.backgroundImage=item.cover?`url('${item.cover}')`:''; loadComments(); }
+function commentsMini(id){return `<div class="comments-box"><h2 class="section-title">Comentários do vídeo</h2><p class="section-text">Use a área Rádio/Comentários para thread em tempo real. ID: ${esc(id)}</p></div>`}
+async function loadComments(){ const box=$('commentsList'); box.innerHTML='Carregando...'; try{const snap=await getDocs(collection(db,'memberComments')); const arr=[]; snap.forEach(d=>{const x=d.data(); if(String(x.episodeId||'')===String(selectedEpisode) && x.status!=='hidden') arr.push({id:d.id,...x})}); arr.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)); box.innerHTML=arr.map(c=>`<div class="comment"><b>${esc(c.name||c.email||'member')} <span class="meta">${esc(c.badge||'member')}</span></b><p>${esc(c.text||'')}</p><div class="emoji-row"><button>🖤</button><button>🔥</button><button>Responder</button></div></div>`).join('')||'<div class="empty">Sem comentários ainda. Seja o primeiro.</div>'; }catch(e){box.innerHTML='<div class="empty">Comentários indisponíveis. Verifique regras do Firestore.</div>';}}
+async function sendComment(e){e.preventDefault(); const text=$('commentText').value.trim(); if(!text)return; await addDoc(collection(db,'memberComments'),{episodeId:selectedEpisode,name:$('commentName').value||currentUser?.email||'member',email:currentUser?.email||'',uid:currentUser?.uid||'',badge:userData.role==='admin'?'ADMIN':(userData.tier||'MEMBER'),text,status:'approved',createdAt:serverTimestamp()}); $('commentText').value=''; await loadComments();}
+function renderPosts(){
+  const posts=JSON.parse(localStorage.getItem('cyberisdead_member_posts_local')||'[]');
+  const seeded = posts.length ? posts : [
+    {name:'CYBERISDEAD', badge:'CRIADOR', title:'Bem-vindo à comunidade privada', text:'Use este espaço para compartilhar referências, dúvidas, bastidores, links, sons e ideias com outros assinantes.', createdAt:new Date().toISOString()},
+    {name:'Membro', badge:'ASSINANTE', title:'Drop de referências da semana', text:'Poste aqui músicas, filmes, zines, fotos ou qualquer coisa que combine com a energia do projeto.', createdAt:new Date().toISOString()}
+  ];
+  $('postsList').innerHTML=seeded.map((p,i)=>{
+    const initial=esc(String(p.name||'M').trim().charAt(0)||'M');
+    const badge=esc(p.badge||'MEMBRO');
+    return `<article class="community-post"><div class="community-post-head"><div class="community-post-avatar">${initial}</div><div><div><span class="community-post-name">${esc(p.name||'Membro')}</span><span class="community-post-badge">${badge}</span><span class="community-post-time">agora</span></div><h3 class="community-post-title">${esc(p.title||'Post')}</h3></div><div class="community-menu">⋮</div></div><p class="community-post-text">${esc(p.text||'')}</p><div class="community-post-actions"><button type="button">♡ Curtir</button><button type="button">↗ Compartilhar</button><button type="button">▣ Salvar</button><button type="button">💬 Responder</button></div></article>`
+  }).join('') || '<div class="community-empty">O feed está pronto. Publique o primeiro post.</div>';
+}
+function sendPost(e){e.preventDefault(); const title=$('postTitle').value.trim()||'Post sem título'; const text=$('postText').value.trim(); if(!text)return; const posts=JSON.parse(localStorage.getItem('cyberisdead_member_posts_local')||'[]'); posts.unshift({title,text,name:($('profileName')?.textContent||userData.displayName||'member'),badge:String(userData.tier||userData.plan||userData.membershipTier||'ASSINANTE').toUpperCase(),createdAt:new Date().toISOString()}); localStorage.setItem('cyberisdead_member_posts_local',JSON.stringify(posts.slice(0,50))); $('postTitle').value=''; $('postText').value=''; renderPosts();}
+$('modalClose').onclick=()=>$('contentModal').classList.remove('open'); $('contentModal').addEventListener('click',e=>{if(e.target.id==='contentModal')$('contentModal').classList.remove('open')}); $('commentForm').addEventListener('submit',sendComment); $('postForm').addEventListener('submit',sendPost); document.querySelectorAll('[data-emoji]').forEach(b=>b.onclick=()=>{$('commentText').value += ' '+b.dataset.emoji}); $('saveEpisodeBtn').onclick=()=>saveItem(selectedEpisode);
+onAuthStateChanged(auth, async user=>{currentUser=user; userData=await loadUser(user); if(adminPreview){try{userData={...userData,...JSON.parse(localStorage.getItem('cyberisdead_admin_preview_profile')||'{}')}}catch(e){}} const ok=canAccess(user,userData); if(adminPreview){$('adminBanner').classList.remove('hidden')} if(!ok){$('lockedTitle').textContent='VOCÊ PRECISA DE UMA ASSINATURA ATIVA.'; $('lockedView').classList.remove('hidden'); $('dashboardView').classList.add('hidden'); return;} $('lockedView').classList.add('hidden'); $('dashboardView').classList.remove('hidden'); applyProfile(user,userData); await loadContent();});
+</script>
+
+<script type="module">
+import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const CFG={apiKey:"AIzaSyBOl8WXhHyG8M2Uh9zFTwt4mClqRYO4GIc",authDomain:"cyberisdeadesite.firebaseapp.com",projectId:"cyberisdeadesite",storageBucket:"cyberisdeadesite.firebasestorage.app",messagingSenderId:"145227236840",appId:"1:145227236840:web:c691a4f7e31ca32cff905d",measurementId:"G-3QBSY750TT"};
+const builderEsc=v=>String(v??"").replace(/[&<>'"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","'":"&#39;",'"':"&quot;"}[c]));
+const clean=v=>String(v||"").replace(/[<>]/g,"").replace(/javascript:/gi,"");
+function st(s={}){const map={background:"background",color:"color",align:"text-align",padding:"padding",margin:"margin",minHeight:"min-height",fontSize:"font-size",radius:"border-radius",border:"border",maxWidth:"max-width",gap:"gap",display:"display",justify:"justify-content",alignItems:"align-items",width:"width",height:"height",opacity:"opacity",shadow:"box-shadow",transform:"transform",zIndex:"z-index"};return Object.entries(map).map(([k,css])=>s[k]?`${css}:${clean(s[k])}`:"").filter(Boolean).join(";");}
+function btn(c={}){if(!c.buttonLabel)return"";let href=c.buttonUrl||"#"; if(c.action==="builderPage")href=`index.html?builder=${encodeURIComponent(c.pageTarget||href||"home")}`; if(c.action==="section")href=`#${String(c.section||href||"home").replace(/^#/,"")}`; if(c.action==="memberArea")href="member-area.html"; if(c.action==="email"&&!href.startsWith("mailto:"))href=`mailto:${href}`; if(c.action==="whatsapp"&&!href.startsWith("http"))href=`https://wa.me/${String(href).replace(/\D/g,"")}`; return `<a class="builder-public-button" href="${builderEsc(href)}">${builderEsc(c.buttonLabel)}</a>`;}
+function html(b){const c=b.content||{},items=Array.isArray(b.items)?b.items:[],base=st(b.style||{}),title=c.title?`<h2>${builderEsc(c.title)}</h2>`:"",text=c.text?`<p>${builderEsc(c.text).replace(/\n/g,"<br>")}</p>`:"",button=btn(c); if(b.type==="grid")return `<section class="builder-public-block" style="${base}">${title}${text}<div class="builder-public-grid">${items.map(i=>`<article><h3>${builderEsc(i.title||'Item')}</h3><p>${builderEsc(i.text||i.caption||'')}</p>${i.url?`<a href="${builderEsc(i.url)}">Abrir</a>`:""}</article>`).join("")}</div>${button}</section>`; if(b.type==="image")return `<section class="builder-public-block" style="${base}">${title}${c.media?`<img src="${builderEsc(c.media)}" alt="${builderEsc(c.alt||'')}"/>`:""}${text}${button}</section>`; return `<section class="builder-public-block" style="${base}">${title}${text}${button}</section>`;}
+async function loadMemberBuilder(){try{const app=getApps().length?getApp():initializeApp(CFG);const db=getFirestore(app);const snap=await getDocs(collection(db,"builderPages"));const page=snap.docs.map(d=>({id:d.id,...d.data()})).find(p=>p.status==="published"&&(p.id==="member-area"||p.slug==="member-area")); if(!page||!page.blocks?.length)return; const wrap=document.querySelector('.wrap'); if(!wrap)return; let root=document.getElementById('memberBuilderRenderRoot'); if(!root){root=document.createElement('section');root.id='memberBuilderRenderRoot';root.className='section aura-builder-page';wrap.insertBefore(root, document.getElementById('dashboardView')||wrap.firstChild);} root.style.background=clean(page.style?.background||""); root.style.color=clean(page.style?.color||""); root.innerHTML=page.blocks.map(html).join(''); if(page.replaceSite){document.getElementById('dashboardView')?.classList.add('hidden');}}
+catch(e){console.warn('[Member Builder] indisponível',e)}}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadMemberBuilder,{once:true});else loadMemberBuilder();
+</script>
+<style>.aura-builder-page{max-width:1280px;margin:0 auto 10px;display:grid;gap:8px}.builder-public-block{border:1px solid #333;background:rgba(0,0,0,.62);padding:18px;text-transform:none}.builder-public-block h2{font-size:clamp(32px,6vw,84px);line-height:.86;letter-spacing:-.065em;text-transform:uppercase;font-weight:400;margin-bottom:10px}.builder-public-block p{font-size:14px;line-height:20px;color:#ccc;text-transform:none}.builder-public-button{display:inline-flex;margin-top:12px;border:1px solid #fff;background:#fff;color:#000;padding:9px 11px;text-transform:uppercase;font-size:10px}.builder-public-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px}.builder-public-grid article{border:1px solid #333;padding:12px;background:#050505}.builder-public-block img{width:100%;max-height:440px;object-fit:cover}</style>
+</body>
+</html>
