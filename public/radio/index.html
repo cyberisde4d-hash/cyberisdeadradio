@@ -4843,22 +4843,45 @@ programLinks.innerHTML=renderStationLinks(s,'program');
 console.log("PROGRAMA CLICADO:", s);
 console.log("AUDIO RECEBIDO:", s.audio);
 
-const audioSrc =
-  typeof s.audio === "string"
-    ? s.audio
-    : s.audio?.url || s.audio?.src || "";
+const rawAudio =
+  (typeof s.audio === "string" ? s.audio : (s.audio?.url || s.audio?.src || "")) ||
+  (s.audioHq || s.audioHQ || s.audioHigh || "") ||
+  (s.audioUrl || "") ||
+  (s.audioSubstack || "") ||
+  (s.download || "");
+const audioSrc = String(rawAudio || "").trim();
+const isAbsoluteAudio = /^(https?:\/\/|data:|blob:)/i.test(audioSrc);
+const proxyBase = ((typeof siteSettings !== 'undefined' && siteSettings.proxyUrl) || '').trim() || 'https://cyber-proxy.cyberisde4d.workers.dev/?url=';
+function resolveLocalAudio(src){
+  if(!src) return "";
+  if(/^(https?:\/\/|data:|blob:|\/)/i.test(src)) return src;
+  return '/' + String(src).replace(/^\.\/+/, '');
+}
+function isDirectPlayHost(src){
+  try{
+    const u = new URL(src);
+    if(/firebasestorage\.googleapis\.com$/i.test(u.hostname)) return true;
+    if(/storage\.googleapis\.com$/i.test(u.hostname)) return true;
+    if(/\.firebasestorage\.app$/i.test(u.hostname)) return true;
+    if(u.origin === location.origin) return true;
+  }catch(e){}
+  return false;
+}
+const directAudio = isAbsoluteAudio ? audioSrc : resolveLocalAudio(audioSrc);
+const shouldProxy = !!(audioSrc && isAbsoluteAudio && proxyBase && !isDirectPlayHost(audioSrc));
+const proxiedAudio = shouldProxy ? proxyBase + encodeURIComponent(audioSrc) : directAudio;
 
-const proxyBase = ((typeof siteSettings !== 'undefined' && siteSettings.proxyUrl) || '').trim() || 'https://cyberisdead-backend.onrender.com/api/audio-proxy?url=';
-const proxiedAudio =
-  audioSrc
-    ? proxyBase +
-      encodeURIComponent(audioSrc)
-    : "";
-
-if(radioAudio.src !== proxiedAudio) {
-  radioAudio.src = proxiedAudio;
-  radioAudio.dataset.directSrc = audioSrc;
-  radioAudio.dataset.proxyFailed = "";
+if(audioSrc){
+  if(radioAudio.getAttribute('src') !== proxiedAudio && radioAudio.src !== proxiedAudio) {
+    radioAudio.src = proxiedAudio || directAudio;
+    radioAudio.dataset.directSrc = directAudio;
+    radioAudio.dataset.proxyFailed = "";
+  }
+} else {
+  radioAudio.removeAttribute('src');
+  try{radioAudio.load();}catch(e){}
+  radioAudio.dataset.directSrc = "";
+  radioAudio.dataset.proxyFailed = "1";
 }
 if(!window.__audioFallbackBound){
   window.__audioFallbackBound = true;
@@ -4866,7 +4889,7 @@ if(!window.__audioFallbackBound){
     try{
       const direct = radioAudio.dataset.directSrc || '';
       if(!direct || radioAudio.dataset.proxyFailed) return;
-      if(!String(radioAudio.src||'').includes('/api/audio-proxy')) return;
+      if(String(radioAudio.src||'') === direct) return;
       radioAudio.dataset.proxyFailed = '1';
       console.warn('[radio] proxy falhou, tentando áudio direto');
       radioAudio.src = direct;
@@ -4918,6 +4941,11 @@ updateMediaSession(s);
     function toggleRadio(){
       const s = stations[currentStation];
       updateMediaSession(s);
+      const hasSrc = !!(radioAudio.getAttribute('src') || radioAudio.currentSrc || radioAudio.dataset.directSrc);
+      if(!hasSrc){
+        auraFeedback('Áudio da rádio não configurado');
+        return;
+      }
       if(!radioPlaying){
         radioAudio.play().then(()=>{
           setRadioButtonsPlaying(true);
@@ -5514,7 +5542,9 @@ document.querySelectorAll('[data-info]').forEach(card=>card.addEventListener('cl
         name: cleanText(item.name || item.title || docId || `Episódio ${i+1}`),
         type: cleanText(item.type || 'Radio'),
         desc: cleanText(item.desc || item.excerpt || item.description || item.episodeDescription || ''),
-        audio: cleanText(item.audio || item.audioUrl || ''),
+        audio: cleanText(item.audioHq || item.audioHQ || item.audioHigh || item.audio || item.audioUrl || ''),
+        audioHq: cleanText(item.audioHq || item.audioHQ || item.audioHigh || ''),
+        audioSubstack: cleanText(item.audioSubstack || ''),
         video: cleanText(item.video || item.videoUrl || item.embed || ''),
         cover: cleanText(item.cover || item.coverUrl || ''),
         background: bg,

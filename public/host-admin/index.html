@@ -111,24 +111,37 @@ details.advanced input,details.advanced textarea{opacity:.8;font-family:Consolas
     <p class="muted" style="margin:-6px 0 14px">O episódio entra automaticamente nos episódios da estação escolhida.</p>
     <div class="field"><label>Descrição curta</label><textarea id="stations_desc"></textarea></div>
 
-    <div class="step-head"><span class="step-num">2</span><div><h3>Áudio</h3><p class="muted">Envie o .wav — o link é gerado e testado sozinho.</p></div><span class="pill is-idle" id="pillAudio">Áudio pendente</span></div>
+    <div class="step-head"><span class="step-num">2</span><div><h3>Áudio</h3><p class="muted">Envie o áudio do episódio — o link sai sozinho.</p></div><span class="pill is-idle" id="pillAudio">Áudio pendente</span></div>
 
     <div class="field">
-  <label>Backend URL (envio Tumblr/Substack)</label>
+  <label>Servidor de envio</label>
   <input id="backendUrl" placeholder="https://...">
-  <p class="hint">Padrão: Worker (Tumblr/Substack). Local: http://localhost:3000 · Túnel: cole a URL.</p>
+  <div class="upload-row" style="margin-top:10px">
+    <span class="pill is-idle" id="pillServer">Servidor: verificando…</span>
+    <button id="diagBtn" type="button" class="ghost">Testar conexão</button>
+  </div>
+  <div id="diagDetail" class="upload-status"></div>
+  <p class="hint">Preenchido automaticamente. Não altere sem orientação.</p>
 </div>
 
    <div class="field dropzone">
   <label>Arquivo de áudio (.wav / .mp3)</label>
   <input id="stations_audio_file" type="file" accept=".wav,.mp3,audio/*">
-  <p class="hint">Foto vai ao Tumblr e áudio ao Substack pelo backend acima.</p>
+  <p class="hint">Arquivo de áudio (WAV ou MP3, qualquer duração).</p>
 </div>
 
 <div class="upload-row">
-<button id="upload_audio_btn" type="button">
+<button id="upload_audio_hq_btn" type="button" style="display:none">
+  Enviar audio HQ
+</button>
+<button id="upload_audio_btn" type="button" class="ghost">
   Enviar áudio
 </button>
+</div>
+
+<div id="audioProgressWrap" class="hidden" style="margin-top:10px">
+  <div class="progress-track"><div class="progress-fill" id="audioProgressFill" style="width:0"></div></div>
+  <small id="audioProgressLabel" style="color:#888">0% • 00:00</small>
 </div>
 
 <div id="stations_audio_status" class="media-box"></div>
@@ -189,7 +202,7 @@ details.advanced input,details.advanced textarea{opacity:.8;font-family:Consolas
         <div class="cover-upload">
           <label>Foto de fundo da capa</label>
           <input id="coverImageInput" type="file" accept="image/*">
-          <div class="cover-note">Escolha uma foto do computador. Ela é usada no gerador e não é enviada para o Firebase nesta versão.</div>
+          <div class="cover-note">Escolha uma foto do computador. Ela é usada só no gerador desta página.</div>
         </div>
 
         <div class="cover-tools">
@@ -277,7 +290,7 @@ $("stations_cover_file").onchange = async () => {
     }
 
     setPill("pillCover","loading","Enviando capa…");
-    message("Enviando capa para o Tumblr... (rode o backend local: npm run backend)");
+    message("Enviando capa...");
 
     const formData = new FormData();
     formData.append("cover", file);
@@ -303,64 +316,132 @@ $("stations_cover_file").onchange = async () => {
     updateRadioPreview();
 
     $("stations_cover_status").textContent =
-      "Capa enviada para o Tumblr com sucesso.";
+      "Capa enviada com sucesso.";
 
     refreshCoverPill();
 
-    console.log(
-      "URL Tumblr da capa:",
-      result.coverUrl
-    );
+console.log("Capa pronta.");
 
   } catch (e) {
     console.error(e);
 
     setPill("pillCover","error","Falha na capa");
-    $("stations_cover_status").textContent =
-      "Erro no upload: " + e.message;
+$("stations_cover_status").textContent = "Falha no envio da capa. Confira sua internet e tente de novo; se persistir, avise o administrador.";
+  }
+};
+
+$("upload_audio_hq_btn").onclick = async () => {
+  {
+    const __f = $("stations_audio_file").files[0];
+    if (__f && __f.size > 200 * 1024 * 1024) {
+      message("Arquivo com " + (__f.size/1048576).toFixed(0) + "MB: acima dos 200MB do Firebase. Aponte o Backend URL para o backend local (localhost:3000 ou túnel), que transmite do disco sem teto.", true);
+      setPill("pillAudio","error","Arquivo grande");
+      return;
+    }
+  }
+
+  try {
+    const file = $("stations_audio_file").files[0];
+    if (!file) { message("Selecione um arquivo de audio", true); return; }
+    if (!currentUser) { message("Faca login para enviar HQ.", true); return; }
+    setPill("pillAudio","loading","Enviando HQ...");
+    const hqBtn = $("upload_audio_hq_btn");
+    if (hqBtn) hqBtn.disabled = true;
+    message("Enviando audio HQ para o Firebase (sem recompressao)...");
+    const safeName = String(file.name || "audio.mp3").replace(/[^a-zA-Z0-9._-]+/g, "_");
+    const path = "audio-hq/" + currentUser.uid + "/" + Date.now() + "-" + safeName;
+    const storageRef = ref(storage, path);
+    const task = uploadBytesResumable(storageRef, file, { contentType: file.type || "audio/mpeg" });
+    await new Promise((resolve, reject) => { task.on("state_changed", null, reject, resolve); });
+    const url = await getDownloadURL(task.snapshot.ref);
+    $("stations_audio").value = url;
+    if (hqBtn) hqBtn.disabled = false;
+    renderAudioStatus();
+    message("Audio HQ no ar: " + (file.size ? (file.size/1048576).toFixed(1) + " MB, " : "") + "kbps original preservado.");
+    console.log("URL HQ Firebase:", url);
+  } catch (e) {
+    console.error(e);
+    setPill("pillAudio","error","Falha no HQ");
+    const hqBtn = $("upload_audio_hq_btn");
+    if (hqBtn) hqBtn.disabled = false;
+    let msg = e && e.message ? e.message : String(e);
+    if (/storage\/unauthorized/i.test(msg)) msg += " (verifique login admin + storage.rules)";
+    if (/storage\/retry-limit-exceeded|canceled/i.test(msg)) msg += " (arquivo grande demais para a regra atual)";
+    message("Erro no upload HQ: " + msg, true);
   }
 };
 
 $("upload_audio_btn").onclick = async () => {
+  const CHUNK = 8 * 1024 * 1024;
   try {
     const file = $("stations_audio_file").files[0];
-
-    if (!file) {
-      message("Selecione um arquivo WAV");
-      return;
-    }
-
+    if (!file) { message("Selecione um arquivo de áudio.", true); return; }
+    audioProgressStart();
     setPill("pillAudio","loading","Enviando áudio…");
-    $("upload_audio_btn").disabled=true;
-    message("Enviando áudio para o Substack...");
-
-    const formData = new FormData();
-    formData.append("audio", file);
-
-    const response = await fetch(API_BASE + "/api/upload-audio", {
+    $("upload_audio_btn").disabled = true;
+    message("Preparando envio...");
+    const createRes = await fetch(API_BASE + "/api/upload-audio-create", {
       method: "POST",
-      body: formData
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ fileName: file.name || "audio.mp3", fileSize: file.size, fileType: file.type || "audio/mpeg" })
     });
-
-    const result = await response.json();
-
-    if (!response.ok || !result.ok) {
-      throw new Error(result.message || "Falha no upload.");
+    const created = await createRes.json();
+    if (!createRes.ok || !created.ok) throw new Error(created.message || "Falha ao reservar upload.");
+    const { uploadId, multipartId, parts } = created;
+    const etags = [];
+    for (let pi = 0; pi < parts.length; pi++) {
+      const start = pi * created.partSize;
+      const end = Math.min(file.size, start + created.partSize);
+      let done = false, lastErr = null;
+      for (let attempt = 1; attempt <= 3 && !done; attempt++) {
+        try {
+          const pr = await fetch(API_BASE + "/api/upload-audio-part?url=" + encodeURIComponent(parts[pi]), {
+            method: "POST",
+            headers: { "Content-Type": "application/octet-stream" },
+            body: file.slice(start, end)
+          });
+          const pj = await pr.json();
+          if (!pr.ok || !pj.ok) throw new Error(pj.message || ("HTTP " + pr.status));
+          etags.push(pj.etag);
+          done = true;
+        } catch (err) {
+          lastErr = err;
+          if (attempt < 3) await new Promise(r => setTimeout(r, 2000));
+        }
+      }
+      if (!done) throw new Error("Parte " + (pi + 1) + "/" + parts.length + ": " + (lastErr && lastErr.message || lastErr));
+      audioProgressSet(((pi + 1) / parts.length) * 100); message("Enviando áudio...");
     }
-
-    $("stations_audio").value = result.audioUrl;
-
-    $("upload_audio_btn").disabled=false;
-    renderAudioStatus();
-    message("Áudio enviado para o Substack com sucesso!");
-
-    console.log("URL Substack:", result.audioUrl);
-
+    let fin = null, finRes = null;
+    for (let fattempt = 1; fattempt <= 4; fattempt++) {
+      message("Finalizando envio — arquivos longos levam minutos, não feche...");
+      finRes = await fetch(API_BASE + "/api/upload-audio-finish", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ uploadId, multipartId, etags })
+      });
+      fin = await finRes.json();
+      if (finRes.ok && fin.ok) break;
+      if (finRes.status === 504 && fattempt < 4) continue;
+      throw new Error(fin.message || "Falha ao finalizar.");
+    }
+    const prevHQ = String($("stations_audio").value || "").trim();
+    if (/firebasestorage|storage\.googleapis/i.test(prevHQ)) {
+      console.log("Envio reserva OK.");
+      message("Áudio enviado com sucesso!"); audioProgressDone(true);
+    } else {
+      $("stations_audio").value = fin.audioUrl;
+      renderAudioStatus();
+      message("Áudio enviado com sucesso!"); audioProgressDone(true);
+    }
+    console.log("Áudio pronto.");
+    $("upload_audio_btn").disabled = false;
   } catch (e) {
     console.error(e);
     setPill("pillAudio","error","Falha no áudio");
-    $("upload_audio_btn").disabled=false;
-    message("Erro no upload: " + e.message, true);
+    $("upload_audio_btn").disabled = false; audioProgressDone(false);
+    console.error(e);
+    message("Falha no envio. Confira sua internet e tente de novo; se persistir, avise o administrador.", true);
   }
 };
 
@@ -386,10 +467,34 @@ function initBackendUrl(){
   el.addEventListener("change", ()=>{
     const v = String(el.value || "").trim().replace(/\/+$/,"");
     try{ if(v) localStorage.setItem("hostBackendUrl", v); else localStorage.removeItem("hostBackendUrl"); }catch(e){}
-    message("Backend URL salva. Recarregue a página para valer.");
+    message("Backend URL salva. Testando…"); testBackendDiag();
   });
 }
 initBackendUrl();
+let __upTimer = null, __upStart = 0, __upPct = 0;
+function __upFmt(ms){ const s=Math.floor(ms/1000), h=Math.floor(s/3600), m=Math.floor(s%3600/60), ss=s%60, p=n=>String(n).padStart(2,"0"); return (h?h+":":"")+p(m)+":"+p(ss); }
+function audioProgressStart(){ const w=$("audioProgressWrap"); if(w) w.classList.remove("hidden"); __upStart=Date.now(); __upPct=0; audioProgressPaint(); clearInterval(__upTimer); __upTimer=setInterval(audioProgressPaint,500); }
+function audioProgressSet(p){ __upPct=Math.max(0,Math.min(100,Math.round(p))); audioProgressPaint(); }
+function audioProgressPaint(){ const f=$("audioProgressFill"), l=$("audioProgressLabel"); if(f) f.style.width=__upPct+"%"; if(l) l.textContent=__upPct+"% • "+__upFmt(Date.now()-__upStart); }
+function audioProgressDone(ok){ clearInterval(__upTimer); audioProgressPaint(); const l=$("audioProgressLabel"); if(l) l.textContent+=" • "+(ok?"concluído":"interrompido"); }
+async function testBackendDiag(){
+  const base = backendBase();
+  const pt = $("pillServer"), detail = $("diagDetail");
+  const set = (el, state, text) => { if(el){ el.className = "pill is-" + state; el.textContent = text; } };
+  set(pt, "loading", "Servidor: testando…");
+  if(detail) detail.textContent = "Consultando " + base + "/api/diag …";
+  try{
+    const r = await fetch(base + "/api/diag", { cache: "no-store" });
+    const d = await r.json();
+    if(d?.ok) { set(pt, "ok", "Servidor: OK"); if(detail) detail.textContent = "Servidor pronto — envios liberados."; }
+    else { set(pt, "error", "Servidor: FALHA"); if(detail) detail.textContent = "Falha no servidor — avise o administrador."; }
+  }catch(e){
+set(pt, "error", "Servidor: sem resposta");
+    if(detail) detail.textContent = "Sem resposta de " + base + " — confira a URL e a rede.";
+  }
+}
+$("diagBtn")?.addEventListener("click", testBackendDiag);
+testBackendDiag();
 function message(text,error=false){
   const el=$("message");
   el.textContent=text;
@@ -1323,7 +1428,7 @@ function renderAudioStatus(){
   if(!box) return;
   const url=String($("stations_audio")?.value||"").trim();
   if(url){
-    box.innerHTML=`<div class="ok-line">Áudio carregado — aperte o play para conferir.</div><audio controls preload="metadata" src="${escapeHtml(url)}"></audio>`;
+    box.innerHTML = (() => { const u = url; const isHQ = /firebasestorage|storage\.googleapis/i.test(u); const isSub = /substack/i.test(u); const tag = isHQ ? "HQ • kbps original" : (isSub ? "Substack • kbps de podcast" : "audio"); return `<div class="ok-line">Audio carregado — aperte o play para conferir.</div><audio controls preload="metadata" src="${escapeHtml(u)}"></audio>`; })();
     setPill("pillAudio","ok","Áudio pronto");
   }else if(!box.querySelector("audio")){
     setPill("pillAudio","idle","Áudio pendente");

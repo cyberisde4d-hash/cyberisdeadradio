@@ -29,7 +29,14 @@ service cloud.firestore {
     }
 
     match /articles/{id} { allow read: if true; allow write: if isAdmin(); }
-    match /stations/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /stations/{id} {
+      allow read: if true;
+      allow create: if isAdmin() || (signedIn() && request.resource.data.hostId == request.auth.uid);
+      allow update: if isAdmin() || (signedIn()
+        && resource.data.hostId == request.auth.uid
+        && request.resource.data.hostId == request.auth.uid);
+      allow delete: if isAdmin() || (signedIn() && resource.data.hostId == request.auth.uid);
+    }
     match /products/{id} { allow read: if true; allow write: if isAdmin(); }
     match /hosts/{id} { allow read: if true; allow write: if isAdmin(); }
     match /settings/{id} { allow read: if true; allow write: if isAdmin(); }

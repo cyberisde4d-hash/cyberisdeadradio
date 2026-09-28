@@ -45,6 +45,16 @@ app.post(
         });
       }
 
+      // Tumblr exige OAuth 1.0a de usuário (4 credenciais). Só consumer key/secret dá 401.
+      const missing = ["TUMBLR_CONSUMER_KEY", "TUMBLR_CONSUMER_SECRET", "TUMBLR_TOKEN", "TUMBLR_TOKEN_SECRET"]
+        .filter((k) => !String(process.env[k] || "").trim());
+      if (missing.length) {
+        return res.status(500).json({
+          ok: false,
+          message: `req:${missing.join(",")} ausente(s) no .env — Tumblr exige as 4 credenciais (consumer + token de usuário). Só consumer key/secret dá 401.`
+        });
+      }
+
       filePath = req.file.path;
 
       const response = await client.createPost("cyberisdead", {
@@ -90,9 +100,15 @@ app.post(
     } catch (error) {
       console.error("Erro no upload da capa:", error);
 
-      res.status(500).json({
+      const status = error.response?.status || error.status || 500;
+      let message = error.response?.body || error.message;
+      if (status === 401 || /unauthorized/i.test(String(message))) {
+        message = `${message} (OAuth rejeitado: confira TUMBLR_TOKEN/TOKEN_SECRET do usuário dono do blog + consumer do mesmo app. Consumer sozinho sempre dá 401.)`;
+      }
+
+      res.status(status === 401 ? 502 : status).json({
         ok: false,
-        message: error.response?.body || error.message
+        message
       });
 
     } finally {

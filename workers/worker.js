@@ -16,11 +16,11 @@
 
 const TUMBLR_API = "https://api.tumblr.com";
 const TUMBLR_BLOG = "cyberisdead";
-const SUBSTACK_BASE = "https://cyberisdeadesite.substack.com";
+const SUBSTACK_BASE = "https://cyberisdead.substack.com";
 const SUBSTACK_API = "https://api.substack.com";
 const MAX_BYTES = 90 * 1024 * 1024;
 const SUBSTACK_UA = "Mozilla/5.0";
-const SUBSTACK_REFERER = "https://cyberisdeadesite.substack.com/";
+const SUBSTACK_REFERER = "https://cyberisdead.substack.com/";
 
 /* ---- Bloco 1: segredos (trim) + HTTP helpers + CORS ---------------------- */
 
@@ -35,6 +35,18 @@ function S(env) {
     lli: t(env.SUBSTACK_LLI),
     postId: t(env.SUBSTACK_POST_ID),
   };
+}
+
+// Tumblr POST /v2/blog/{blog}/post exige OAuth 1.0a de USUÁRIO (4 credenciais).
+// Só consumer key/secret (app) sem token/token_secret (usuário) sempre dá 401.
+// Nunca grave valores aqui: segredos vivem no dashboard (Variables) / .env.
+function missingTumblrSecrets(s) {
+  const missing = [];
+  if (!s.consumerKey) missing.push("TUMBLR_CONSUMER_KEY");
+  if (!s.consumerSecret) missing.push("TUMBLR_CONSUMER_SECRET");
+  if (!s.token) missing.push("TUMBLR_TOKEN");
+  if (!s.tokenSecret) missing.push("TUMBLR_TOKEN_SECRET");
+  return missing;
 }
 
 function corsHeaders() {
@@ -193,6 +205,10 @@ async function handleDiag(env) {
     out.tumblr = { ok: false, code: "rede", error: "rede:" + e.message };
   }
 
+  // Só nomes + tamanhos (nunca valores): detecta variável errada/vazia no dashboard.
+  // Se algum dos 4 estiver ausente, o POST daria 401 — o diag avisa antes.
+  out.tumblr.missing = missingTumblrSecrets(s);
+
   try {
     const res = await fetch(
       SUBSTACK_BASE + "/api/v1/subscription/podcast_rss_url?section_id",
@@ -215,6 +231,13 @@ async function handleDiag(env) {
 
 async function handleUploadCover(req, env) {
   const s = S(env);
+  const missing = missingTumblrSecrets(s);
+  if (missing.length) {
+    return json(
+      { ok: false, message: `req:${missing.join(",")} ausente(s) — Tumblr exige as 4 credenciais OAuth 1.0a (consumer key/secret + token/token_secret). Só consumer key/secret dá 401. Confira Variables no dashboard + Deploy.` },
+      500
+    );
+  }
   let form;
   try {
     form = await req.formData();
@@ -248,14 +271,17 @@ async function handleUploadCover(req, env) {
 
     const res = await fetch(baseUrl, {
       method: "POST",
-      headers: { Authorization: auth },
+      headers: { Authorization: auth, "User-Agent": SUBSTACK_UA },
       body: fd,
     });
     const body = await safeJson(res);
     if (!res.ok || body?.meta?.status !== 201) {
       const st = body?.meta?.status ?? res.status;
       const msg = body?.meta?.msg ?? body?.errors?.[0]?.title ?? res.statusText;
-      return json({ ok: false, message: `tumblr:${st} ${msg}` }, 502);
+      const hint = st === 401
+        ? " (OAuth rejeitado: confira TUMBLR_TOKEN/TOKEN_SECRET do usuário dono do blog + consumer do mesmo app, redigite sem espaços + Deploy; consumer sozinho sempre dá 401)"
+        : "";
+      return json({ ok: false, message: `tumblr:${st} ${msg}${hint}` }, 502);
     }
     // id_string: IDs do Tumblr excedem Number.MAX_SAFE_INTEGER — nunca usar
     // response.id numérico (JSON arredonda, ex: ...300 vira ...256 e o GET dá 404).
@@ -303,7 +329,7 @@ async function handleUploadAudio(req, env) {
     return json(
       {
         ok: false,
-        message: `limite:arquivo de ${(file.size / 1048576).toFixed(1)}MB excede o máximo de 90MB do Worker — converta WAV para MP3`,
+        message: `limite:arquivo de ${(file.size / 1048576).toFixed(1)}MB excede o máximo de 90MB do Worker (memória do plano free) — use o botão HQ no host-admin (até 200MB, sem recompressão) ou o backend local, que não tem esse teto`,
       },
       413
     );
@@ -443,7 +469,153 @@ async function handleUploadAudio(req, env) {
   }
 }
 
-/* ---- Bloco 6: roteador ---------------------------------------------------- */
+/* ---- Bloco 5b: áudio LONGO em partes (hosts remotos via Substack, sem backend local) ----
+ * O plano free só tem ~128MB de memória: /api/upload-audio segura o arquivo
+ * inteiro e trava acima de ~90MB. Aqui o navegador fatia o arquivo (8MB) e o
+ * Worker repassa 1 chunk por request — nunca o arquivo todo. 1-3h sem teto.
+ * Fluxo: create (JSON) -> N x part (bytes) -> finish (transcode + poll + src). */
+const AUDIO_CHUNK = 8 * 1024 * 1024;
+const MAX_AUDIO_BYTES = 2 * 1024 * 1024 * 1024;
+
+async function substackCreateUpload(s, { fileName, fileSize, fileType }) {
+  const createQs = new URLSearchParams({
+    filetype: fileType,
+    fileSize: String(fileSize),
+    fileName,
+    post_id: s.postId,
+  }).toString();
+  const createRes = await fetch(`${SUBSTACK_BASE}/api/v1/audio/upload?${createQs}`, { method: "POST", headers: subHeaders(s) });
+  const created = await safeJson(createRes);
+  const uploadId = created?.mediaUpload?.id;
+  const multipartId = created?.multipartUploadId;
+  const urls = created?.multipartUploadUrls;
+  if (!createRes.ok || !uploadId || !multipartId || !Array.isArray(urls) || !urls.length) {
+    throw new Error(`substack:create (status ${createRes.status})`);
+  }
+  return { uploadId, multipartId, urls };
+}
+
+async function substackFinishUpload(s, { uploadId, multipartId, etags }) {
+  const tc = await fetch(`${SUBSTACK_BASE}/api/v1/audio/upload/${uploadId}/transcode`, {
+    method: "POST",
+    headers: { ...subHeaders(s), "Content-Type": "application/json" },
+    body: JSON.stringify({ duration: null, multipart_upload_etags: etags, multipart_upload_id: multipartId }),
+  });
+  if (!tc.ok) throw new Error(`substack:transcode (status ${tc.status})`);
+  const t0 = Date.now();
+  let status = null;
+  for (let attempt = 1; attempt <= 36; attempt++) {
+    await sleep(5000);
+    if (Date.now() - t0 > 170000) break;
+    const st = await fetch(`${SUBSTACK_BASE}/api/v1/audio/upload/${uploadId}`, { headers: subHeaders(s) });
+    status = await safeJson(st);
+    if (status?.uploaded_at) break;
+  }
+  if (!status?.uploaded_at) throw new Error("substack:processando (transcode em andamento; tente de novo em 1 min)");
+  const rss = await fetch(`${SUBSTACK_BASE}/api/v1/subscription/podcast_rss_url?section_id`, { headers: subHeaders(s) });
+  const rssBody = await safeJson(rss);
+  const token = rssBody?.podcast_rss_url?.split("/private/")[1]?.replace(".rss", "");
+  if (!token) throw new Error("substack:rss (sem token)");
+  const src = await fetch(`${SUBSTACK_API}/api/v1/audio/upload/${uploadId}/src?token=${encodeURIComponent(token)}`, { headers: subHeaders(s), redirect: "manual" });
+  const audioUrl = src.headers.get("location");
+  if (src.status !== 307 || !audioUrl) throw new Error(`substack:url-final (status ${src.status})`);
+  return audioUrl;
+}
+
+async function handleAudioCreate(req, env) {
+  const s = S(env);
+  let body;
+  try { body = await req.json(); } catch { return json({ ok: false, message: "req:JSON inválido (fileName/fileSize/fileType)" }, 400); }
+  const fileName = String(body.fileName || "audio.mp3");
+  const fileSize = Number(body.fileSize || 0);
+  let fileType = String(body.fileType || "audio/mpeg");
+  if (!/^audio\//i.test(fileType)) fileType = "audio/mpeg";
+  if (!Number.isFinite(fileSize) || fileSize <= 0) return json({ ok: false, message: "req:fileSize inválido" }, 400);
+  if (fileSize > MAX_AUDIO_BYTES) return json({ ok: false, message: `limite:arquivo de ${(fileSize / 1048576).toFixed(0)}MB excede o máximo de 2GB do upload em partes` }, 413);
+  if (!s.postId) return json({ ok: false, message: "substack:create (SUBSTACK_POST_ID ausente)" }, 500);
+  try {
+    const { uploadId, multipartId, urls } = await substackCreateUpload(s, { fileName, fileSize, fileType });
+    return json({ ok: true, uploadId, multipartId, partSize: Math.ceil(fileSize / urls.length), partCount: urls.length, parts: urls });
+  } catch (e) {
+    return json({ ok: false, message: "rede:" + e.message }, 502);
+  }
+}
+
+async function handleAudioPart(req) {
+  const partUrl = new URL(req.url).searchParams.get("url") || "";
+  if (!/^https:\/\//i.test(partUrl)) return json({ ok: false, message: "req:url de parte inválida" }, 400);
+  // Repasse por STREAM: o Worker nunca segura a parte inteira na memória.
+  // Antes era arrayBuffer (até 32MB): com poucas partes do Substack (ex: 72MB
+  // cada num set de 720MB) estourava os ~128MB do plano free e derrubava o envio.
+  // O backend antigo (Render) funcionava pelo mesmo motivo: stream do disco.
+  const len = Number(req.headers.get("content-length") || 0);
+  if (!Number.isFinite(len) || len <= 0 || len > MAX_AUDIO_BYTES) {
+    return json({ ok: false, message: "req:tamanho de parte inválido" }, 400);
+  }
+  if (!req.body) return json({ ok: false, message: "req:corpo ilegível" }, 400);
+  try {
+    const put = await fetch(partUrl, { method: "PUT", headers: { "Content-Length": String(len) }, body: req.body });
+    const etag = put.headers.get("etag");
+    if (!put.ok || !etag) return json({ ok: false, message: `substack:partes (status ${put.status})` }, 502);
+    return json({ ok: true, etag });
+  } catch (e) {
+    return json({ ok: false, message: "rede:" + e.message }, 502);
+  }
+}
+
+async function handleAudioFinish(req, env) {
+  const s = S(env);
+  let body;
+  try { body = await req.json(); } catch { return json({ ok: false, message: "req:JSON inválido" }, 400); }
+  const { uploadId, multipartId, etags } = body || {};
+  if (!uploadId || !multipartId || !Array.isArray(etags) || !etags.length) {
+    return json({ ok: false, message: "req:uploadId/multipartId/etags ausentes" }, 400);
+  }
+  try {
+    const audioUrl = await substackFinishUpload(s, { uploadId, multipartId, etags });
+    return json({ ok: true, audioUrl });
+  } catch (e) {
+    const msg = String(e.message || "rede:falha");
+    if (msg.startsWith("substack:processando")) return json({ ok: false, message: msg }, 504);
+    return json({ ok: false, message: msg.startsWith("substack:") ? msg : "rede:" + msg }, 502);
+  }
+}
+
+/* ---- Bloco 6: GET /?url= (proxy de mídia: áudio + imagem) ------------------ */
+// Restaura a capacidade do Worker antigo (B1/B2): o rádio e as capas usam
+// siteSettings.proxyUrl = "https://<worker>/?url=" para contornar hotlink/CORS.
+// Streaming com repasse de Range — sem buffer, seguro para a memória do plano free.
+async function handleMediaProxy(req) {
+  const target = new URL(req.url).searchParams.get("url") || "";
+  if (!/^https?:\/\//i.test(target)) {
+    return new Response("URL inválida", { status: 400, headers: corsHeaders() });
+  }
+  try {
+    const headers = { "User-Agent": SUBSTACK_UA, Accept: "*/*" };
+    const range = req.headers.get("range");
+    if (range) headers.Range = range;
+    const up = await fetch(target, { headers });
+    if (up.status !== 200 && up.status !== 206) {
+      return new Response("rede:origem respondeu " + up.status, {
+        status: 502,
+        headers: corsHeaders(),
+      });
+    }
+    const out = new Headers(corsHeaders());
+    out.set("Content-Type", up.headers.get("content-type") || "application/octet-stream");
+    out.set("Accept-Ranges", "bytes");
+    out.set("Cache-Control", "public,max-age=3600");
+    for (const h of ["content-range", "content-length"]) {
+      const v = up.headers.get(h);
+      if (v) out.set(h, v);
+    }
+    return new Response(up.body, { status: up.status, headers: out });
+  } catch (e) {
+    return new Response("rede:" + e.message, { status: 502, headers: corsHeaders() });
+  }
+}
+
+/* ---- Bloco 7: roteador ---------------------------------------------------- */
 
 async function handleRequest(req, env) {
   if (req.method === "OPTIONS") {
@@ -452,6 +624,7 @@ async function handleRequest(req, env) {
   const url = new URL(req.url);
   try {
     if (url.pathname === "/" && req.method === "GET") {
+      if (url.searchParams.get("url")) return handleMediaProxy(req);
       return new Response("URL inválida", { status: 400, headers: corsHeaders() });
     }
     if (url.pathname === "/api/diag" && req.method === "GET") {
@@ -462,6 +635,15 @@ async function handleRequest(req, env) {
     }
     if (url.pathname === "/api/upload-audio" && req.method === "POST") {
       return handleUploadAudio(req, env);
+    }
+    if (url.pathname === "/api/upload-audio-create" && req.method === "POST") {
+      return handleAudioCreate(req, env);
+    }
+    if (url.pathname === "/api/upload-audio-part" && req.method === "POST") {
+      return handleAudioPart(req);
+    }
+    if (url.pathname === "/api/upload-audio-finish" && req.method === "POST") {
+      return handleAudioFinish(req, env);
     }
     return json({ ok: false, message: "rede:rota inexistente" }, 404);
   } catch (e) {

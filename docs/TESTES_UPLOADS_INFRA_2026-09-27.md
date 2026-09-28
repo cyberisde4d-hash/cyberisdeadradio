@@ -114,6 +114,8 @@ Escopo: conexão, upload, interface (host-admin) e backend (Worker + Firebase).
 | 2026-09-27 17:35 | Pós-deploy: U4 (gif 1px) | Formato novo ✅ `tumblr:401 Unauthorized` — falta corrigir os 4 valores no dashboard |
 | 2026-09-27 17:35 | Pós-deploy: U9 (mp3 8,9MB) | `substack:create (SUBSTACK_POST_ID ausente)` — falta cadastrar `SUBSTACK_POST_ID=216787416` (+ cookies novos) |
 | 2026-09-27 17:43 | Alteração: `/api/diag` agora retorna `env` com TAMANHO dos segredos (nunca valores) | Detecta nome errado/vazio no dashboard. Esperado: Tumblr 50/50/50/50; após colar o bloco, Redeploy e chamar `/api/diag` de novo |
+| 2026-09-27 19:55 | Causa raiz do áudio: meu FIX removeu o proxy `GET /?url=` (B1/B2) + URL Substack com expiry curto | Link informado: 307→206 OK agora (MP3 `ID3` confirmado), mas `Expires=2026-09-28 19:54 UTC` — morre amanhã. URLs `/src?token=` NÃO são permanentes |
+| 2026-09-27 19:55 | Correção: `handleMediaProxy` recriado em `workers/worker.js` (Range + CORS + streaming) + default do rádio Render→Worker (`radio:4851`) | `node --check` OK. Falta: colar worker de novo + Deploy + `firebase deploy --only hosting` |
 
 ## 7. RISCOS CONHECIDOS
 
