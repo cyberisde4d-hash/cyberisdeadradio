@@ -3598,6 +3598,7 @@ button[data-member-area-gate],
     let accessSettings = {};
     let homepageSettings = {};
     let liveSettings = {};
+    let djMixesSettings = {};
     let orderSettings = {};
     let siteTextsSettings = {};
 
@@ -4608,16 +4609,20 @@ function updateScheduleViewText(total){
   scheduleExpandBtn.textContent=expanded?t('showLess','VER MENOS'):t('showMore','VER MAIS');
   scheduleCountText.textContent=t('showingEps','SHOWING EPISODES');
 }
-function renderBroadcastGrid(){
-
+function djMixOverrideFor(name){
+  const mixes = (typeof djMixesSettings !== 'undefined' && Array.isArray(djMixesSettings.mixes)) ? djMixesSettings.mixes : [];
+  const key = String(name||'').trim().toLowerCase();
+  return mixes.find(m=>String(m.series||'').trim().toLowerCase()===key) || null;
+}
+function broadcastMixPos(name, ov){
+  if(ov && ov.order !== undefined && ov.order !== '' && ov.order !== null && Number(ov.order) !== 999) return Number(ov.order);
+  return seriesOrderPos(name);
+}
+function getBroadcastSeries(){
   const groups = new Map();
-
   stations.forEach((s, index) => {
-
     const seriesName = String(s.series || s.name || '').trim();
-
     if(!seriesName) return;
-
     if(!groups.has(seriesName)){
       groups.set(seriesName, {
         name: seriesName,
@@ -4626,23 +4631,68 @@ function renderBroadcastGrid(){
         episodes: []
       });
     }
-
     groups.get(seriesName).episodes.push({
       ...s,
       originalIndex: index
     });
-
   });
+  let series = Array.from(groups.values()).map(serie=>{
+    const ov = djMixOverrideFor(serie.name);
+    if(ov && ov.visible === false) return null;
+    let eps = serie.episodes;
+    const playIds = Array.isArray(ov?.episodeIds) ? ov.episodeIds.map(id=>String(id||'').trim()).filter(Boolean) : [];
+    if(playIds.length){
+      const byId = new Map(serie.episodes.map(e=>[String(e.id), e]));
+      const listed = playIds.map(id=>byId.get(id)).filter(Boolean);
+      if(listed.length) eps = listed;
+    }
+    const ordered=[...eps].sort((a,b)=>((b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)));
+    const latest=ordered[0]||eps[0]||{};
+    const baseGenres=uniqGenreLabels(latest.genres||[]);
+    const ovGenres=Array.isArray(ov?.genres)?ov.genres.map(g=>String(g||'').trim()).filter(Boolean):[];
+    return {
+      ...serie,
+      episodes: eps,
+      title:(ov && String(ov.title||'').trim()) || serie.name,
+      cover:(ov && String(ov.cover||'').trim()) || (eps[0]?.cover || serie.cover),
+      genres: ovGenres.length ? ovGenres.slice(0,4) : baseGenres.slice(0,4),
+      pos: broadcastMixPos(serie.name, ov)
+    };
+  }).filter(Boolean);
+  const seenKeys = new Set(series.map(s=>String(s.name||'').trim().toLowerCase()));
+  const allMixes = (typeof djMixesSettings !== 'undefined' && Array.isArray(djMixesSettings.mixes)) ? djMixesSettings.mixes : [];
+  allMixes.forEach(ov=>{
+    const key = String(ov.series||'').trim();
+    if(!key || seenKeys.has(key.toLowerCase())) return;
+    if(ov.visible === false) return;
+    const ids = Array.isArray(ov.episodeIds) ? ov.episodeIds.map(id=>String(id||'').trim()).filter(Boolean) : [];
+    if(!ids.length) return;
+    const listed = ids.map(id=>stations.find(s=>String(s.id)===id)).filter(Boolean);
+    if(!listed.length) return;
+    const withIdx = listed.map(e=>({...e, originalIndex: stations.findIndex(s=>String(s.id)===String(e.id))}));
+    const ovGenres = Array.isArray(ov.genres) ? ov.genres.map(g=>String(g||'').trim()).filter(Boolean) : [];
+    const baseGenres = uniqGenreLabels(withIdx.map(e=>e.genres||[]).flat());
+    series.push({
+      name: key,
+      title: String(ov.title||'').trim() || key,
+      cover: String(ov.cover||'').trim() || withIdx[0]?.cover || '',
+      kicker: withIdx[0]?.kicker || '',
+      episodes: withIdx,
+      genres: (ovGenres.length ? ovGenres : baseGenres).slice(0,4),
+      pos: broadcastMixPos(key, ov)
+    });
+    seenKeys.add(key.toLowerCase());
+  });
+  series.sort((a,b)=>(a.pos??1e9)-(b.pos??1e9));
+  return series;
+}
+function renderBroadcastGrid(){
 
-  const series = Array.from(groups.values());
-  series.sort((a,b)=>seriesOrderPos(a.name)-seriesOrderPos(b.name));
+  const series = getBroadcastSeries();
 
   broadcastGrid.innerHTML = series.map((serie, i) => {
 
-    const ordered=[...serie.episodes].sort((a,b)=>((b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)));
-    const latest=ordered[0]||serie.episodes[0]||{};
-    const latestGenreList=uniqGenreLabels(latest.genres||[]);
-    const shownGenres=latestGenreList.slice(0,4);
+    const shownGenres=(serie.genres||[]).slice(0,4);
 
     return `
 
@@ -4655,7 +4705,7 @@ function renderBroadcastGrid(){
       <div class="broadcast-bottom">
         ${shownGenres.length ? `<div class="broadcast-genres">${shownGenres.map(g=>`<button type="button" class="episode-genre" data-genre="${g}">${g}</button>`).join('')}</div>` : ''}
         <div class="broadcast-meta">${serie.kicker}</div>
-        <h3>${serie.name}</h3>
+        <h3>${serie.title || serie.name}</h3>
         <div class="broadcast-meta">
           ${serie.episodes.length}
           episódio${serie.episodes.length === 1 ? '' : 's'}
@@ -5199,32 +5249,13 @@ document.querySelectorAll('[data-info]').forEach(card=>card.addEventListener('cl
 
   const seriesIndex = Number(card.dataset.series);
 
-  const groups = new Map();
+  const series = getBroadcastSeries();
 
-  stations.forEach((s,index)=>{
-
-    const name = String(s.series || s.name || '').trim();
-
-    if(!groups.has(name)){
-      groups.set(name,[]);
-    }
-
-    groups.get(name).push({
-      ...s,
-      originalIndex:index
-    });
-
-  });
-
-
-  const series = Array.from(groups.values());
-  const seriesKeys = Array.from(groups.keys());
-
-  const episodes = series[seriesIndex];
+  const episodes = (series[seriesIndex]||{}).episodes;
 
   if(!episodes) return;
 
-  const seriesName = seriesKeys[seriesIndex] || episodes[0].series || episodes[0].name;
+  const seriesName = series[seriesIndex].title || series[seriesIndex].name || episodes[0].series || episodes[0].name;
 
   openEpisodeModal(
     seriesName,
@@ -5981,7 +6012,7 @@ document.querySelectorAll('[data-info]').forEach(card=>card.addEventListener('cl
       products = (productsData.items || productsData || []).map(normalizeProduct);
       infoContent = infoData || {};
 
-      const [fireArticles, fireStations, fireHosts, fireProducts, fireSocials, fireTheme, fireCart, fireHomeButtons, fireHeaderButtons, fireArchiveTags, fireInfoCards, fireShare, fireAccess, fireSite, fireSiteTexts, fireHomepage, fireLive, fireOrder] = await Promise.all([
+      const [fireArticles, fireStations, fireHosts, fireProducts, fireSocials, fireTheme, fireCart, fireHomeButtons, fireHeaderButtons, fireArchiveTags, fireInfoCards, fireShare, fireAccess, fireSite, fireSiteTexts, fireHomepage, fireLive, fireOrder, fireDjMixes] = await Promise.all([
         getFirestoreCollection('articles'),
         getFirestoreCollection('stations'),
         getFirestoreCollection('hosts'),
@@ -5999,7 +6030,8 @@ document.querySelectorAll('[data-info]').forEach(card=>card.addEventListener('cl
         getFirestoreDoc('settings', 'siteTexts'),
         getFirestoreDoc('settings', 'homepage'),
         getFirestoreDoc('settings', 'live'),
-        getFirestoreDoc('settings', 'order')
+        getFirestoreDoc('settings', 'order'),
+        getFirestoreDoc('settings', 'djmixes')
       ]);
 
       if(Array.isArray(fireArticles) && fireArticles.length) articles = fireArticles.map(normalizeArticle);
@@ -6017,6 +6049,7 @@ document.querySelectorAll('[data-info]').forEach(card=>card.addEventListener('cl
       homepageSettings = fireHomepage || {};
       liveSettings = fireLive || {};
       orderSettings = fireOrder || {};
+      djMixesSettings = fireDjMixes || {};
       if(Array.isArray(orderSettings.articleOrder) && orderSettings.articleOrder.length && articles.length){
         const pos = new Map(orderSettings.articleOrder.map((id,i)=>[String(id),i]));
         articles.sort((a,b)=>{

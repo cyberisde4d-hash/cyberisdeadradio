@@ -236,6 +236,7 @@ function buildPanels(){
   `);
 
   $("livePanel").innerHTML = `<p class="help">Controla os logos do Must Watch e a transmissão contínua. Vazio = automático (todas as séries com a capa do último episódio).</p><fieldset><legend>Transmissão</legend><div class="grid2">${input("live_enabled","Ao vivo ligado? true/false")}${input("live_autoplay","Tocar sozinho ao abrir? true/false")}</div><p class="hint">Navegadores só liberam áudio após o primeiro toque — o site tenta sozinho e engata no primeiro gesto do visitante.</p></fieldset><fieldset><legend>No ar agora (clique Editar para ajustar)</legend><div class="cards" id="liveOnAirList"><p class="note">Carregando…</p></div></fieldset><fieldset><legend>Estações no ar</legend><div class="hp-list" id="live_stationsRows"></div><div class="actions"><button class="ghost" type="button" data-hp-add="live_stationsRows">＋ Adicionar estação</button></div><p class="hint">Série tem que ser igual ao campo Série do episódio. Logo quadrado. Áudio override troca o som sem trocar o episódio. Ordem define a sequência. Visível false esconde.</p></fieldset><div class="actions"><button id="saveLiveBtn">Salvar Ao Vivo</button><button class="ghost" id="previewLiveBtn" type="button">Pré-visualizar resultado</button><button class="ghost" id="reloadLiveBtn" type="button">Recarregar</button></div><div id="livePreviewResult" style="margin-top:10px"></div></div><div class="list"><h2>Preview JSON</h2><pre id="livePreview" class="preview-code"></pre></div>`;
+  $("djMixesPanel").innerHTML = `<p class="help">Curadoria manual da grade DJ MIXES do site. Vazio = automático (capa do primeiro episódio, nome da série, gêneros do episódio mais recente).</p><fieldset><legend>Mixes no ar (clique Editar para ajustar)</legend><div class="cards" id="djMixOnAirList"><p class="note">Carregando…</p></div></fieldset><fieldset><legend>Playlists</legend><div class="cards" id="djPlaylistsList"><p class="note">Carregando…</p></div><div class="actions"><button class="ghost" type="button" data-dj-new-playlist>＋ Nova playlist</button></div><p class="hint">Playlist livre: nome próprio + episódios de qualquer série. Separada das séries abaixo.</p></fieldset><fieldset><legend>Mixes das séries</legend><div class="hp-list" id="dj_mixesRows"></div><datalist id="dj_genresList"></datalist><div class="actions"><button class="ghost" type="button" data-hp-add="dj_mixesRows">＋ Adicionar mix</button></div><p class="hint">Nome pode ser igual à Série do episódio ou nome novo p/ playlist livre. Capa quadrada. Gêneros separados por vírgula — digite para ver os já cadastrados. Ordem define a sequência. Visível false esconde o mix do site.</p></fieldset><div class="actions"><button id="saveDjMixesBtn">Salvar DJ Mixes</button><button class="ghost" id="previewDjMixesBtn" type="button">Pré-visualizar resultado</button><button class="ghost" id="reloadDjMixesBtn" type="button">Recarregar</button><button class="ghost" id="djFixIdsBtn" type="button">Corrigir IDs</button></div><div id="djMixesPreviewResult" style="margin-top:10px"></div></div><div class="list"><h2>Preview JSON</h2><pre id="djMixesPreview" class="preview-code"></pre></div>`;
 
   $("orderPanel").innerHTML = `<div class="editor wide-editor"><h2>Ordem do conteúdo</h2><p class="help">Arraste pelas alças, use ↑ ↓, fixe destaques e salve. Vale para episódios, estações e seções do site.</p><fieldset><legend>Episódios (ordem + destaque)</legend><div class="ord-list" id="orderEpisodes"></div><div class="actions"><button id="newEpisodeBtn" type="button">＋ Novo episódio</button><button id="saveEpisodeOrderBtn">Salvar ordem dos episódios</button></div></fieldset><fieldset><legend>Index / Matérias (lista separada de episódios e estações)</legend><div class="ord-list" id="orderArticles"></div><div class="actions"><button id="saveArticleOrderBtn">Salvar ordem do Index</button></div></fieldset><fieldset><legend>Estações / Séries</legend><div class="ord-list" id="orderSeries"></div><div class="actions"><button id="saveSeriesOrderBtn">Salvar ordem das estações</button></div></fieldset><fieldset><legend>Seções da página</legend><div class="ord-list" id="orderSections"></div><div class="actions"><button class="ghost" id="newSectionBtn" type="button">＋ Nova seção</button><button id="saveSectionsOrderBtn">Salvar ordem das seções</button></div></fieldset></div><div class="list"><h2>Como aparece no site</h2><pre id="orderPreview" class="preview-code"></pre><h2 style="margin-top:14px">Preview do site em tempo real</h2><div class="actions"><button class="ghost" type="button" data-preview-device="desktop">Desktop</button><button class="ghost" type="button" data-preview-device="mobile">Mobile</button><button class="ghost" id="reloadSitePreviewBtn" type="button">Recarregar preview</button></div><div class="preview-frame-wrap"><iframe id="sitePreviewFrame" src="../radio" title="Preview do site"></iframe></div></div>`;
 
@@ -506,13 +507,20 @@ function bindButtons(){
   if($("reloadHomepageBtn")) $("reloadHomepageBtn").onclick = loadHomepage;
   if($("saveLiveBtn")) $("saveLiveBtn").onclick = saveLive;
   if($("previewLiveBtn")) $("previewLiveBtn").onclick = previewLiveResult;
-  if($("reloadLiveBtn")) $("reloadLiveBtn").onclick = loadLive;
+  if($("reloadLiveBtn")) $("reloadLiveBtn").onclick = ()=>{ if(hpConfirmDiscard("live_stationsRows","Recarregar")) loadLive(); };
+  if($("saveDjMixesBtn")) $("saveDjMixesBtn").onclick = saveDjMixes;
+  if($("previewDjMixesBtn")) $("previewDjMixesBtn").onclick = previewDjMixes;
+  if($("reloadDjMixesBtn")) $("reloadDjMixesBtn").onclick = ()=>{ if(hpConfirmDiscard("dj_mixesRows","Recarregar")) loadDjMixes(); };
+  if($("djFixIdsBtn")) $("djFixIdsBtn").onclick = djFixIds;
   if(!window.__auraHpBound){ window.__auraHpBound = true; document.addEventListener("click", (e)=>{
     const add = e.target.closest?.("[data-hp-add]"); if(add){ const box=$(add.dataset.hpAdd); if(box){ const empty=box.querySelector("p.note"); if(empty) empty.remove(); const tmp=document.createElement("div"); tmp.innerHTML=hpRow({}, HP_SCHEMAS[add.dataset.hpAdd]||[]); box.appendChild(tmp.firstChild); } return; }
-    const del = e.target.closest?.("[data-hp-del]"); if(del){ del.closest("[data-hp-row]")?.remove(); return; }
+    const del = e.target.closest?.("[data-hp-del]"); if(del){ const __rowEl = del.closest("[data-hp-row]"); if(__rowEl){ const __inDj = !!__rowEl.closest("#dj_mixesRows"); const __inLive = !!__rowEl.closest("#live_stationsRows"); if(__inLive || __inDj){ const __sk = __rowEl.querySelector('[data-hp-k="series"]'); const __k = String(__sk?.value || "").trim().toLowerCase(); if(__k) (__inDj ? djRemovedKeys : liveRemovedKeys).add(__k); } } __rowEl?.remove(); return; }
     const up = e.target.closest?.("[data-hp-up]"); if(up){ const row=up.closest("[data-hp-row]"); const prev=row?.previousElementSibling; if(row&&prev&&prev.hasAttribute("data-hp-row")) row.parentNode.insertBefore(row, prev); return; }
     const down = e.target.closest?.("[data-hp-down]"); if(down){ const row=down.closest("[data-hp-row]"); const next=row?.nextElementSibling; if(row&&next&&next.hasAttribute("data-hp-row")) row.parentNode.insertBefore(next, row); return; }
-    const upl = e.target.closest?.("[data-hp-upload]"); if(upl){ uploadLiveLogo(upl); return; }
+    const upl = e.target.closest?.("[data-hp-upload]"); if(upl){ if(upl.closest("#dj_mixesRows")) uploadMixCover(upl); else uploadLiveLogo(upl); return; }
+    const pick = e.target.closest?.("[data-dj-pick]"); if(pick){ const rowEl = pick.closest("[data-hp-row]"); if(rowEl) openDjPicker(rowEl); return; }
+    const plNew = e.target.closest?.("[data-dj-new-playlist]"); if(plNew){ openDjPlaylistEditor(null); return; }
+    const plEdit = e.target.closest?.("[data-dj-edit-playlist]"); if(plEdit){ openDjPlaylistEditor(plEdit.dataset.djEditPlaylist); return; }
   }); }
   if($("saveMemberContentBtn")) $("saveMemberContentBtn").onclick = saveMemberContent;
   if($("clearMemberContentBtn")) $("clearMemberContentBtn").onclick = clearMemberContent;
@@ -1056,7 +1064,7 @@ if(role === "host"){
   }
 });
 
-async function refreshAll(){ await Promise.all([loadDashboard(), ...COLLECTIONS.map(c=>loadList(c)), loadSettings(), loadSiteMeta(), loadSiteTexts(), loadShare(), loadTheme(), loadCart(), loadHomeButtons(), loadHeaderButtons(), loadArchiveTags(), loadInfoCards(), loadAccess(), loadMembership(), loadHomepage(), loadLive(), loadOrderTab(), loadMemberContentList(), loadMemberCalendarList(), loadMemberComments(), loadMediaLibrary(), loadLogs(), loadBuilderPages()]); }
+async function refreshAll(){ await Promise.all([loadDashboard(), ...COLLECTIONS.map(c=>loadList(c)), loadSettings(), loadSiteMeta(), loadSiteTexts(), loadShare(), loadTheme(), loadCart(), loadHomeButtons(), loadHeaderButtons(), loadArchiveTags(), loadInfoCards(), loadAccess(), loadMembership(), loadHomepage(), loadLive(), loadDjMixes(), loadOrderTab(), loadMemberContentList(), loadMemberCalendarList(), loadMemberComments(), loadMediaLibrary(), loadLogs(), loadBuilderPages()]); }
 async function loadDashboard(){ const box=$("dashboardStats"); const recent=$("dashboardRecent"); if(!box) return; const counts={}; for(const c of COLLECTIONS){ try{ const snap=await getDocs(collection(db,c)); counts[c]=snap.size; }catch{ counts[c]="?"; } } box.innerHTML = `<button class="stat" data-tab-jump="articles"><b>${counts.articles}</b><span>Artigos</span></button><button class="stat" data-tab-jump="stations"><b>${counts.stations}</b><span>Episódios</span></button><button class="stat" data-tab-jump="products"><b>${counts.products}</b><span>Produtos</span></button><button class="stat" data-tab-jump="hosts"><b>${counts.hosts}</b><span>Hosts</span></button>`; if(recent) recent.innerHTML = `<article class="card"><h3>Status Firebase</h3><p>Login ativo: ${escapeHtml(currentUser?.email || "")}</p><span class="badge">Firestore conectado</span></article><article class="card"><h3>Visualizar Member Area</h3><p>Abre a área de membros com acesso de admin, sem liberar para usuários comuns.</p><div class="row"><a id="dashboardMemberAreaBtn" class="admin-member-link" data-open-member-area href="./member-area.html?adminPreview=1" target="_blank" rel="noopener">Ver Member Area</a></div></article><article class="card"><h3>Próximos passos</h3><p>Use Mídia para uploads, Backup para exportar dados e Logs para auditoria.</p></article>`; }
 function viewUrlFor(c, item, id){
   if(c==="stations") return `/radio#episode-${encodeURIComponent(id)}`;
@@ -1187,7 +1195,7 @@ async function exportCollection(c){
   try{
     toast(`Exportando ${c}...`);
     const snap = await getDocs(collection(db,c));
-    const items = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    const items = snap.docs.map(d=>djStationDoc(d));
     const blob = new Blob([JSON.stringify({items}, null, 2)], {type:"application/json"});
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
@@ -1199,9 +1207,16 @@ async function exportCollection(c){
   }catch(e){ console.error("exportCollection failed", e); toast(`Erro ao exportar: ${e?.message || e}`, "error"); }
 }
 function hpRow(item, fields){
-  return `<div class="hp-row" data-hp-row>${fields.map(([k,l,tp,extra])=> tp==="textarea"
-    ? `<div class="field"><label>${l}</label><textarea data-hp-k="${k}">${escapeHtml(item[k]||'')}</textarea></div>`
-    : `<div class="field"><label>${l}</label><input data-hp-k="${k}"${k==="series"?' list="stations_seriesList"':''} value="${escapeHtml(item[k]||'')}">${extra==="upload"?`<div class="actions" style="margin-top:6px"><input type="file" data-hp-file="${k}" accept="image/*"><button class="ghost" type="button" data-hp-upload>Enviar logo</button></div>`:""}</div>`).join('')}<div class="actions"><button class="ghost" type="button" data-hp-up>↑</button><button class="ghost" type="button" data-hp-down>↓</button><button class="danger" type="button" data-hp-del>Remover</button></div></div>`;
+  const parts = fields.map(([k,l,tp,extra])=>{
+    if(tp==="pick"){
+      return `<div class="field"><label>${l}</label><textarea data-hp-k="${k}" rows="3" placeholder="Um ID por linha \u2014 vazio = todos">${escapeHtml(Array.isArray(item[k])?item[k].join("\n"):(item[k]||''))}</textarea><div class="actions" style="margin-top:6px"><button class="ghost" type="button" data-dj-pick>Selecionar epis\u00f3dios</button><small data-dj-count style="align-self:center;color:#aaa"></small></div>`;
+    }
+    if(tp==="textarea"){
+      return `<div class="field"><label>${l}</label><textarea data-hp-k="${k}">${escapeHtml(item[k]||'')}</textarea></div>`;
+    }
+    return `<div class="field"><label>${l}</label><input data-hp-k="${k}"${k==="series"?' list="stations_seriesList"':(k==="genres"?' list="dj_genresList"':'')} value="${escapeHtml(item[k]||'')}">${extra==="upload"?`<div class="actions" style="margin-top:6px"><input type="file" data-hp-file="${k}" accept="image/*"><button class="ghost" type="button" data-hp-upload>Enviar logo</button></div>`:""}</div>`;
+  });
+  return `<div class="hp-row" data-hp-row>${parts.join('')}<div class="actions"><button class="ghost" type="button" data-hp-up>\u2191</button><button class="ghost" type="button" data-hp-down>\u2193</button><button class="danger" type="button" data-hp-del>Remover</button></div></div>`;
 }
 const HP_SCHEMAS = {
   hp_heroRows: [["badge","Selo (ex: LIVE NOW)"],["title","Título"],["subtitle","Subtítulo","textarea"],["image","Imagem URL"],["videoUrl","Vídeo URL"],["ctaLabel","Texto do botão"],["ctaLink","Link do botão"],["episodeId","Episódio ID (toca ao clicar, opcional)"],["durationMs","Duração deste slide em ms (vazio = padrão)"]],
@@ -1210,7 +1225,8 @@ const HP_SCHEMAS = {
   hp_newsRows: [["title","Título"],["category","Categoria"],["excerpt","Resumo","textarea"],["cover","Capa URL"],["date","Data"],["url","Link"]],
   hp_eventsRows: [["title","Título"],["venue","Local"],["date","Data"],["time","Horário"],["cover","Capa URL"],["url","Link"],["description","Descrição","textarea"]],
   hp_channelsRows: [["name","Nome do canal"],["badge","Selo"],["url","Link"]],
-  live_stationsRows: [["series","Série (igual ao episódio)"],["title","Título exibido"],["logo","Logo URL quadrado","","upload"],["audioUrl","Áudio/stream override (opcional)"],["episodeId","Tocar episódio ID fixo (opcional)"],["order","Ordem"],["visible","Visível? true/false"]]
+  live_stationsRows: [["series","Nome da playlist (pode ser igual à Série)"],["title","Título exibido"],["logo","Logo URL quadrado","","upload"],["audioUrl","Áudio/stream override (opcional)"],["episodeId","Tocar episódio ID fixo (opcional)"],["order","Ordem"],["visible","Visível? true/false"]],
+  dj_mixesRows: [["series","Série (igual ao episódio)"],["title","Título exibido"],["cover","Capa URL quadrada","","upload"],["genres","Gêneros (vírgula — use os cadastrados)"],["episodeIds","Episódios (IDs, um por linha — vazio = todos) ","pick"],["visible","Visível? true/false"],["order","Ordem"]]
 };
 function hpGetRows(boxId){ return [...document.querySelectorAll(`#${boxId} [data-hp-row]`)].map(row=>{ const o={}; row.querySelectorAll('[data-hp-k]').forEach(el=>o[el.dataset.hpK]=el.value); return o; }); }
 function hpSetRows(boxId, items){ const box=$(boxId); if(!box) return; const fields=HP_SCHEMAS[boxId]||[]; box.innerHTML=(items||[]).map(it=>hpRow(it,fields)).join('') || `<p class="note">Vazio — usa conteúdo automático do site.</p>`; }
@@ -1284,7 +1300,7 @@ async function previewLiveResult(){
   const box = $("livePreviewResult");
   try{
     const snap = await getDocs(collection(db,"stations"));
-    const eps = snap.docs.map(d=>({id:d.id, ...d.data()}));
+    const eps = snap.docs.map(d=>djStationDoc(d));
     const rows = hpGetRows("live_stationsRows").map(r=>({series:String(r.series||"").trim(), title:String(r.title||"").trim(), logo:String(r.logo||"").trim(), audioUrl:String(r.audioUrl||"").trim(), episodeId:String(r.episodeId||"").trim(), order:r.order, visible:liveVisibleVal(r.visible)}));
     let savedN = 0;
     try{ const saved = await getDoc(doc(db,"settings","live")); if(saved.exists()) savedN = (saved.data().stations||[]).length; }catch(e){}
@@ -1349,6 +1365,29 @@ async function previewLiveResult(){
     });
   }catch(e){ box.innerHTML = `<p class="error">Erro: ${escapeHtml(e?.message || e)}</p>`; }
 }
+// AO VIVO: o save nunca apaga sozinho series ja salvas (form defasado de outra
+// aba) e linha duplicada em branco nunca apaga campo preenchido. Para tirar
+// um override de vez, delete a linha inteira (botao Remover).
+const liveRemovedKeys = new Set();
+function liveMergeRows(rows){
+  const norm = v => String(v || "").trim().toLowerCase();
+  const FIELDS = ["title","logo","audioUrl","episodeId","order","visible"];
+  const map = new Map();
+  const put = r => {
+    const k = norm(r && r.series);
+    if(!k) return;
+    let cur = map.get(k);
+    if(!cur){ cur = {...r, series: String(r.series).trim()}; map.set(k, cur); return; }
+    FIELDS.forEach(f=>{
+      const v = r[f];
+      if(v === undefined || v === null) return;
+      if(typeof v === "string" && v.trim() === "") return; // vazio nunca apaga
+      cur[f] = v;
+    });
+  };
+  (rows || []).forEach(put);
+  return [...map.values()];
+}
 function liveDataFromFields(){
   return {
     enabled: String($("live_enabled")?.value ?? "true").toLowerCase() !== "false",
@@ -1357,6 +1396,24 @@ function liveDataFromFields(){
     updatedAt: serverTimestamp()
   };
 }
+// Guarda contra perder digitacao nao salva: Recarregar reconstroi o form
+// do Firestore e apaga o que foi digitado. Merge protege o SALVO; isto aqui
+// protege o DIGITADO.
+const hpSavedSnap = {};
+function hpSnapshot(boxId){
+  try{
+    return hpGetRows(boxId).map(r=>JSON.stringify([r.series||"",r.title||"",r.logo||r.cover||"",Array.isArray(r.genres)?r.genres.join(","):(r.genres||""),r.audioUrl||"",r.episodeId||"",r.order??"",String(r.visible??"")])).join("\n");
+  }catch(e){ return ""; }
+}
+function hpConfirmDiscard(boxId, what){
+  const snap = hpSavedSnap[boxId];
+  if(snap === undefined) return true;
+  if(hpSnapshot(boxId) !== snap){
+    try{ return confirm("Há alterações NÃO SALVAS neste painel. " + what + " apaga o que você digitou. Salve antes ou clique Cancelar. Continuar mesmo assim?"); }
+    catch(e){ return true; }
+  }
+  return true;
+}
 function fillLiveFields(data={}){
   const set=(id,v)=>{ const el=$(id); if(el) el.value=v??""; };
   set("live_enabled", data.enabled !== false ? "true" : "false");
@@ -1364,6 +1421,7 @@ function fillLiveFields(data={}){
   const box=$("live_stationsRows");
   if(box){ box.innerHTML=(data.stations||[]).map(st=>{ const tmp=document.createElement("div"); tmp.innerHTML=hpRow({series:st.series||"",title:st.title||"",logo:st.logo||"",audioUrl:st.audioUrl||"",episodeId:st.episodeId||"",order:(st.order??""),visible:(st.visible!==false?"true":"false")}, HP_SCHEMAS.live_stationsRows); box.appendChild(tmp.firstChild); }); if(!(data.stations||[]).length) box.innerHTML=`<p class="note">Vazio — automático (todas as séries).</p>`; }
   const prev=$("livePreview"); if(prev) prev.textContent=JSON.stringify({...data,updatedAt:"serverTimestamp()"},null,2);
+  try{ hpSavedSnap.live_stationsRows = hpSnapshot("live_stationsRows"); }catch(e){}
 }
 async function loadLiveOnAir(){
   const box = $("liveOnAirList");
@@ -1371,7 +1429,7 @@ async function loadLiveOnAir(){
   box.innerHTML = `<p class="note">Carregando…</p>`;
   try{
     const [snapS, snapL] = await Promise.all([getDocs(collection(db,"stations")), getDoc(doc(db,"settings","live"))]);
-    const eps = snapS.docs.map(d=>({id:d.id, ...d.data()}));
+    const eps = snapS.docs.map(d=>djStationDoc(d));
     const ovs = (snapL.exists() && Array.isArray(snapL.data().stations)) ? snapL.data().stations : [];
     const byKey = new Map(ovs.map(o=>[liveNormKey(o.series), o]));
     const groups = new Map();
@@ -1413,6 +1471,462 @@ function liveEditStation(key){
   target.classList.add("tab-flash");
   setTimeout(()=>target.classList.remove("tab-flash"), 1600);
 }
+/* ---------- DJ MIXES (curadoria manual da grade — espelho do Ao Vivo) ---------- */
+const djRemovedKeys = new Set();
+function djStationDoc(d){
+  let v = {};
+  try{ v = d.data() || {}; }catch(e){}
+  const rid = String(v.id ?? "").trim();
+  return {...v, id: rid || d.id};
+}
+function djNormIds(v){
+  return [...new Set(String(v||"").split(/[\n,]+/).map(s=>s.trim()).filter(Boolean))];
+}
+function djParseGenres(v){
+  if(Array.isArray(v)) return uniqGenresAdmin(v.map(g=>String(g||"").trim()).filter(Boolean));
+  return uniqGenresAdmin(csv(v));
+}
+function djMergeRows(rows){
+  const norm = v => String(v || "").trim().toLowerCase();
+  const FIELDS = ["title","cover","genres","episodeIds","visible","order"];
+  const map = new Map();
+  const put = r => {
+    const k = norm(r && r.series);
+    if(!k) return;
+    let cur = map.get(k);
+    if(!cur){ cur = {...r, series: String(r.series).trim()}; map.set(k, cur); return; }
+    FIELDS.forEach(f=>{
+      const v = r[f];
+      if(v === undefined || v === null) return;
+      if(typeof v === "string" && v.trim() === "") return;
+      if(Array.isArray(v) && !v.length) return;
+      cur[f] = v;
+    });
+  };
+  (rows || []).forEach(put);
+  return [...map.values()];
+}
+async function uploadMixCover(btn){
+  const row = btn.closest("[data-hp-row]");
+  if(!row) return;
+  const fileInp = row.querySelector('input[type="file"][data-hp-file="cover"]');
+  const urlInp = row.querySelector('[data-hp-k="cover"]');
+  const file = fileInp && fileInp.files && fileInp.files[0];
+  if(!file){ toast("Escolha o arquivo da capa primeiro.", "error"); return; }
+  btn.disabled = true;
+  const orig = btn.textContent;
+  btn.textContent = "Enviando…";
+  try{
+    const safe = String(file.name || "cover.png").replace(/[^a-zA-Z0-9.\-_]+/g, "-");
+    const r = ref(storage, `mix-covers/${Date.now()}-${safe}`);
+    await uploadBytesResumable(r, file);
+    const url = await getDownloadURL(r);
+    if(urlInp) urlInp.value = url;
+    await logAction("upload", "mix-covers", {file: safe});
+    toast("Capa no ar (Storage). Salve a linha.");
+  }catch(e){
+    console.error("uploadMixCover failed", e);
+    toast("Falha no upload: " + (e?.message || e), "error");
+  }
+  btn.disabled = false;
+  btn.textContent = orig;
+}
+function djDataFromFields(){
+  return {
+    mixes: hpGetRows("dj_mixesRows").map(r=>({series:String(r.series||"").trim(), title:String(r.title||"").trim(), cover:String(r.cover||"").trim(), genres:djParseGenres(r.genres||""), episodeIds:[...new Set(String(r.episodeIds||"").split(/[\n,]+/).map(s=>s.trim()).filter(Boolean))], visible:liveVisibleVal(r.visible), order:Number(r.order ?? 999) || 0})).filter(r=>r.series),
+    updatedAt: serverTimestamp()
+  };
+}
+function fillDjMixesFields(data={}){
+  const box=$("dj_mixesRows");
+  if(box){ box.innerHTML=(data.mixes||[]).map(st=>{ const tmp=document.createElement("div"); tmp.innerHTML=hpRow({series:st.series||"",title:st.title||"",cover:st.cover||"",genres:Array.isArray(st.genres)?st.genres.join(", "):(st.genres||""),episodeIds:Array.isArray(st.episodeIds)?st.episodeIds.join("\n"):(st.episodeIds||""),visible:(st.visible!==false?"true":"false"),order:(st.order??"")}, HP_SCHEMAS.dj_mixesRows); box.appendChild(tmp.firstChild); }); if(!(data.mixes||[]).length) box.innerHTML=`<p class="note">Vazio — automático (todas as séries).</p>`; }
+  try{ djRefreshCounts($("dj_mixesRows")); }catch(e){}
+  const prev=$("djMixesPreview"); if(prev) prev.textContent=JSON.stringify({...data,updatedAt:"serverTimestamp()"},null,2);
+  try{ hpSavedSnap.dj_mixesRows = hpSnapshot("dj_mixesRows"); }catch(e){}
+}
+async function loadDjMixOnAir(){
+  const box = $("djMixOnAirList");
+  if(!box) return;
+  box.innerHTML = `<p class="note">Carregando…</p>`;
+  try{
+    const [snapS, snapD] = await Promise.all([getDocs(collection(db,"stations")), getDoc(doc(db,"settings","djmixes"))]);
+    const eps = snapS.docs.map(d=>djStationDoc(d));
+    djStationsCache = eps;
+    const ovs = (snapD.exists() && Array.isArray(snapD.data().mixes)) ? snapD.data().mixes : [];
+    const byKey = new Map(ovs.map(o=>[liveNormKey(o.series), o]));
+    const groups = new Map();
+    eps.forEach(s=>{ const raw=String(s.series||s.name||"").trim(); const k=liveNormKey(raw); if(!k) return; if(!groups.has(k)) groups.set(k,{key:raw, items:[]}); groups.get(k).items.push(s); });
+    ovs.forEach(o=>{ const k=liveNormKey(o.series); if(k && !groups.has(k)) groups.set(k, {key:String(o.series||"").trim(), items:[]}); });
+    const genreSet = new Map();
+    eps.forEach(s=>{(Array.isArray(s.genres)?s.genres:[]).forEach(g=>{ const gg=String(g||"").trim(); if(gg && ![...genreSet.values()].some(x=>x.toLowerCase()===gg.toLowerCase())) genreSet.set(gg.toLowerCase(), gg); }); });
+    const dl = $("dj_genresList");
+    if(dl) dl.innerHTML = [...genreSet.values()].sort((a,b)=>a.localeCompare(b)).map(g=>`<option value="${escapeHtml(g)}">`).join("");
+    const cards = [...groups.values()].map(g=>{
+      const ov = byKey.get(liveNormKey(g.key));
+      const latest = [...g.items].sort((a,b)=>((b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)))[0];
+      const cover = (ov && ov.cover) ? ov.cover : (g.items[0]?.cover || "");
+      const title = (ov && ov.title) || g.key;
+      const badge = ov ? "MANUAL" : "AUTO";
+      const genres = (ov && ov.genres && ov.genres.length) ? ov.genres.join(" / ") : ((latest?.genres || []).slice(0,3).join(" / ") || "—");
+      return `<article class="card"><small>${escapeHtml(badge)} · ${g.items.length} episódio(s)</small><h3>${escapeHtml(title)}</h3>${cover?`<img src="${escapeHtml(cover)}" alt="" style="width:100%;height:90px;object-fit:cover;background:#111" onerror="this.style.display='none'">`:`<p class="note">Sem capa</p>`}<p class="note">${escapeHtml(genres)}</p><div class="row"><button class="ghost" data-dj-edit-mix="${escapeHtml(g.key)}">Editar</button></div></article>`;
+    });
+    box.innerHTML = cards.join("") || `<p class="note">Nenhum mix no ar.</p>`;
+    box.querySelectorAll("[data-dj-edit-mix]").forEach(b=>b.onclick=()=>djEditMix(b.dataset.djEditMix));
+    try{ const __plBox = $("djPlaylistsList"); if(__plBox){ __plBox.dataset.mixescache = JSON.stringify(ovs); } }catch(e){}
+    try{ renderDjPlaylists(); }catch(e){}
+  }catch(e){ box.innerHTML = `<p class="error">Erro: ${escapeHtml(e?.message || e)}</p>`; }
+}
+function djEditMix(key){
+  const box = $("dj_mixesRows");
+  if(!box) return;
+  const norm = liveNormKey(key);
+  let target = [...box.querySelectorAll("[data-hp-row]")].find(row=>{
+    const inp = row.querySelector('[data-hp-k="series"]');
+    return inp && liveNormKey(inp.value) === norm;
+  });
+  if(!target){
+    const tmp = document.createElement("div");
+    tmp.innerHTML = hpRow({series:key, title:"", cover:"", genres:"", episodeIds:"", visible:"true", order:""}, HP_SCHEMAS.dj_mixesRows);
+    target = tmp.firstChild;
+    const empty = box.querySelector("p.note");
+    if(empty) empty.remove();
+    box.appendChild(target);
+    toast("Linha criada — preencha e salve.");
+  } else {
+    toast("Linha existente localizada.");
+  }
+  target.scrollIntoView({behavior:"smooth", block:"center"});
+  target.classList.add("tab-flash");
+  setTimeout(()=>target.classList.remove("tab-flash"), 1600);
+}
+let djStationsCache = [];
+function djRefreshCounts(box){
+  (box || document).querySelectorAll('#dj_mixesRows [data-hp-row]').forEach(row=>{
+    const ta = row.querySelector('[data-hp-k="episodeIds"]');
+    const el = row.querySelector('[data-dj-count]');
+    if(!ta || !el) return;
+    const n = djNormIds(ta.value).length;
+    el.textContent = n ? `${n} selecionado(s)` : "Nenhum marcado = todos da s\u00e9rie";
+  });
+}
+document.addEventListener("input", e=>{
+  const ta = e.target.closest?.('[data-hp-k="episodeIds"]');
+  if(ta && ta.closest("#dj_mixesRows")) djRefreshCounts(ta.closest("[data-hp-row]").parentNode || document);
+});
+function djPickerItemHTML(ep, checked){
+  const id = String(ep.id);
+  const name = String(ep.name || ep.title || id);
+  const cover = String(ep.cover || "");
+  return `<label style="display:grid;grid-template-columns:26px 52px 1fr;gap:10px;align-items:center;border:1px solid #333;padding:8px;cursor:pointer"><input type="checkbox" data-dj-pick-id="${escapeHtml(id)}"${checked?" checked":""} style="width:18px;height:18px">${cover?`<img src="${escapeHtml(cover)}" alt="" style="width:52px;height:52px;object-fit:cover;background:#111" onerror="this.style.display='none'">`:`<span style="width:52px;height:52px;background:#111;display:block"></span>`}<span><strong>${escapeHtml(name)}</strong><br><small style="color:#aaa">${escapeHtml(id)}</small></span></label>`;
+}
+async function openDjPicker(rowEl){
+  const seriesInp = rowEl.querySelector('[data-hp-k="series"]');
+  const ta = rowEl.querySelector('[data-hp-k="episodeIds"]');
+  const series = String(seriesInp?.value || "").trim();
+  if(!series){ toast("D\u00ea um nome \u00e0 playlist primeiro (campo Nome).", "error"); return; }
+  if(!djStationsCache.length){
+    try{
+      const snap = await getDocs(collection(db,"stations"));
+      djStationsCache = snap.docs.map(d=>djStationDoc(d));
+    }catch(e){ toast("Falha ao carregar epis\u00f3dios: " + (e?.message || e), "error"); return; }
+  }
+  const key = series.toLowerCase();
+  let eps = djStationsCache.filter(s=>String(s.series||s.name||"").trim().toLowerCase()===key);
+  let groups = null;
+  if(!eps.length){
+    eps = [...djStationsCache];
+    groups = new Map();
+    eps.forEach(s=>{ const gk = String(s.series||s.name||"sem s\u00e9rie").trim() || "sem s\u00e9rie"; if(!groups.has(gk)) groups.set(gk, []); groups.get(gk).push(s); });
+  }
+  if(!eps.length){ toast("Nenhum epis\u00f3dio cadastrado.", "error"); return; }
+  const selected = new Set(djNormIds(ta?.value));
+  const old = document.getElementById("djPickModal");
+  if(old) old.remove();
+  const modal = document.createElement("div");
+  modal.id = "djPickModal";
+  modal.style.cssText = "position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:16px";
+  modal.innerHTML = `<div style="width:min(560px,100%);max-height:84vh;overflow:auto;background:#0b0b0b;border:1px solid #fff;padding:14px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><strong>Epis\u00f3dios \u2014 ${escapeHtml(series)}</strong><button class="ghost" type="button" data-dj-pick-close>\u00d7 Fechar</button></div><input data-dj-pick-filter placeholder="Filtrar..." style="width:100%;margin-bottom:10px"><div class="actions" style="margin-bottom:10px"><button class="ghost" type="button" data-dj-pick-all>Marcar todos</button><button class="ghost" type="button" data-dj-pick-none>Desmarcar</button></div><div data-dj-pick-list style="display:grid;gap:8px">${groups ? [...groups.entries()].map(([g,arr])=>`<p class="note" data-dj-pick-group="${escapeHtml(g)}" style="margin:6px 0 0">${escapeHtml(g)} (${arr.length})</p>` + arr.map(ep=>djPickerItemHTML(ep, selected.has(String(ep.id)))).join("")).join("") : eps.map(ep=>djPickerItemHTML(ep, selected.has(String(ep.id)))).join("")}</div><div class="actions" style="margin-top:12px"><button type="button" data-dj-pick-apply>Aplicar sele\u00e7\u00e3o</button></div><p class="note">Nenhum marcado = mix mostra todos da s\u00e9rie.</p></div>`;
+  document.body.appendChild(modal);
+  const list = modal.querySelector("[data-dj-pick-list]");
+  const updateCount = ()=>{ const n = modal.querySelectorAll("[data-dj-pick-id]:checked").length; const b = modal.querySelector("[data-dj-pick-apply]"); if(b) b.textContent = n ? `Aplicar sele\u00e7\u00e3o (${n})` : "Aplicar (todos)"; };
+  updateCount();
+  list.addEventListener("change", updateCount);
+  modal.querySelector("[data-dj-pick-filter]").addEventListener("input", ev=>{
+    const q = String(ev.target.value||"").toLowerCase();
+    list.querySelectorAll("label").forEach(l=>{ l.style.display = l.textContent.toLowerCase().includes(q) ? "" : "none"; });
+    list.querySelectorAll("[data-dj-pick-group]").forEach(h=>{
+      let vis = false, el = h.nextElementSibling;
+      while(el && !el.hasAttribute("data-dj-pick-group")){ if(el.tagName === "LABEL" && el.style.display !== "none") vis = true; el = el.nextElementSibling; }
+      h.style.display = vis ? "" : "none";
+    });
+  });
+  modal.querySelector("[data-dj-pick-all]").onclick = ()=>{ list.querySelectorAll("[data-dj-pick-id]").forEach(c=>{ c.checked = true; }); updateCount(); };
+  modal.querySelector("[data-dj-pick-none]").onclick = ()=>{ list.querySelectorAll("[data-dj-pick-id]").forEach(c=>{ c.checked = false; }); updateCount(); };
+  const isDirtyPick = ()=>{
+    const cur = new Set([...modal.querySelectorAll("[data-dj-pick-id]:checked")].map(c=>c.getAttribute("data-dj-pick-id")));
+    if(cur.size !== selected.size) return true;
+    for(const id of cur) if(!selected.has(id)) return true;
+    return false;
+  };
+  const tryClosePick = ()=>{ if(isDirtyPick() && !confirm("Fechar sem aplicar? As marcas feitas ser\u00e3o perdidas.")) return; modal.remove(); };
+  modal.querySelector("[data-dj-pick-close]").onclick = tryClosePick;
+  modal.addEventListener("click", ev=>{ if(ev.target === modal) tryClosePick(); });
+  modal.querySelector("[data-dj-pick-apply]").onclick = ()=>{
+    const ids = [...modal.querySelectorAll("[data-dj-pick-id]:checked")].map(c=>c.getAttribute("data-dj-pick-id"));
+    if(ta) ta.value = ids.join("\n");
+    modal.remove();
+    djRefreshCounts(rowEl.parentNode || document);
+    toast(ids.length ? `${ids.length} epis\u00f3dio(s) na playlist.` : "Playlist limpa \u2014 mix mostra todos.");
+  };
+}
+function djPlaylistEntryFromForm(f){
+  return {
+    series: String(f.name || "").trim(),
+    title: String(f.title || "").trim(),
+    cover: String(f.cover || "").trim(),
+    genres: djParseGenres(f.genresText || ""),
+    episodeIds: [...new Set((f.ids || []).map(id=>String(id||"").trim()).filter(Boolean))],
+    visible: String(f.visible ?? "true").toLowerCase() !== "false",
+    order: Number(f.order ?? 999) || 0
+  };
+}
+function djAllSeriesGroups(){
+  const groups = new Map();
+  (djStationsCache || []).forEach(s=>{
+    const gk = String(s.series || s.name || "sem s\u00e9rie").trim() || "sem s\u00e9rie";
+    if(!groups.has(gk)) groups.set(gk, []);
+    groups.get(gk).push(s);
+  });
+  return groups;
+}
+async function openDjPlaylistEditor(keyOrNull){
+  if(!djStationsCache.length){
+    try{
+      const snap = await getDocs(collection(db,"stations"));
+      djStationsCache = snap.docs.map(d=>djStationDoc(d));
+    }catch(e){ toast("Falha ao carregar epis\u00f3dios: " + (e?.message || e), "error"); return; }
+  }
+  let current = null;
+  if(keyOrNull){
+    try{
+      const snap = await getDoc(doc(db,"settings","djmixes"));
+      const arr = snap.exists() && Array.isArray(snap.data().mixes) ? snap.data().mixes : [];
+      current = arr.find(m=>String(m.series||"").trim().toLowerCase()===String(keyOrNull).trim().toLowerCase()) || null;
+    }catch(e){}
+  }
+  const sel = new Set(current && Array.isArray(current.episodeIds) ? current.episodeIds.map(id=>String(id)) : []);
+  const old = document.getElementById("djPlaylistModal");
+  if(old) old.remove();
+  const modal = document.createElement("div");
+  modal.id = "djPlaylistModal";
+  modal.style.cssText = "position:fixed;z-index:9999;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:16px";
+  modal.innerHTML = `<div style="width:min(640px,100%);max-height:88vh;overflow:auto;background:#0b0b0b;border:1px solid #fff;padding:14px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><strong>${current ? "Editar playlist" : "Nova playlist"}</strong><button class="ghost" type="button" data-dj-pl-close>\u00d7 Fechar</button></div>
+    <div class="field"><label>Nome da playlist</label><input data-dj-pl-name value="${escapeHtml(current?.series || "")}"></div>
+    <div class="field"><label>T\u00edtulo exibido</label><input data-dj-pl-title value="${escapeHtml(current?.title || "")}"></div>
+    <div class="field"><label>Capa URL</label><input data-dj-pl-cover value="${escapeHtml(current?.cover || "")}"></div>
+    <div class="field"><label>G\u00eaneros (v\u00edrgula)</label><input data-dj-pl-genres value="${escapeHtml(Array.isArray(current?.genres) ? current.genres.join(", ") : "")}"></div>
+    <div class="grid2"><div class="field"><label>Vis\u00edvel? true/false</label><input data-dj-pl-visible value="${current && current.visible === false ? "false" : "true"}"></div>
+    <div class="field"><label>Ordem</label><input data-dj-pl-order value="${current?.order ?? ""}"></div></div>
+    <input data-dj-pl-filter placeholder="Filtrar epis\u00f3dios..." style="width:100%;margin:8px 0">
+    <div class="actions" style="margin-bottom:10px"><button class="ghost" type="button" data-dj-pl-all>Marcar todos</button><button class="ghost" type="button" data-dj-pl-none>Desmarcar</button><span data-dj-pl-count style="align-self:center;color:#aaa"></span></div>
+    <div data-dj-pl-list style="display:grid;gap:8px"></div>
+    <div class="actions" style="margin-top:12px"><button type="button" data-dj-pl-save>Salvar playlist</button>${current ? `<button class="danger" type="button" data-dj-pl-del>Excluir</button>` : ""}</div>
+    <p class="note">Desmarcar tudo = playlist mostra todos (vira mix autom\u00e1tico da lista).</p></div>`;
+  document.body.appendChild(modal);
+  const list = modal.querySelector("[data-dj-pl-list]");
+  const groups = djAllSeriesGroups();
+  list.innerHTML = [...groups.entries()].map(([g, arr])=>`<p class="note" data-dj-pl-group style="margin:6px 0 0">${escapeHtml(g)} (${arr.length}) <button class="ghost" type="button" data-dj-pl-groupall="all" style="padding:2px 6px">todos</button> <button class="ghost" type="button" data-dj-pl-groupnone="none" style="padding:2px 6px">nenhum</button></p>` + arr.map(ep=>djPickerItemHTML(ep, sel.has(String(ep.id)))).join("")).join("");
+  const syncCount = ()=>{ const el = modal.querySelector("[data-dj-pl-count]"); if(el) el.textContent = `${modal.querySelectorAll("[data-dj-pick-id]:checked").length} marcado(s)`; };
+  const itemSel = 'input[type="checkbox"][data-dj-pick-id]';
+  syncCount();
+  list.addEventListener("change", syncCount);
+  modal.querySelector("[data-dj-pl-filter]").addEventListener("input", ev=>{
+    const q = String(ev.target.value||"").toLowerCase();
+    list.querySelectorAll("label").forEach(l=>{ l.style.display = l.textContent.toLowerCase().includes(q) ? "" : "none"; });
+    list.querySelectorAll("[data-dj-pl-group]").forEach(h=>{
+      let vis = false, el = h.nextElementSibling;
+      while(el && !el.hasAttribute("data-dj-pl-group")){ if(el.tagName === "LABEL" && el.style.display !== "none") vis = true; el = el.nextElementSibling; }
+      h.style.display = vis || !q ? "" : "none";
+    });
+  });
+  // checkboxes usam data-dj-pick-id (do item padrao)
+  const boxes = ()=>[...list.querySelectorAll("[data-dj-pick-id]")];
+  modal.querySelector("[data-dj-pl-all]").onclick = ()=>{ boxes().forEach(c=>{ c.checked = true; }); syncCount(); };
+  modal.querySelector("[data-dj-pl-none]").onclick = ()=>{ boxes().forEach(c=>{ c.checked = false; }); syncCount(); };
+  list.querySelectorAll("[data-dj-pl-groupall]").forEach(b=>b.onclick=()=>{ let el=b.closest("p").nextElementSibling; while(el && !el.hasAttribute("data-dj-pl-group")){ const c=el.querySelector?.("input[type=checkbox]"); if(c) c.checked=true; el=el.nextElementSibling; } syncCount(); });
+  list.querySelectorAll("[data-dj-pl-groupnone]").forEach(b=>b.onclick=()=>{ let el=b.closest("p").nextElementSibling; while(el && !el.hasAttribute("data-dj-pl-group")){ const c=el.querySelector?.("input[type=checkbox]"); if(c) c.checked=false; el=el.nextElementSibling; } syncCount(); });
+  const isDirtyPl = ()=>{
+    const cur = new Set([...modal.querySelectorAll("[data-dj-pick-id]:checked")].map(c=>c.getAttribute("data-dj-pick-id")));
+    if(cur.size !== sel.size) return true;
+    for(const id of cur) if(!sel.has(id)) return true;
+    return false;
+  };
+  const tryClosePl = ()=>{ if(isDirtyPl() && !confirm("Fechar sem salvar? As marcas feitas ser\u00e3o perdidas.")) return; modal.remove(); };
+  modal.querySelector("[data-dj-pl-close]").onclick = tryClosePl;
+  modal.addEventListener("click", ev=>{ if(ev.target === modal) tryClosePl(); });
+  modal.querySelector("[data-dj-pl-save]").onclick = async (ev)=>{
+    const saveBtn = ev.target.closest("button");
+    if(saveBtn) saveBtn.disabled = true;
+    const name = modal.querySelector("[data-dj-pl-name]").value;
+    if(!String(name||"").trim()){ toast("D\u00ea um nome \u00e0 playlist.", "error"); return; }
+    const entry = djPlaylistEntryFromForm({
+      name, title: modal.querySelector("[data-dj-pl-title]").value,
+      cover: modal.querySelector("[data-dj-pl-cover]").value,
+      genresText: modal.querySelector("[data-dj-pl-genres]").value,
+      ids: boxes().filter(c=>c.checked).map(c=>c.getAttribute("data-dj-pick-id")),
+      visible: modal.querySelector("[data-dj-pl-visible]").value,
+      order: modal.querySelector("[data-dj-pl-order]").value
+    });
+    try{
+      const ref_ = doc(db,"settings","djmixes");
+      const snap = await getDoc(ref_);
+      const arr = snap.exists() && Array.isArray(snap.data().mixes) ? snap.data().mixes : [];
+      const nk = entry.series.toLowerCase();
+      const ok = keyOrNull ? String(keyOrNull).trim().toLowerCase() : null;
+      const next = arr.filter(m=>{ const k = String(m.series||"").trim().toLowerCase(); return k !== nk && k !== ok; });
+      next.push(entry);
+      await setDoc(ref_, {mixes: djMergeRows(next), updatedAt: serverTimestamp()}, {merge:true});
+      await logAction("save","settings/djmixes");
+      const verify = await getDoc(ref_);
+      const savedEntry = ((verify.exists() && verify.data().mixes) || []).find(m=>String(m.series||"").trim().toLowerCase()===nk);
+      const savedN = Array.isArray(savedEntry?.episodeIds) ? savedEntry.episodeIds.length : -1;
+      if(savedN !== entry.episodeIds.length) throw new Error(`Falha na verifica\u00e7\u00e3o: salvos ${savedN} de ${entry.episodeIds.length}. Tente de novo.`);
+      modal.remove();
+      djSyncMixRow(entry, ok);
+      await loadDjMixOnAir(); renderDjPlaylists(); await loadDjMixes();
+      toast(`Playlist "${entry.series}" salva com ${entry.episodeIds.length ? entry.episodeIds.length + " epis\u00f3dio(s)" : "todos os epis\u00f3dios"}.`);
+    }catch(e){ toast("Falha ao salvar: " + (e?.message || e), "error"); if(saveBtn) saveBtn.disabled = false; }
+  };
+  const delBtn = modal.querySelector("[data-dj-pl-del]");
+  if(delBtn) delBtn.onclick = async ()=>{
+    if(!confirm(`Excluir a playlist "${current.series}"?`)) return;
+    try{
+      const ref_ = doc(db,"settings","djmixes");
+      const snap = await getDoc(ref_);
+      const arr = snap.exists() && Array.isArray(snap.data().mixes) ? snap.data().mixes : [];
+      const k = String(current.series||"").trim().toLowerCase();
+      await setDoc(ref_, {mixes: arr.filter(m=>String(m.series||"").trim().toLowerCase()!==k), updatedAt: serverTimestamp()}, {merge:true});
+      await logAction("delete","settings/djmixes");
+      const verifyDel = await getDoc(ref_);
+      const stillThere = ((verifyDel.exists() && verifyDel.data().mixes) || []).some(m=>String(m.series||"").trim().toLowerCase()===k);
+      if(stillThere) throw new Error("Falha na verifica\u00e7\u00e3o: playlist ainda existe. Tente de novo.");
+      modal.remove();
+      loadDjMixOnAir(); renderDjPlaylists(); loadDjMixes();
+      toast("Playlist excluída.");
+    }catch(e){ toast("Falha ao excluir: " + (e?.message || e), "error"); }
+  };
+}
+function renderDjPlaylists(){
+  const box = $("djPlaylistsList");
+  if(!box) return;
+  const eps = djStationsCache || [];
+  const seriesKeys = new Set(eps.map(s=>String(s.series||s.name||"").trim().toLowerCase()).filter(Boolean));
+  let mixes = [];
+  try{
+    const cached = box.dataset.mixescache ? JSON.parse(box.dataset.mixescache) : null;
+    if(cached) mixes = cached;
+  }catch(e){}
+  const standalone = mixes.filter(m=>!seriesKeys.has(String(m.series||"").trim().toLowerCase()));
+  if(!standalone.length){ box.innerHTML = `<p class="note">Nenhuma playlist livre — crie uma acima. Mixes de s\u00e9ries ficam na se\u00e7\u00e3o Mixes abaixo.</p>`; return; }
+  box.innerHTML = standalone.map(m=>{
+    const ids = Array.isArray(m.episodeIds) ? m.episodeIds : [];
+    const found = ids.filter(id=>eps.some(s=>String(s.id)===String(id))).length;
+    return `<article class="card"><small>PLAYLIST · ${ids.length ? found + "/" + ids.length + " eps" : "todos"}</small><h3>${escapeHtml(m.title || m.series)}</h3>${m.cover?`<img src="${escapeHtml(m.cover)}" alt="" style="width:100%;height:90px;object-fit:cover;background:#111" onerror="this.style.display='none'">`:`<p class="note">Sem capa</p>`}<div class="row"><button class="ghost" data-dj-edit-playlist="${escapeHtml(m.series)}">Editar</button></div></article>`;
+  }).join("");
+}
+function djSyncMixRow(entry, oldKey){
+  const box = $("dj_mixesRows");
+  if(!box || !entry) return;
+  const norm = v => String(v||"").trim().toLowerCase();
+  if(oldKey && norm(oldKey) !== norm(entry.series)){
+    const oldRow = [...box.querySelectorAll("[data-hp-row]")].find(row=>norm(row.querySelector('[data-hp-k="series"]')?.value)===norm(oldKey));
+    if(oldRow){ oldRow.remove(); djRemovedKeys.add(norm(oldKey)); }
+  }
+  let target = [...box.querySelectorAll("[data-hp-row]")].find(row=>norm(row.querySelector('[data-hp-k="series"]')?.value)===norm(entry.series));
+  if(!target){
+    const tmp = document.createElement("div");
+    tmp.innerHTML = hpRow({series:entry.series, title:"", cover:"", genres:"", episodeIds:"", visible:"true", order:""}, HP_SCHEMAS.dj_mixesRows);
+    target = tmp.firstChild;
+    const empty = box.querySelector("p.note");
+    if(empty) empty.remove();
+    box.appendChild(target);
+  }
+  const set = (k,v)=>{ const el = target.querySelector(`[data-hp-k="${k}"]`); if(el) el.value = v; };
+  set("series", entry.series);
+  set("title", entry.title || "");
+  set("cover", entry.cover || "");
+  set("genres", Array.isArray(entry.genres) ? entry.genres.join(", ") : (entry.genres || ""));
+  set("episodeIds", Array.isArray(entry.episodeIds) ? entry.episodeIds.join("\n") : (entry.episodeIds || ""));
+  set("visible", entry.visible === false ? "false" : "true");
+  set("order", entry.order ?? "");
+  try{ djRefreshCounts(box); }catch(e){}
+}
+async function djFixIds(){
+  try{
+    const snap = await getDocs(collection(db,"stations"));
+    let fixed = 0;
+    for(const d of snap.docs){
+      const v = d.data() || {};
+      if(!String(v.id ?? "").trim()){
+        await setDoc(doc(db,"stations",d.id), {id:d.id}, {merge:true});
+        fixed++;
+      }
+    }
+    await logAction("fix","stations-ids",{fixed});
+    toast(fixed ? `${fixed} epis\u00f3dio(s) com ID corrigido. Recarregando\u2026` : "Nenhum epis\u00f3dio com ID vazio.");
+    loadDjMixOnAir(); loadDjMixes();
+  }catch(e){ toast("Falha: " + (e?.message || e), "error"); }
+}
+async function loadDjMixes(){
+  if(!$("djMixesPanel")) return;
+  try{ const snap=await getDoc(doc(db,"settings","djmixes")); fillDjMixesFields(snap.exists()?snap.data():{}); }
+  catch(e){ console.warn("djmixes load failed", e); fillDjMixesFields({}); }
+  loadDjMixOnAir();
+}
+async function saveDjMixes(){
+  const form=djDataFromFields();
+  const formRows=djMergeRows(form.mixes);
+  let savedMixes=[];
+  try{ const snap=await getDoc(doc(db,"settings","djmixes")); if(snap.exists() && Array.isArray(snap.data().mixes)) savedMixes=snap.data().mixes; }catch(e){}
+  const normK = v => String(v || "").trim().toLowerCase();
+  const formKeys=new Set(formRows.map(s=>normK(s.series)).filter(Boolean));
+  const kept=savedMixes.filter(s=>{ const k=normK(s.series); return k && !formKeys.has(k) && !djRemovedKeys.has(k); });
+  const removedCount=savedMixes.filter(s=>{ const k=normK(s.series); return k && !formKeys.has(k) && djRemovedKeys.has(k); }).length;
+  const data={...form, mixes:djMergeRows([...kept, ...formRows]), updatedAt:serverTimestamp()};
+  await setDoc(doc(db,"settings","djmixes"), data, {merge:true});
+  await logAction("save","settings/djmixes");
+  djRemovedKeys.clear();
+  fillDjMixesFields({...data, updatedAt:"serverTimestamp()"});
+  loadDjMixOnAir();
+  toast(`DJ Mixes salvo: ${data.mixes.length} mix(es)${kept.length?` (${kept.length} mantido(s) do salvamento anterior)`:""}${removedCount?` (${removedCount} removido(s))`:""}.`);
+}
+async function previewDjMixes(){
+  const box = $("djMixesPreviewResult");
+  if(!box) return;
+  try{
+    const snap = await getDocs(collection(db,"stations"));
+    const eps = snap.docs.map(d=>djStationDoc(d));
+    const rows = djMergeRows(djDataFromFields().mixes);
+    let savedN = 0;
+    try{ const saved = await getDoc(doc(db,"settings","djmixes")); if(saved.exists()) savedN = (saved.data().mixes||[]).length; }catch(e){}
+    const head = `<p class="note">Salvo no Firestore: ${savedN} mix(es) | No formulário agora: ${rows.length} mix(es).${savedN !== rows.length ? " Clique SALVAR DJ MIXES para valer o formulário." : ""}</p>`;
+    const fmt = (ok,txt)=>`<p class="${ok?"success":"error"}">${ok?"[OK]":"[--]"} ${escapeHtml(txt)}</p>`;
+    if(!rows.length) return void (box.innerHTML = head + fmt(true, "Modo automático: séries, capas e gêneros vêm dos episódios."));
+    box.innerHTML = head + rows.map(r=>{
+      const match = eps.filter(s=>liveNormKey(s.series||s.name||"")===liveNormKey(r.series));
+      const cover = r.cover ? "capa própria" : (match.length ? "capa do episódio" : "SEM CAPA");
+      const genres = (r.genres && r.genres.length) ? r.genres.join(" / ") : "gêneros do episódio";
+      const ids = Array.isArray(r.episodeIds) ? r.episodeIds : [];
+      const missing = ids.filter(id=>!eps.some(s=>String(s.id)===String(id)));
+      const inSeries = ids.filter(id=>match.some(s=>String(s.id)===String(id)));
+      const playlist = !ids.length ? `${match.length} episódio(s) automáticos` : `${inSeries.length}/${ids.length} na playlist${missing.length?` (IDs não achados: ${missing.slice(0,5).join(", ")})`:""}`;
+      const avail = match.slice(0,30).map(s=>`${s.id} (${(s.name||s.title||"").slice(0,28)})`).join(" · ");
+      const ok = match.length > 0 && !missing.length;
+      return fmt(ok, `${r.series} → ${playlist} | ${cover} | ${genres}`) + (match.length?`<p class="note">IDs da série p/ copiar: ${escapeHtml(avail)}</p>`:"");
+    }).join("");
+  }catch(e){ box.innerHTML = `<p class="error">Erro: ${escapeHtml(e?.message || e)}</p>`; }
+}
 async function loadLive(){
   if(!$("livePanel")) return;
   try{ const snap=await getDoc(doc(db,"settings","live")); fillLiveFields(snap.exists()?snap.data():{}); }
@@ -1420,12 +1934,21 @@ async function loadLive(){
   loadLiveOnAir();
 }
 async function saveLive(){
-  const data=liveDataFromFields();
+  const form=liveDataFromFields();
+  const formRows=liveMergeRows(form.stations);
+  let savedStations=[];
+  try{ const snap=await getDoc(doc(db,"settings","live")); if(snap.exists() && Array.isArray(snap.data().stations)) savedStations=snap.data().stations; }catch(e){}
+  const normK = v => String(v || "").trim().toLowerCase();
+  const formKeys=new Set(formRows.map(s=>normK(s.series)).filter(Boolean));
+  const kept=savedStations.filter(s=>{ const k=normK(s.series); return k && !formKeys.has(k) && !liveRemovedKeys.has(k); });
+  const removedCount=savedStations.filter(s=>{ const k=normK(s.series); return k && !formKeys.has(k) && liveRemovedKeys.has(k); }).length;
+  const data={...form, stations:liveMergeRows([...kept, ...formRows]), updatedAt:serverTimestamp()};
   await setDoc(doc(db,"settings","live"), data, {merge:true});
   await logAction("save","settings/live");
+  liveRemovedKeys.clear();
   fillLiveFields({...data, updatedAt:"serverTimestamp()"});
   loadLiveOnAir();
-  toast("Ao Vivo salvo.");
+  toast(`Ao Vivo salvo: ${data.stations.length} estacao(oes)${kept.length?` (${kept.length} mantida(s) do salvamento anterior)`:""}${removedCount?` (${removedCount} removida(s))`:""}.`);
 }
 async function saveHomepage(){
   const data=homepageDataFromFields();
@@ -1460,8 +1983,8 @@ async function loadOrderTab(){
   try{
     const [snapS, snapA, snapO] = await Promise.all([getDocs(collection(db,"stations")), getDocs(collection(db,"articles")), getDoc(doc(db,"settings","order"))]);
     const saved = snapO.exists() ? snapO.data() : {};
-    const eps = snapS.docs.map(d=>({id:d.id, ...d.data()}));
-    const arts = snapA.docs.map(d=>({id:d.id, ...d.data()}));
+    const eps = snapS.docs.map(d=>djStationDoc(d));
+    const arts = snapA.docs.map(d=>djStationDoc(d));
     const artById = new Map(arts.map(a=>[a.id, a]));
     const artOrder = Array.isArray(saved.articleOrder) ? saved.articleOrder.filter(id=>artById.has(id)) : [];
     artOrder.push(...arts.map(a=>a.id).filter(id=>!artOrder.includes(id)));
